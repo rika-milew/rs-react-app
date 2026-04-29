@@ -11,7 +11,8 @@
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
     "lint:css": "stylelint \"**/*.{css,scss}\"",
-    "lint:css:fix": "stylelint \"**/*.{css,scss}\" --fix"
+    "lint:css:fix": "stylelint \"**/*.{css,scss}\" --fix",
+    "lint-staged": "lint-staged"
   },
   "lint-staged": {
      "src/**/*.{ts,tsx}": [
