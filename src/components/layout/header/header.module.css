@@ -9,6 +9,15 @@
   color: var(--color-white);
   background: var(--color-gray-800);
   border-bottom: 1px solid var(--color-gray-700);
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 0.25rem;
+    height: auto;
+  }
 }
 
 .sticky {
