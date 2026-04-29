@@ -17,10 +17,3 @@ button {
   color: inherit;
   cursor: pointer;
 }
-
-.container {
-  width: 100%;
-  max-width: 64rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-}

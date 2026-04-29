@@ -1,0 +1,22 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--color-gray-800);
+  color: var(--color-white);
+}
+
+.main {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  padding: 2rem 1.5rem;
+}
+
+.container {
+  width: 100%;
+  max-width: 65rem;
+  margin: 0 auto;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}

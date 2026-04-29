@@ -15,8 +15,9 @@ export class Layout extends React.Component<Props> {
     return (
       <div className={cx('wrapper')}>
         <Header />
-
-        <main className={cx('main')}>{this.props.children}</main>
+        <main className={cx('main')}>
+          <div className={cx('container')}>{this.props.children}</div>
+        </main>
       </div>
     );
   }
