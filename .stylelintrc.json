@@ -1,0 +1,119 @@
+{
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-standard-scss",
+    "stylelint-config-clean-order"
+  ],
+  "customSyntax": "postcss-scss",
+  "plugins": ["stylelint-order"],
+  "rules": {
+    "max-nesting-depth": 3,
+    "no-descending-specificity": true,
+    "order/properties-order": [
+      [
+        {
+          "properties": [
+            "position",
+            "top",
+            "right",
+            "bottom",
+            "left",
+            "float",
+            "clear",
+            "z-index"
+          ]
+        },
+        {
+          "properties": [
+            "display",
+            "justify-content",
+            "align-items",
+            "align-content",
+            "align-self",
+            "flex",
+            "flex-direction",
+            "flex-wrap",
+            "flex-grow",
+            "flex-basis",
+            "flex-shrink",
+            "gap",
+            "grid",
+            "grid-template-rows",
+            "grid-template-columns",
+            "grid-gap",
+            "width",
+            "min-width",
+            "max-width",
+            "height",
+            "min-height",
+            "max-height",
+            "margin",
+            "margin-top",
+            "margin-right",
+            "margin-bottom",
+            "margin-left",
+            "padding",
+            "padding-left",
+            "box-sizing"
+          ]
+        },
+        {
+          "properties": [
+            "border",
+            "border-width",
+            "border-style",
+            "border-color",
+            "border-radius",
+            "box-shadow"
+          ]
+        },
+        {
+          "properties": [
+            "list-style-type",
+            "overflow",
+            "overflow-x",
+            "overflow-y"
+          ]
+        },
+        {
+          "properties": [
+            "font",
+            "font-size",
+            "font-family",
+            "font-weight",
+            "font-style",
+            "font-optical-sizing",
+            "line-height",
+            "letter-spacing",
+            "white-space",
+            "text-transform",
+            "color",
+            "text-align"
+          ]
+        },
+        {
+          "properties": [
+            "background",
+            "background-color",
+            "background-image",
+            "background-size",
+            "outline",
+            "text-decoration"
+          ]
+        },
+        {
+          "properties": [
+            "cursor",
+            "transition",
+            "transform",
+            "opacity",
+            "animation"
+          ]
+        }
+      ],
+      {
+        "unspecified": "bottomAlphabetical"
+      }
+    ]
+  }
+}
