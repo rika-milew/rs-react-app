@@ -1,0 +1,34 @@
+:root {
+  /* COLORS */
+
+  /* White colors */
+  --color-white: hsl(210, 40%, 98%);
+
+  /* Gray colors */
+  --color-gray-400: hsl(215 16% 60%);
+  --color-gray-500: hsl(0, 0%, 50%);
+  --color-gray-700: hsl(220, 20%, 18%);
+  --color-gray-800: hsl(220 30% 7%);
+  --color-gray-900: hsl(240, 14%, 10%);
+  --color-gray-950: hsl(240, 20%, 4%);
+
+  /* Yelloe colors */
+  --color-yellow-600: hsl(38, 92%, 55%);
+
+  /* OPACITY  */
+  --opacity-80: 0.8;
+  --opacity-70: 0.7;
+  --opacity-50: 0.5;
+  --opacity-40: 0.4;
+  --opacity-30: 0.3;
+  --opacity-10: 0.1;
+
+  /* Font weights */
+  --font-weight-bold: 700;
+
+  /* Easing functions */
+  --ease-in-cubic: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Transition */
+  --transition-default: 0.3s;
+}

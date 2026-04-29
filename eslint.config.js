@@ -23,9 +23,14 @@ export default defineConfig([
     ],
     languageOptions: {
       globals: globals.browser,
-       parserOptions: {
+      parserOptions: {
         projectService: true,
         tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    settings: {
+      react: {
+        version: 'detect',
       },
     },
   },
