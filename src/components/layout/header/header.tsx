@@ -4,14 +4,20 @@ import styles from './header.module.css';
 
 const cx = classNames.bind(styles);
 
+type Props = Record<string, never>;
+
 interface State {
   isSticky: boolean;
 }
 
-export class Header extends React.Component<object, State> {
-  state: State = {
-    isSticky: false,
-  };
+export class Header extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+
+    this.state = {
+      isSticky: false,
+    };
+  }
 
   handleScroll = () => {
     this.setState({
