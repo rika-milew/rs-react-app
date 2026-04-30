@@ -5,6 +5,7 @@ import { getPokemons, getPokemonByName } from '@/api/poke-api';
 const cx = classNames.bind(styles);
 import styles from './list.module.css';
 import { Card } from '../card/card';
+import { Loader } from '../loader/loader';
 
 import { SEARCH_LIMIT, CARD_LIMIT } from '@/constants/constants';
 
@@ -103,7 +104,7 @@ export class List extends React.Component<Props, State> {
     const { data, loading, error } = this.state;
 
     if (loading) {
-      return <p className={cx('state')}>Loading...</p>;
+      return <Loader />;
     }
 
     if (error) {
