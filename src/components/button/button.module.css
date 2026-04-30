@@ -1,0 +1,35 @@
+.button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+  height: 100%;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  color: var(--color-gray-800);
+  background-color: var(--color-yellow-600);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: background-color var(--transition-default) var(--ease-in-cubic);
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: var(--color-yellow-700);
+    }
+  }
+
+  @media (hover: none) {
+    &:active {
+      background-color: var(--color-yellow-700);
+    }
+  }
+
+  &:disabled {
+    opacity: var(--opacity-40);
+    cursor: not-allowed;
+  }
+}

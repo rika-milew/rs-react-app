@@ -1,4 +1,85 @@
 .card {
+  overflow: hidden;
   display: flex;
   flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  color: var(--color-gray-400);
+  background-color: var(--color-gray-750);
+  border-radius: 1rem;
+  border: 1px solid var(--color-gray-700);
+  box-shadow: 0 8px 24px -12px hsl(220 60% 2% / 0.6);
+  transition: all var(--transition-default) var(--ease-in-cubic);
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      border: 1px solid
+        hsla(from var(--color-yellow-600) h s l / var(--opacity-50));
+      transform: scale(1.025);
+    }
+  }
+
+  @media (hover: none) {
+    &:active {
+      border: 1px solid
+        hsla(from var(--color-yellow-600) h s l / var(--opacity-50));
+      transform: scale(1.025);
+    }
+  }
+}
+
+.name {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: var(--color-white);
+}
+
+.list {
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.types,
+.abilities {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.image-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding: 1rem;
+  aspect-ratio: 1 / 1;
+  background-color: hsla(from var(--color-gray-700) h s l / var(--opacity-40));
+  border-radius: 0.75rem;
+}
+
+.image {
+  position: relative;
+  width: 100%;
+}
+
+.id {
+  position: absolute;
+  top: 0.5rem;
+  left: 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  pointer-events: none;
 }

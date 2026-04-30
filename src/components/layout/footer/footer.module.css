@@ -20,8 +20,16 @@
   color: var(--color-gray-400);
   transition: all var(--transition-default) ease;
 
-  &:hover {
-    color: var(--color-yellow-700);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      color: var(--color-yellow-700);
+    }
+  }
+
+  @media (hover: none) {
+    &:active {
+      color: var(--color-yellow-700);
+    }
   }
 }
 
