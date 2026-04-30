@@ -29,7 +29,7 @@ export class List extends React.Component<Record<string, never>, State> {
 
   loadData = async () => {
     try {
-      const data = await getPokemons(0, 20);
+      const data = await getPokemons(0, 16);
 
       const fullData = await Promise.all(
         data.results.map((item: PokemonListItem) => getPokemonByName(item.name))
@@ -65,8 +65,7 @@ export class List extends React.Component<Record<string, never>, State> {
 
     return (
       <section className={cx('section')}>
-        <h2 className={cx('title')}>Pokemons</h2>
-
+        <h2 className={cx('title')}>Results</h2>
         <div className={cx('card-container')}>
           {data.map((pokemon) => (
             <Card key={pokemon.id} pokemon={pokemon} />
