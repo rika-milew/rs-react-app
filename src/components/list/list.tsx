@@ -7,7 +7,7 @@ import styles from './list.module.css';
 import { Card } from '../card/card';
 import { Loader } from '../loader/loader';
 
-import { SEARCH_LIMIT, CARD_LIMIT } from '@/constants/constants';
+import { CARD_LIMIT } from '@/constants/constants';
 
 interface State {
   page: number;
@@ -18,7 +18,7 @@ interface State {
 }
 
 interface Props {
-  searchQuery: string;
+  search: string;
 }
 
 export class List extends React.Component<Props, State> {
@@ -35,52 +35,42 @@ export class List extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    void this.loadData(this.props.searchQuery, this.state.page);
+    void this.loadData(this.props.search);
   }
 
   componentDidUpdate(prevProps: Props) {
-    if (prevProps.searchQuery !== this.props.searchQuery) {
+    if (prevProps.search !== this.props.search) {
       this.setState({ page: 0 }, () => {
-        void this.loadData(this.props.searchQuery);
+        void this.loadData(this.props.search);
       });
     }
   }
-  loadData = async (searchQuery?: string, page = this.state.page) => {
+  loadData = async (searchQuery?: string) => {
     try {
       this.setState({ loading: true, error: null });
 
-      let fullData: Pokemon[] = [];
-
+      const { page } = this.state;
+      let searchData: Pokemon[] = [];
       let totalPages = 1;
 
-      if (searchQuery) {
+      if (searchQuery?.trim()) {
         const query = searchQuery.trim().toLowerCase();
 
-        const data = await getPokemons(0, SEARCH_LIMIT);
+        try {
+          const pokemon = await getPokemonByName(query);
 
-        const dataList = await Promise.all(
-          data.results.map((item: PokemonListItem) =>
-            getPokemonByName(item.name)
-          )
-        );
-
-        const filteredData = dataList.filter((pokemon) =>
-          pokemon.name.toLowerCase().includes(query)
-        );
-
-        totalPages = Math.ceil(filteredData.length / CARD_LIMIT);
-
-        fullData = filteredData.slice(
-          page * CARD_LIMIT,
-          (page + 1) * CARD_LIMIT
-        );
+          searchData = [pokemon];
+        } catch {
+          searchData = [];
+        }
+        totalPages = 1;
       } else {
         const offset = page * CARD_LIMIT;
         const data = await getPokemons(offset, CARD_LIMIT);
 
         totalPages = Math.ceil(data.count / CARD_LIMIT);
 
-        fullData = await Promise.all(
+        searchData = await Promise.all(
           data.results.map((item: PokemonListItem) =>
             getPokemonByName(item.name)
           )
@@ -88,7 +78,7 @@ export class List extends React.Component<Props, State> {
       }
 
       this.setState({
-        data: fullData,
+        data: searchData,
         loading: false,
         totalPages,
       });
@@ -113,11 +103,19 @@ export class List extends React.Component<Props, State> {
           <p>{error}</p>
           <button
             onClick={() => {
-              void this.loadData(this.props.searchQuery, this.state.page);
+              void this.loadData(this.props.search);
             }}
           >
             Try again
           </button>
+        </div>
+      );
+    }
+
+    if (data.length === 0 && this.props.search.trim()) {
+      return (
+        <div className={cx('state')}>
+          <p>Nothing found</p>
         </div>
       );
     }
@@ -130,46 +128,45 @@ export class List extends React.Component<Props, State> {
             <Card key={pokemon.id} pokemon={pokemon} />
           ))}
         </div>
-        <div className={cx('pagination')}>
-          <button
-            className={cx('pagination-button')}
-            disabled={this.state.page === 0 || loading}
-            onClick={() => {
-              this.setState(
-                (prev) => ({ page: Math.max(prev.page - 1, 0) }),
-                () => {
-                  void this.loadData(this.props.searchQuery, this.state.page);
-                }
-              );
-            }}
-          >
-            ← Prev
-          </button>
+        {!this.props.search && (
+          <div className={cx('pagination')}>
+            <button
+              className={cx('pagination-button')}
+              disabled={this.state.page === 0 || loading}
+              onClick={() => {
+                this.setState(
+                  (prev) => ({ page: Math.max(prev.page - 1, 0) }),
+                  () => {
+                    void this.loadData(this.props.search);
+                  }
+                );
+              }}
+            >
+              ← Prev
+            </button>
 
-          <span className={cx('page-info')}>
-            Page{' '}
-            <span className={cx('page-number')}>{this.state.page + 1}</span> of{' '}
-            {this.state.totalPages}
-          </span>
+            <span className={cx('page-info')}>
+              Page{' '}
+              <span className={cx('page-number')}>{this.state.page + 1}</span>{' '}
+              of {this.state.totalPages}
+            </span>
 
-          <button
-            className={cx('pagination-button')}
-            disabled={this.state.page + 1 >= this.state.totalPages || loading}
-            onClick={() => {
-              this.setState(
-                (prev) => ({ page: prev.page + 1 }),
-                () => {
-                  void this.loadData(
-                    this.props.searchQuery,
-                    this.state.page + 1
-                  );
-                }
-              );
-            }}
-          >
-            Next →
-          </button>
-        </div>
+            <button
+              className={cx('pagination-button')}
+              disabled={this.state.page + 1 >= this.state.totalPages || loading}
+              onClick={() => {
+                this.setState(
+                  (prev) => ({ page: prev.page + 1 }),
+                  () => {
+                    void this.loadData(this.props.search);
+                  }
+                );
+              }}
+            >
+              Next →
+            </button>
+          </div>
+        )}
       </section>
     );
   }
