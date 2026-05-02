@@ -8,22 +8,24 @@ interface Props {
   text: string;
   onClick: () => void;
   disabled?: boolean;
+  variant?: 'basic' | 'error';
 }
 
 export class Button extends React.Component<Props> {
   static defaultProps = {
     disabled: false,
+    variant: 'basic',
   };
 
   render() {
-    const { text, onClick, disabled } = this.props;
+    const { text, onClick, disabled, variant } = this.props;
 
     return (
       <button
         type="button"
         onClick={onClick}
         disabled={disabled}
-        className={cx('button', {
+        className={cx('button', variant, {
           disabled: disabled,
         })}
       >
