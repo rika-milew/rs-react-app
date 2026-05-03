@@ -7,8 +7,17 @@ import styles from './list.module.css';
 import { Card } from '../card/card';
 import { Loader } from '../loader/loader';
 import { Pagination } from '../pagination/pagination';
+import { Button } from '../button/button';
 
-import { CARD_LIMIT } from '@/constants/constants';
+import {
+  CARD_LIMIT,
+  LOADING_DELAY_MS,
+  HTTP_STATUS,
+} from '@/constants/constants';
+
+import { ApiError } from '@/services/api-error';
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 type State = {
   page: number;
@@ -50,6 +59,8 @@ export class List extends React.Component<Props, State> {
     try {
       this.setState({ loading: true, error: null });
 
+      await delay(LOADING_DELAY_MS);
+
       const { page } = this.state;
       let searchData: PokemonWithDescription[] = [];
       let totalPages = 1;
@@ -57,13 +68,9 @@ export class List extends React.Component<Props, State> {
       if (searchQuery?.trim()) {
         const query = searchQuery.trim().toLowerCase();
 
-        try {
-          const pokemon = await getPokemonFull(query);
+        const pokemon = await getPokemonFull(query);
 
-          searchData = [pokemon];
-        } catch {
-          searchData = [];
-        }
+        searchData = [pokemon];
         totalPages = 1;
       } else {
         const offset = page * CARD_LIMIT;
@@ -82,8 +89,24 @@ export class List extends React.Component<Props, State> {
         totalPages,
       });
     } catch (error) {
+      let message = 'Something went wrong. Please try again.';
+
+      if (error instanceof ApiError) {
+        if (error.status === HTTP_STATUS.NOT_FOUND) {
+          message = 'Pokemon not found.';
+        }
+
+        if (error.status >= HTTP_STATUS.INTERNAL_SERVER_ERROR) {
+          message = 'Server error. Try again later.';
+        }
+
+        if (error.status === 0) {
+          message = 'Network error. Check your internet connection.';
+        }
+      }
+
       this.setState({
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: message,
         loading: false,
       });
     }
@@ -114,18 +137,15 @@ export class List extends React.Component<Props, State> {
       return (
         <div className={cx('state')}>
           <p>{error}</p>
-          <button
-            onClick={() => {
-              void this.loadData(this.props.search);
-            }}
-          >
-            Try again
-          </button>
+          <Button
+            text="Try again"
+            onClick={() => void this.loadData(this.props.search)}
+          />
         </div>
       );
     }
 
-    if (data.length === 0 && this.props.search.trim()) {
+    if (!loading && !error && data.length === 0 && this.props.search.trim()) {
       return (
         <div className={cx('state')}>
           <p>Nothing found</p>

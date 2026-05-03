@@ -1,5 +1,6 @@
 .section {
   position: relative;
+  min-height: 30rem;
   padding: 1.5rem;
   box-shadow: 0 8px 24px -12px hsl(220 60% 2% / 0.6);
   border-radius: 1rem;
@@ -39,4 +40,12 @@
   align-items: flex-start;
   background-color: var(--color-gray-750);
   z-index: 10;
+}
+
+.state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
 }

@@ -12,6 +12,8 @@ import {
   isPokemonSpecies,
 } from '@/types/type-guards';
 
+import { ApiError } from './api-error';
+
 async function fetchData<T>(
   url: string,
   validator: TypeGuard<T>,
@@ -20,7 +22,7 @@ async function fetchData<T>(
   const res = await fetch(url);
 
   if (!res.ok) {
-    throw new Error(errorMessage);
+    throw new ApiError(res.status, errorMessage);
   }
 
   let data: unknown;
