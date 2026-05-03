@@ -2,7 +2,6 @@ import React from 'react';
 import type { PokemonListItem, PokemonWithDescription } from '@/types/api';
 import classNames from 'classnames/bind';
 import { getPokemons, getPokemonFull } from '@/services/api';
-const cx = classNames.bind(styles);
 import styles from './list.module.css';
 import { Card } from '../card/card';
 import { Loader } from '../loader/loader';
@@ -17,13 +16,17 @@ import {
 
 import { ApiError } from '@/services/api-error';
 
+const cx = classNames.bind(styles);
+
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+type Status = 'loading' | 'error' | 'not-found' | 'success';
 
 type State = {
   page: number;
   totalPages: number;
   data: PokemonWithDescription[];
-  loading: boolean;
+  status: Status;
   error: string | null;
 };
 
@@ -39,7 +42,7 @@ export class List extends React.Component<Props, State> {
       page: 0,
       totalPages: 1,
       data: [],
-      loading: true,
+      status: 'loading',
       error: null,
     };
   }
@@ -57,23 +60,38 @@ export class List extends React.Component<Props, State> {
   }
   public loadData = async (searchQuery?: string) => {
     try {
-      this.setState({ loading: true, error: null });
-
-      await delay(LOADING_DELAY_MS);
+      this.setState({ status: 'loading', error: null });
 
       const { page } = this.state;
+      await delay(LOADING_DELAY_MS);
+
       let searchData: PokemonWithDescription[] = [];
       let totalPages = 1;
 
-      if (searchQuery?.trim()) {
-        const query = searchQuery.trim().toLowerCase();
-
-        const pokemon = await getPokemonFull(query);
-
-        searchData = [pokemon];
+      const query = searchQuery?.trim().toLowerCase();
+      if (query) {
+        try {
+          const pokemon = await getPokemonFull(query);
+          searchData = [pokemon];
+        } catch (error) {
+          if (
+            error instanceof ApiError &&
+            error.status === HTTP_STATUS.NOT_FOUND
+          ) {
+            this.setState({
+              status: 'not-found',
+              data: [],
+              error: null,
+              totalPages: 1,
+            });
+            return;
+          }
+          throw error;
+        }
         totalPages = 1;
       } else {
         const offset = page * CARD_LIMIT;
+
         const data = await getPokemons(offset, CARD_LIMIT);
 
         totalPages = Math.ceil(data.count / CARD_LIMIT);
@@ -83,10 +101,12 @@ export class List extends React.Component<Props, State> {
         );
       }
 
+      const status: Status = searchData.length > 0 ? 'success' : 'not-found';
+
       this.setState({
         data: searchData,
-        loading: false,
         totalPages,
+        status,
       });
     } catch (error) {
       let message = 'Something went wrong. Please try again.';
@@ -94,20 +114,16 @@ export class List extends React.Component<Props, State> {
       if (error instanceof ApiError) {
         if (error.status === HTTP_STATUS.NOT_FOUND) {
           message = 'Pokemon not found.';
-        }
-
-        if (error.status >= HTTP_STATUS.INTERNAL_SERVER_ERROR) {
+        } else if (error.status >= HTTP_STATUS.INTERNAL_SERVER_ERROR) {
           message = 'Server error. Try again later.';
-        }
-
-        if (error.status === 0) {
+        } else if (error.status === 0) {
           message = 'Network error. Check your internet connection.';
         }
       }
 
       this.setState({
+        status: 'error',
         error: message,
-        loading: false,
       });
     }
   };
@@ -131,9 +147,9 @@ export class List extends React.Component<Props, State> {
   };
 
   public render() {
-    const { data, loading, error, page, totalPages } = this.state;
+    const { data, error, status, page, totalPages } = this.state;
 
-    if (error) {
+    if (status === 'error') {
       return (
         <div className={cx('state')}>
           <p>{error}</p>
@@ -145,10 +161,14 @@ export class List extends React.Component<Props, State> {
       );
     }
 
-    if (!loading && !error && data.length === 0 && this.props.search.trim()) {
+    if (status === 'not-found') {
       return (
         <div className={cx('state')}>
-          <p>Nothing found</p>
+          <p>Pokemon not found.</p>
+          <Button
+            text="Try again"
+            onClick={() => void this.loadData(this.props.search)}
+          />
         </div>
       );
     }
@@ -156,7 +176,7 @@ export class List extends React.Component<Props, State> {
     return (
       <section className={cx('section')}>
         <h2 className={cx('title')}>Results</h2>
-        {loading && (
+        {status === 'loading' && (
           <div className={cx('loader-container')}>
             <Loader />
           </div>
@@ -170,7 +190,7 @@ export class List extends React.Component<Props, State> {
           <Pagination
             page={page}
             totalPages={totalPages}
-            loading={loading}
+            loading={status === 'loading'}
             onPrev={this.handlePrev}
             onNext={this.handleNext}
           />
