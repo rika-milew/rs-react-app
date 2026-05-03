@@ -4,20 +4,20 @@ import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
 
-interface Props {
+type Props = {
   text: string;
   onClick: () => void;
   disabled?: boolean;
   variant?: 'basic' | 'error';
-}
+};
 
 export class Button extends React.Component<Props> {
-  static defaultProps = {
+  public static defaultProps = {
     disabled: false,
     variant: 'basic',
   };
 
-  render() {
+  public render() {
     const { text, onClick, disabled, variant } = this.props;
 
     return (

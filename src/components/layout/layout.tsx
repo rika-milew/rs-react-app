@@ -7,12 +7,12 @@ import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
 
-interface Props {
+type Props = {
   children: React.ReactNode;
-}
+};
 
 export class Layout extends React.Component<Props> {
-  render() {
+  public render() {
     return (
       <div className={cx('wrapper')}>
         <Header />

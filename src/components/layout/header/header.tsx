@@ -4,11 +4,13 @@ import styles from './header.module.css';
 
 const cx = classNames.bind(styles);
 
+const SCROLL = 5;
+
 type Props = Record<string, never>;
 
-interface State {
+type State = {
   isSticky: boolean;
-}
+};
 
 export class Header extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -19,21 +21,21 @@ export class Header extends React.Component<Props, State> {
     };
   }
 
-  handleScroll = () => {
+  public handleScroll = () => {
     this.setState({
-      isSticky: window.scrollY > 5,
+      isSticky: window.scrollY > SCROLL,
     });
   };
 
-  componentDidMount() {
+  public componentDidMount() {
     window.addEventListener('scroll', this.handleScroll);
   }
 
-  componentWillUnmount() {
+  public componentWillUnmount() {
     window.removeEventListener('scroll', this.handleScroll);
   }
 
-  render() {
+  public render() {
     return (
       <header
         className={cx('header', {

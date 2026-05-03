@@ -4,7 +4,7 @@ import styles from './loader.module.css';
 import classNames from 'classnames/bind';
 
 export class Loader extends React.Component {
-  render() {
+  public render() {
     return (
       <div className={cx('loader-container')}>
         <div className={cx('loader')}>

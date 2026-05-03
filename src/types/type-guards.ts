@@ -1,26 +1,32 @@
-import { Pokemon, PokemonListResponse } from '@/types/api';
+import type { Pokemon, PokemonListResponse } from '@/types/api';
+
+function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
 
 export function isPokemonListResponse(
   data: unknown
 ): data is PokemonListResponse {
-  if (typeof data !== 'object' || data === null) return false;
-
-  const obj = data as Record<string, unknown>;
-
-  return Array.isArray(obj.results) && typeof obj.count === 'number';
-}
-
-export function isPokemon(data: unknown): data is Pokemon {
-  if (!data || typeof data !== 'object') {
+  if (!isObject(data)) {
     return false;
   }
 
-  const obj = data as Record<string, unknown>;
+  const results = data.results;
+  const count = data.count;
+
+  return Array.isArray(results) && typeof count === 'number';
+}
+
+export function isPokemon(data: unknown): data is Pokemon {
+  if (!isObject(data)) {
+    return false;
+  }
+
+  const name = data.name;
+  const id = data.id;
+  const sprites = data.sprites;
 
   return (
-    typeof obj.name === 'string' &&
-    typeof obj.id === 'number' &&
-    typeof obj.sprites === 'object' &&
-    obj.sprites !== null
+    typeof name === 'string' && typeof id === 'number' && isObject(sprites)
   );
 }

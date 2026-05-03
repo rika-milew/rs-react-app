@@ -2,9 +2,9 @@ import React from 'react';
 import { List } from '@/components/list/list';
 import { SearchBar } from '@/components/search-bar/search-bar';
 
-interface State {
+type State = {
   searchQuery: string;
-}
+};
 
 export class SearchPage extends React.Component<Record<string, never>, State> {
   constructor(props: Record<string, never>) {
@@ -17,11 +17,11 @@ export class SearchPage extends React.Component<Record<string, never>, State> {
     };
   }
 
-  handleSearch = (value: string) => {
+  public handleSearch = (value: string) => {
     this.setState({ searchQuery: value });
   };
 
-  render() {
+  public render() {
     const { searchQuery } = this.state;
 
     return (

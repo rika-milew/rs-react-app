@@ -28,7 +28,10 @@ async function fetchData<T>(
   return data;
 }
 
-export const getPokemons = (offset: number, limit: number) => {
+export const getPokemons = (
+  offset: number,
+  limit: number
+): Promise<PokemonListResponse> => {
   const params = new URLSearchParams({
     limit: String(limit),
     offset: String(offset),
@@ -41,7 +44,7 @@ export const getPokemons = (offset: number, limit: number) => {
   );
 };
 
-export const getPokemonByName = (name: string) =>
+export const getPokemonByName = (name: string): Promise<Pokemon> =>
   fetchData<Pokemon>(
     `${API_BASE_URL}/${name.toLowerCase().trim()}`,
     isPokemon,

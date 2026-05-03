@@ -1,16 +1,16 @@
-export interface PokemonListItem {
+export type PokemonListItem = {
   name: string;
   url: string;
-}
+};
 
-export interface PokemonListResponse {
+export type PokemonListResponse = {
   results: PokemonListItem[];
   next: string | null;
   previous: string | null;
   count: number;
-}
+};
 
-export interface Pokemon {
+export type Pokemon = {
   id: number;
   name: string;
   sprites: {
@@ -36,6 +36,6 @@ export interface Pokemon {
       name: string;
     };
   }[];
-}
+};
 
 export type TypeGuard<T> = (data: unknown) => data is T;

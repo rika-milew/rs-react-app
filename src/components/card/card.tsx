@@ -5,12 +5,14 @@ import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
 
-interface Props {
+const ID_LENGTH = 3;
+
+type Props = {
   pokemon: Pokemon;
-}
+};
 
 export class Card extends React.Component<Props> {
-  render() {
+  public render() {
     const { id, name, height, weight, sprites, types, abilities } =
       this.props.pokemon;
 
@@ -27,7 +29,9 @@ export class Card extends React.Component<Props> {
     return (
       <div className={cx('card')}>
         <div className={cx('image-container')}>
-          <span className={cx('id')}>#{id.toString().padStart(3, '0')}</span>
+          <span className={cx('id')}>
+            #{id.toString().padStart(ID_LENGTH, '0')}
+          </span>
           <img className={cx('image')} src={image} alt={name} />
         </div>
         <h3 className={cx('name')}>{capitalizedName}</h3>

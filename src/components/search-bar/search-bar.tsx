@@ -6,14 +6,14 @@ import { Button } from '@/components/button/button';
 
 const cx = classNames.bind(styles);
 
-interface Props {
+type Props = {
   value?: string;
   onSearch: (value: string) => void;
-}
+};
 
-interface State {
+type State = {
   query: string;
-}
+};
 
 export class SearchBar extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -24,19 +24,19 @@ export class SearchBar extends React.Component<Props, State> {
     };
   }
 
-  componentDidUpdate(prevProps: Props) {
-    if (prevProps.value !== this.props.value) {
+  public componentDidUpdate(previousProps: Props) {
+    if (previousProps.value !== this.props.value) {
       this.setState({
         query: this.props.value ?? '',
       });
     }
   }
 
-  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ query: e.target.value });
+  public handleChange = (event_: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ query: event_.target.value });
   };
 
-  handleSearch = () => {
+  public handleSearch = () => {
     const trimmed = this.state.query.trim();
 
     if (trimmed) {
@@ -48,7 +48,7 @@ export class SearchBar extends React.Component<Props, State> {
     this.props.onSearch(trimmed);
   };
 
-  render() {
+  public render() {
     const query = this.state.query;
 
     return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { PokemonListItem, Pokemon } from '@/types/api';
+import type { PokemonListItem, Pokemon } from '@/types/api';
 import classNames from 'classnames/bind';
 import { getPokemons, getPokemonByName } from '@/api/poke-api';
 const cx = classNames.bind(styles);
@@ -9,17 +9,17 @@ import { Loader } from '../loader/loader';
 
 import { CARD_LIMIT } from '@/constants/constants';
 
-interface State {
+type State = {
   page: number;
   totalPages: number;
   data: Pokemon[];
   loading: boolean;
   error: string | null;
-}
+};
 
-interface Props {
+type Props = {
   search: string;
-}
+};
 
 export class List extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -34,18 +34,18 @@ export class List extends React.Component<Props, State> {
     };
   }
 
-  componentDidMount() {
+  public componentDidMount() {
     void this.loadData(this.props.search);
   }
 
-  componentDidUpdate(prevProps: Props) {
-    if (prevProps.search !== this.props.search) {
+  public componentDidUpdate(previousProps: Props) {
+    if (previousProps.search !== this.props.search) {
       this.setState({ page: 0 }, () => {
         void this.loadData(this.props.search);
       });
     }
   }
-  loadData = async (searchQuery?: string) => {
+  public loadData = async (searchQuery?: string) => {
     try {
       this.setState({ loading: true, error: null });
 
@@ -90,7 +90,7 @@ export class List extends React.Component<Props, State> {
     }
   };
 
-  render() {
+  public render() {
     const { data, loading, error } = this.state;
 
     if (loading) {
@@ -135,7 +135,7 @@ export class List extends React.Component<Props, State> {
               disabled={this.state.page === 0 || loading}
               onClick={() => {
                 this.setState(
-                  (prev) => ({ page: Math.max(prev.page - 1, 0) }),
+                  (previous) => ({ page: Math.max(previous.page - 1, 0) }),
                   () => {
                     void this.loadData(this.props.search);
                   }
@@ -156,7 +156,7 @@ export class List extends React.Component<Props, State> {
               disabled={this.state.page + 1 >= this.state.totalPages || loading}
               onClick={() => {
                 this.setState(
-                  (prev) => ({ page: prev.page + 1 }),
+                  (previous) => ({ page: previous.page + 1 }),
                   () => {
                     void this.loadData(this.props.search);
                   }

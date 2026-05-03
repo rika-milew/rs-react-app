@@ -5,7 +5,7 @@ import classNames from 'classnames/bind';
 const cx = classNames.bind(styles);
 
 export class Footer extends React.Component {
-  render() {
+  public render() {
     return (
       <footer className={cx('footer')}>
         <span className={cx('logo')}>RS School</span>
