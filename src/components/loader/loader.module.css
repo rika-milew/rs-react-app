@@ -3,6 +3,7 @@
   justify-content: center;
   align-items: center;
   width: 100%;
+  margin-top: 6rem;
 }
 
 .loader {
@@ -15,7 +16,7 @@
 .spinner {
   width: 4rem;
   height: 4rem;
-  border: 2px solid var(--color-gray-500);
+  border: 3px solid var(--color-gray-500);
   border-top-color: var(--color-yellow-600);
   border-radius: 50%;
   animation: spin 1s linear infinite;
