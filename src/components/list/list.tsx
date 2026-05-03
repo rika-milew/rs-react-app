@@ -110,10 +110,6 @@ export class List extends React.Component<Props, State> {
   public render() {
     const { data, loading, error, page, totalPages } = this.state;
 
-    if (loading) {
-      return <Loader />;
-    }
-
     if (error) {
       return (
         <div className={cx('state')}>
@@ -140,6 +136,11 @@ export class List extends React.Component<Props, State> {
     return (
       <section className={cx('section')}>
         <h2 className={cx('title')}>Results</h2>
+        {loading && (
+          <div className={cx('loader-container')}>
+            <Loader />
+          </div>
+        )}
         <div className={cx('card-container')}>
           {data.map((pokemon) => (
             <Card key={pokemon.id} pokemon={pokemon} />
