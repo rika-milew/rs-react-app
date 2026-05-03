@@ -1,6 +1,16 @@
 import { API_BASE_URL } from '@/constants/constants';
-import type { Pokemon, PokemonListResponse, TypeGuard } from '@/types/api';
-import { isPokemon, isPokemonListResponse } from '@/types/type-guards';
+import type {
+  Pokemon,
+  PokemonListResponse,
+  TypeGuard,
+  PokemonWithDescription,
+  PokemonSpecies,
+} from '@/types/api';
+import {
+  isPokemon,
+  isPokemonListResponse,
+  isPokemonSpecies,
+} from '@/types/type-guards';
 
 async function fetchData<T>(
   url: string,
@@ -50,3 +60,31 @@ export const getPokemonByName = (name: string): Promise<Pokemon> =>
     isPokemon,
     'Pokemon not found'
   );
+
+export const getPokemonSpecies = (url: string): Promise<PokemonSpecies> =>
+  fetchData<PokemonSpecies>(
+    url,
+    isPokemonSpecies,
+    'Failed to get pokemon species'
+  );
+
+export const getPokemonFull = async (
+  name: string
+): Promise<PokemonWithDescription> => {
+  const pokemon = await getPokemonByName(name);
+
+  const speciesUrl = pokemon.species.url;
+
+  const species = await getPokemonSpecies(speciesUrl);
+
+  const entries = species.flavor_text_entries;
+
+  const entry = entries.find((item) => item.language.name === 'en');
+
+  const description = entry ? entry.flavor_text.replaceAll(/\f|\n/g, ' ') : '';
+
+  return {
+    ...pokemon,
+    description,
+  };
+};

@@ -1,4 +1,4 @@
-import type { Pokemon, PokemonListResponse } from '@/types/api';
+import type { Pokemon, PokemonListResponse, PokemonSpecies } from '@/types/api';
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
@@ -29,4 +29,30 @@ export function isPokemon(data: unknown): data is Pokemon {
   return (
     typeof name === 'string' && typeof id === 'number' && isObject(sprites)
   );
+}
+
+export function isPokemonSpecies(data: unknown): data is PokemonSpecies {
+  if (!isObject(data)) {
+    return false;
+  }
+
+  const entries = data.flavor_text_entries;
+
+  if (!Array.isArray(entries)) {
+    return false;
+  }
+
+  return entries.every((item) => {
+    if (!isObject(item)) {
+      return false;
+    }
+
+    const language = item.language;
+
+    return (
+      typeof item.flavor_text === 'string' &&
+      isObject(language) &&
+      typeof language.name === 'string'
+    );
+  });
 }

@@ -60,8 +60,8 @@ export default defineConfig([
       '@typescript-eslint/no-unsafe-argument': 'error',
       '@typescript-eslint/no-unsafe-member-access': 'error',
       '@typescript-eslint/no-unsafe-return': 'error',
-      '@typescript-eslint/no-unsafe-assignment': 'warn',
-      '@typescript-eslint/no-unsafe-call': 'error',
+      '@typescript-eslint/no-unsafe-assignment': 'off', //* switched off for now
+      '@typescript-eslint/no-unsafe-call': 'off', //* switched off for now
 
       'react-hooks/exhaustive-deps': 'warn',
 

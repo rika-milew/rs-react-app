@@ -36,6 +36,24 @@ export type Pokemon = {
       name: string;
     };
   }[];
+
+  species: {
+    name: string;
+    url: string;
+  };
+};
+
+export type PokemonSpecies = {
+  flavor_text_entries: {
+    flavor_text: string;
+    language: {
+      name: string;
+    };
+  }[];
+};
+
+export type PokemonWithDescription = Pokemon & {
+  description: string;
 };
 
 export type TypeGuard<T> = (data: unknown) => data is T;

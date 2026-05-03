@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './card.module.css';
-import type { Pokemon } from '@/types/api';
+import type { PokemonWithDescription } from '@/types/api';
 import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
@@ -8,12 +8,12 @@ const cx = classNames.bind(styles);
 const ID_LENGTH = 3;
 
 type Props = {
-  pokemon: Pokemon;
+  pokemon: PokemonWithDescription;
 };
 
 export class Card extends React.Component<Props> {
   public render() {
-    const { id, name, height, weight, sprites, types, abilities } =
+    const { id, name, height, weight, sprites, types, abilities, description } =
       this.props.pokemon;
 
     const image =
@@ -47,9 +47,19 @@ export class Card extends React.Component<Props> {
             <span>{abilityContent}</span>
           </div>
         </div>
+        {description && (
+          <div className={cx('description')}>
+            <p className={cx('label')}>Description:</p>
+            <p>{description}</p>
+          </div>
+        )}
         <div className={cx('info')}>
-          <p>Height: {height * 10} cm</p>
-          <p>Weight: {weight / 10} kg</p>
+          <p>
+            <span className={cx('label')}>Height:</span> {height * 10} cm
+          </p>
+          <p>
+            <span className={cx('label')}>Weight:</span> {weight / 10} kg
+          </p>
         </div>
       </div>
     );

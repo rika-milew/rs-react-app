@@ -1,7 +1,7 @@
 import React from 'react';
-import type { PokemonListItem, Pokemon } from '@/types/api';
+import type { PokemonListItem, PokemonWithDescription } from '@/types/api';
 import classNames from 'classnames/bind';
-import { getPokemons, getPokemonByName } from '@/api/poke-api';
+import { getPokemons, getPokemonFull } from '@/services/api';
 const cx = classNames.bind(styles);
 import styles from './list.module.css';
 import { Card } from '../card/card';
@@ -13,7 +13,7 @@ import { CARD_LIMIT } from '@/constants/constants';
 type State = {
   page: number;
   totalPages: number;
-  data: Pokemon[];
+  data: PokemonWithDescription[];
   loading: boolean;
   error: string | null;
 };
@@ -51,14 +51,14 @@ export class List extends React.Component<Props, State> {
       this.setState({ loading: true, error: null });
 
       const { page } = this.state;
-      let searchData: Pokemon[] = [];
+      let searchData: PokemonWithDescription[] = [];
       let totalPages = 1;
 
       if (searchQuery?.trim()) {
         const query = searchQuery.trim().toLowerCase();
 
         try {
-          const pokemon = await getPokemonByName(query);
+          const pokemon = await getPokemonFull(query);
 
           searchData = [pokemon];
         } catch {
@@ -72,9 +72,7 @@ export class List extends React.Component<Props, State> {
         totalPages = Math.ceil(data.count / CARD_LIMIT);
 
         searchData = await Promise.all(
-          data.results.map((item: PokemonListItem) =>
-            getPokemonByName(item.name)
-          )
+          data.results.map((item: PokemonListItem) => getPokemonFull(item.name))
         );
       }
 
