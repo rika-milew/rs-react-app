@@ -6,6 +6,7 @@ const cx = classNames.bind(styles);
 import styles from './list.module.css';
 import { Card } from '../card/card';
 import { Loader } from '../loader/loader';
+import { Pagination } from '../pagination/pagination';
 
 import { CARD_LIMIT } from '@/constants/constants';
 
@@ -90,8 +91,26 @@ export class List extends React.Component<Props, State> {
     }
   };
 
+  private handlePrev = () => {
+    this.setState(
+      (previous) => ({ page: Math.max(previous.page - 1, 0) }),
+      () => {
+        void this.loadData(this.props.search);
+      }
+    );
+  };
+
+  private handleNext = () => {
+    this.setState(
+      (previous) => ({ page: previous.page + 1 }),
+      () => {
+        void this.loadData(this.props.search);
+      }
+    );
+  };
+
   public render() {
-    const { data, loading, error } = this.state;
+    const { data, loading, error, page, totalPages } = this.state;
 
     if (loading) {
       return <Loader />;
@@ -129,43 +148,13 @@ export class List extends React.Component<Props, State> {
           ))}
         </div>
         {!this.props.search && (
-          <div className={cx('pagination')}>
-            <button
-              className={cx('pagination-button')}
-              disabled={this.state.page === 0 || loading}
-              onClick={() => {
-                this.setState(
-                  (previous) => ({ page: Math.max(previous.page - 1, 0) }),
-                  () => {
-                    void this.loadData(this.props.search);
-                  }
-                );
-              }}
-            >
-              ← Prev
-            </button>
-
-            <span className={cx('page-info')}>
-              Page{' '}
-              <span className={cx('page-number')}>{this.state.page + 1}</span>{' '}
-              of {this.state.totalPages}
-            </span>
-
-            <button
-              className={cx('pagination-button')}
-              disabled={this.state.page + 1 >= this.state.totalPages || loading}
-              onClick={() => {
-                this.setState(
-                  (previous) => ({ page: previous.page + 1 }),
-                  () => {
-                    void this.loadData(this.props.search);
-                  }
-                );
-              }}
-            >
-              Next →
-            </button>
-          </div>
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            loading={loading}
+            onPrev={this.handlePrev}
+            onNext={this.handleNext}
+          />
         )}
       </section>
     );
