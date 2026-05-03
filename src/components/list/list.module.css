@@ -1,5 +1,6 @@
 .section {
   position: relative;
+  width: 100%;
   min-height: 30rem;
   padding: 1.5rem;
   box-shadow: 0 8px 24px -12px hsl(220 60% 2% / 0.6);

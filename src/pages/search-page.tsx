@@ -1,6 +1,7 @@
 import React from 'react';
 import { List } from '@/components/list/list';
 import { SearchBar } from '@/components/search-bar/search-bar';
+import { ErrorButton } from '@/components/error-button/error-button';
 
 type State = {
   searchQuery: string;
@@ -28,6 +29,7 @@ export class SearchPage extends React.Component<Record<string, never>, State> {
       <>
         <SearchBar value={searchQuery} onSearch={this.handleSearch} />
         <List search={searchQuery} />
+        <ErrorButton>Trigger Error</ErrorButton>
       </>
     );
   }

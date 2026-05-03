@@ -13,9 +13,13 @@
   --color-gray-900: hsl(240, 14%, 10%);
   --color-gray-950: hsl(240, 20%, 4%);
 
-  /* Yelloe colors */
+  /* Yellow colors */
   --color-yellow-600: hsl(38, 92%, 55%);
   --color-yellow-700: hsl(38 100% 65%);
+
+  /* Red colors */
+  --color-red-500: hsl(0, 84%, 60%);
+  --color-red-700: hsl(0, 59%, 36%);
 
   /* OPACITY  */
   --opacity-80: 0.8;

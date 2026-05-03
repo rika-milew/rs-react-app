@@ -4,6 +4,7 @@
   align-items: center;
   width: auto;
   height: 100%;
+  max-height: 4rem;
   padding: 0.75rem 1.5rem;
   font-size: 0.875rem;
   line-height: 1.25rem;
@@ -33,6 +34,25 @@
   @media (hover: none) {
     &:active {
       background-color: var(--color-yellow-700);
+    }
+  }
+}
+
+.error {
+  width: 12rem;
+  height: 3rem;
+  margin-top: 1.5rem;
+  background-color: var(--color-red-500);
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: var(--color-red-700);
+    }
+  }
+
+  @media (hover: none) {
+    &:active {
+      background-color: var(--color-red-700);
     }
   }
 }
