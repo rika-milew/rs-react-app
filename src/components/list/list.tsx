@@ -6,7 +6,7 @@ import styles from './list.module.css';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
 import { Pagination } from '@/components/pagination/pagination';
-import { Button } from '@/components/button/button';
+import { StateView } from '@/components/state-view/state-view';
 
 import { LOADING_DELAY_MS } from '@/constants/constants';
 
@@ -134,25 +134,23 @@ export class List extends React.Component<Props, State> {
 
     if (status === 'error') {
       return (
-        <div className={cx('state')}>
-          <p>{error}</p>
-          <Button
-            text="Try again"
-            onClick={() => void this.loadData(this.props.search)}
-          />
-        </div>
+        <StateView
+          message={error ?? 'Something went wrong. Try again later.'}
+          onReload={() => {
+            this.load();
+          }}
+        />
       );
     }
 
     if (status === 'not-found') {
       return (
-        <div className={cx('state')}>
-          <p>Pokemon not found.</p>
-          <Button
-            text="Try again"
-            onClick={() => void this.loadData(this.props.search)}
-          />
-        </div>
+        <StateView
+          message="Pokemon not found."
+          onReload={() => {
+            this.load();
+          }}
+        />
       );
     }
 

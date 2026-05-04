@@ -42,11 +42,3 @@
   background-color: var(--color-gray-750);
   z-index: 10;
 }
-
-.state {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 1rem;
-}
