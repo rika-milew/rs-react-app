@@ -30,6 +30,7 @@ export async function getData(
         ) {
           return { type: 'not-found' };
         }
+
         throw error;
       }
     } else {

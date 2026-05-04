@@ -12,7 +12,7 @@ import {
   isPokemonSpecies,
 } from '@/types/type-guards';
 
-import { ApiError } from './api-error';
+import { ApiError } from '@/services/api-error';
 
 async function fetchData<T>(
   url: string,

@@ -1,6 +1,6 @@
 import './styles/index.css';
 
-import { Layout } from './components/layout/layout';
+import { Layout } from '@/components/layout/layout';
 import { SearchPage } from '@/pages/search-page';
 
 function App() {

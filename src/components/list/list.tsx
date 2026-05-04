@@ -3,10 +3,10 @@ import type { PokemonWithDescription } from '@/types/api';
 import classNames from 'classnames/bind';
 
 import styles from './list.module.css';
-import { Card } from '../card/card';
-import { Loader } from '../loader/loader';
-import { Pagination } from '../pagination/pagination';
-import { Button } from '../button/button';
+import { Card } from '@/components/card/card';
+import { Loader } from '@/components/loader/loader';
+import { Pagination } from '@/components/pagination/pagination';
+import { Button } from '@/components/button/button';
 
 import { LOADING_DELAY_MS } from '@/constants/constants';
 

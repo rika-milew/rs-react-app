@@ -1,8 +1,8 @@
 import { Component, type ReactNode } from 'react';
 import type { ErrorInfo } from 'react';
-import { Button } from '../button/button';
+import { Button } from '@/components/button/button';
 import classNames from 'classnames/bind';
-import { Layout } from '../layout/layout';
+import { Layout } from '@/components/layout/layout';
 
 import styles from './error-boundary.module.css';
 
