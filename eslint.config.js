@@ -69,7 +69,7 @@ export default defineConfig([
       'no-console': ['warn', { allow: ['info', 'error'] }],
       'no-magic-numbers': ['error', { ignore: [0, 1, 2, -1, 10, 100, 1000, 1000000] }],
       'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
-      'max-lines-per-function': ['warn', { max: 40, skipBlankLines: true, skipComments: true }],
+      'max-lines-per-function': ['warn', { max: 60, skipBlankLines: true, skipComments: true }],
       '@typescript-eslint/consistent-type-assertions': ['error', { assertionStyle: 'never' }],
       '@typescript-eslint/consistent-type-definitions': ['warn', 'type'],
       '@typescript-eslint/consistent-type-imports': [

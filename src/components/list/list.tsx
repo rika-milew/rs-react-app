@@ -1,20 +1,16 @@
 import React from 'react';
-import type { PokemonListItem, PokemonWithDescription } from '@/types/api';
+import type { PokemonWithDescription } from '@/types/api';
 import classNames from 'classnames/bind';
-import { getPokemons, getPokemonFull } from '@/services/api';
+
 import styles from './list.module.css';
 import { Card } from '../card/card';
 import { Loader } from '../loader/loader';
 import { Pagination } from '../pagination/pagination';
 import { Button } from '../button/button';
 
-import {
-  CARD_LIMIT,
-  LOADING_DELAY_MS,
-  HTTP_STATUS,
-} from '@/constants/constants';
+import { LOADING_DELAY_MS } from '@/constants/constants';
 
-import { ApiError } from '@/services/api-error';
+import { getData } from '@/services/data-service';
 
 const cx = classNames.bind(styles);
 
@@ -47,83 +43,70 @@ export class List extends React.Component<Props, State> {
     };
   }
 
-  public componentDidMount() {
+  private load = () => {
     void this.loadData(this.props.search);
+  };
+
+  public componentDidMount() {
+    this.load();
   }
 
   public componentDidUpdate(previousProps: Props) {
     if (previousProps.search !== this.props.search) {
       this.setState({ page: 0 }, () => {
-        void this.loadData(this.props.search);
+        this.load();
       });
     }
   }
+
+  private requestId = 0;
+
   public loadData = async (searchQuery?: string) => {
+    this.requestId += 1;
+    const currentRequestId = this.requestId;
     try {
       this.setState({ status: 'loading', error: null });
 
       const { page } = this.state;
       await delay(LOADING_DELAY_MS);
 
-      let searchData: PokemonWithDescription[] = [];
-      let totalPages = 1;
+      const result = await getData(page, searchQuery);
 
-      const query = searchQuery?.trim().toLowerCase();
-      if (query) {
-        try {
-          const pokemon = await getPokemonFull(query);
-          searchData = [pokemon];
-        } catch (error) {
-          if (
-            error instanceof ApiError &&
-            error.status === HTTP_STATUS.NOT_FOUND
-          ) {
-            this.setState({
-              status: 'not-found',
-              data: [],
-              error: null,
-              totalPages: 1,
-            });
-            return;
-          }
-          throw error;
-        }
-        totalPages = 1;
-      } else {
-        const offset = page * CARD_LIMIT;
-
-        const data = await getPokemons(offset, CARD_LIMIT);
-
-        totalPages = Math.ceil(data.count / CARD_LIMIT);
-
-        searchData = await Promise.all(
-          data.results.map((item: PokemonListItem) => getPokemonFull(item.name))
-        );
+      if (currentRequestId !== this.requestId) {
+        return;
       }
 
-      const status: Status = searchData.length > 0 ? 'success' : 'not-found';
+      switch (result.type) {
+        case 'success': {
+          this.setState({
+            data: result.data,
+            totalPages: result.totalPages,
+            status: 'success',
+          });
+          break;
+        }
 
-      this.setState({
-        data: searchData,
-        totalPages,
-        status,
-      });
-    } catch (error) {
-      let message = 'Something went wrong. Please try again.';
+        case 'not-found': {
+          this.setState({
+            data: [],
+            totalPages: 1,
+            status: 'not-found',
+          });
+          break;
+        }
 
-      if (error instanceof ApiError) {
-        if (error.status === HTTP_STATUS.NOT_FOUND) {
-          message = 'Pokemon not found.';
-        } else if (error.status >= HTTP_STATUS.INTERNAL_SERVER_ERROR) {
-          message = 'Server error. Try again later.';
-        } else if (error.status === 0) {
-          message = 'Network error. Check your internet connection.';
+        case 'error': {
+          this.setState({
+            status: 'error',
+            error: result.message,
+          });
+          break;
         }
       }
-
+    } catch {
       this.setState({
         status: 'error',
-        error: message,
+        error: 'Something went wrong. Try again later.',
       });
     }
   };
@@ -132,7 +115,7 @@ export class List extends React.Component<Props, State> {
     this.setState(
       (previous) => ({ page: Math.max(previous.page - 1, 0) }),
       () => {
-        void this.loadData(this.props.search);
+        this.load();
       }
     );
   };
@@ -141,7 +124,7 @@ export class List extends React.Component<Props, State> {
     this.setState(
       (previous) => ({ page: previous.page + 1 }),
       () => {
-        void this.loadData(this.props.search);
+        this.load();
       }
     );
   };
