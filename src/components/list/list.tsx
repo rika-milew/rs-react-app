@@ -1,7 +1,6 @@
 import React from 'react';
 import type { PokemonWithDescription } from '@/types/api';
 import classNames from 'classnames/bind';
-
 import styles from './list.module.css';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
