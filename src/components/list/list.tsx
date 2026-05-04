@@ -14,7 +14,7 @@ import { getData } from '@/services/data-service';
 const cx = classNames.bind(styles);
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-const normalize = (value: string) => value.trim();
+const normalize = (value: string) => value.trim().toLowerCase();
 
 type Status = 'loading' | 'error' | 'not-found' | 'success';
 
