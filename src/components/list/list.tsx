@@ -14,6 +14,7 @@ import { getData } from '@/services/data-service';
 const cx = classNames.bind(styles);
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const normalize = (value: string) => value.trim();
 
 type Status = 'loading' | 'error' | 'not-found' | 'success';
 
@@ -43,7 +44,8 @@ export class List extends React.Component<Props, State> {
   }
 
   private load = () => {
-    void this.loadData(this.props.search);
+    const normalizedSearch = normalize(this.props.search);
+    void this.loadData(normalizedSearch);
   };
 
   public componentDidMount() {
@@ -51,7 +53,10 @@ export class List extends React.Component<Props, State> {
   }
 
   public componentDidUpdate(previousProps: Props) {
-    if (previousProps.search !== this.props.search) {
+    const previousSearch = normalize(previousProps.search);
+    const currentSearch = normalize(this.props.search);
+
+    if (previousSearch !== currentSearch) {
       this.setState({ page: 0 }, () => {
         this.load();
       });
@@ -121,7 +126,9 @@ export class List extends React.Component<Props, State> {
 
   private handleNext = () => {
     this.setState(
-      (previous) => ({ page: previous.page + 1 }),
+      (previous) => ({
+        page: Math.min(previous.page + 1, previous.totalPages - 1),
+      }),
       () => {
         this.load();
       }
