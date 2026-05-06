@@ -5,7 +5,7 @@ import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
 
-const ID_LENGTH = 3;
+export const ID_LENGTH = 3;
 
 type Props = {
   pokemon: PokemonWithDescription;

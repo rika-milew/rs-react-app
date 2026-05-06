@@ -53,7 +53,7 @@ export type PokemonSpecies = {
 };
 
 export type PokemonWithDescription = Pokemon & {
-  description: string;
+  description: string | undefined;
 };
 
 export type TypeGuard<T> = (data: unknown) => data is T;

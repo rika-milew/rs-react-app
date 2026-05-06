@@ -153,6 +153,7 @@ export default defineConfig([
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/await-thenable': 'off',
+       'max-lines-per-function': ['off', { max: 80, skipBlankLines: true, skipComments: true }],
     },
   },
   {

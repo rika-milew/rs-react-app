@@ -2,7 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { Button } from './button';
 
-describe('Button component', () => {
+describe('button component', () => {
   it('renders text inside button', () => {
     render(<Button text="Try again" onClick={vi.fn()} />);
 
