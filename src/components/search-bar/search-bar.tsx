@@ -39,6 +39,8 @@ export class SearchBar extends React.Component<Props, State> {
   public handleSearch = () => {
     const trimmed = this.state.query.trim();
 
+    this.setState({ query: trimmed });
+
     if (trimmed) {
       localStorage.setItem('search', trimmed);
     } else {
