@@ -1,6 +1,7 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { Button } from './button';
+import userEvent from '@testing-library/user-event';
 
 describe('button component', () => {
   it('renders text inside button', () => {
@@ -9,21 +10,23 @@ describe('button component', () => {
     expect(screen.getByRole('button')).toHaveTextContent('Try again');
   });
 
-  it('calls onClick after click', () => {
+  it('calls onClick after click', async () => {
     const handleClick = vi.fn();
+    const user = userEvent.setup();
 
     render(<Button text="Click" onClick={handleClick} />);
-    fireEvent.click(screen.getByRole('button'));
+    await user.click(screen.getByRole('button'));
 
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
 
-  it('click is ignored when disabled', () => {
+  it('click is ignored when disabled', async () => {
     const handleClick = vi.fn();
+    const user = userEvent.setup();
 
     render(<Button text="Click" onClick={handleClick} disabled />);
 
-    fireEvent.click(screen.getByRole('button'));
+    await user.click(screen.getByRole('button'));
 
     expect(handleClick).not.toHaveBeenCalled();
   });

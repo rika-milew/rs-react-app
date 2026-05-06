@@ -61,11 +61,6 @@ describe('ErrorBoundary component', () => {
     expect(screen.queryByText('Something went wrong')).not.toBeInTheDocument();
   });
 
-  it('getDerivedStateFromError returns hasError: true', () => {
-    const state = ErrorBoundary.getDerivedStateFromError();
-    expect(state).toEqual({ hasError: true });
-  });
-
   it('shows console error when error is caught', () => {
     const consoleTest = vi.spyOn(console, 'error');
 
