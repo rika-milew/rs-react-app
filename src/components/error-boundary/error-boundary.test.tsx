@@ -66,7 +66,7 @@ describe('ErrorBoundary component', () => {
     expect(state).toEqual({ hasError: true });
   });
 
-  it('calls console.error when error is caught', () => {
+  it('shows console error when error is caught', () => {
     const consoleTest = vi.spyOn(console, 'error');
 
     render(
