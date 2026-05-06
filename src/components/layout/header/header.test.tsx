@@ -3,7 +3,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { Header } from './header';
 import { waitFor } from '@testing-library/react';
 
-describe('Header component', () => {
+describe('header component', () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });

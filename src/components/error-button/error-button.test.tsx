@@ -3,6 +3,7 @@ import { describe, it, expect } from 'vitest';
 import { ErrorButton } from './error-button';
 import userEvent from '@testing-library/user-event';
 import { ErrorBoundary } from '@/components/error-boundary/error-boundary';
+import { waitFor } from '@testing-library/react';
 
 describe('ErrorButton component', () => {
   it('renders error button', () => {
@@ -23,7 +24,9 @@ describe('ErrorButton component', () => {
 
     await user.click(screen.getByRole('button'));
 
-    expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
+    });
   });
 
   it('has error variant class', () => {
