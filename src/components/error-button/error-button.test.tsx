@@ -6,6 +6,10 @@ import { ErrorBoundary } from '@/components/error-boundary/error-boundary';
 import { waitFor } from '@testing-library/react';
 
 describe('ErrorButton component', () => {
+  beforeEach(() => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+  });
+
   it('renders error button', () => {
     render(<ErrorButton />);
     expect(

@@ -133,8 +133,6 @@ describe('list component', () => {
     render(<List search="" />);
 
     expect(await screen.findByText(/server error/i)).toBeInTheDocument();
-
-    screen.debug();
   });
 
   it('shows error state when API request fails', async () => {

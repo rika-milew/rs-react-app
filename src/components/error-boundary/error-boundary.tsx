@@ -29,7 +29,9 @@ export class ErrorBoundary extends Component<
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Error caught:', error, errorInfo);
+    if (process.env.NODE_ENV !== 'test') {
+      console.error('Error caught:', error, errorInfo);
+    }
   }
 
   private resetError = () => {

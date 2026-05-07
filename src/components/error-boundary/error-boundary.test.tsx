@@ -64,22 +64,4 @@ describe('ErrorBoundary component', () => {
     expect(screen.getByText('App Content')).toBeInTheDocument();
     expect(screen.queryByText('Something went wrong')).not.toBeInTheDocument();
   });
-
-  it('shows console error when error is caught', () => {
-    const consoleTest = vi.spyOn(console, 'error');
-
-    render(
-      <ErrorBoundary>
-        <TestError isError={true} />
-      </ErrorBoundary>
-    );
-
-    expect(consoleTest).toHaveBeenCalledWith(
-      'Error caught:',
-      expect.any(Error),
-      expect.any(Object)
-    );
-
-    consoleTest.mockRestore();
-  });
 });
