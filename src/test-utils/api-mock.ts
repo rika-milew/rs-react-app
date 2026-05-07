@@ -1,4 +1,5 @@
 import type { PokemonWithDescription } from '@/types/api';
+import { HTTP_STATUS } from '@/constants/constants';
 
 export const artworkMockImage = '/assets/artwork-mock-image.png';
 const mockImage = '/assets/mock-image.png';
@@ -46,3 +47,21 @@ export const mockPokemonPartial: PokemonWithDescription = {
   },
   description: undefined,
 };
+
+export function mockFetchData(data: unknown, status = HTTP_STATUS.OK): void {
+  vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+    Response.json(data, { status })
+  );
+}
+
+export function mockFetchDataError(
+  status = HTTP_STATUS.INTERNAL_SERVER_ERROR
+): void {
+  vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+    new Response(null, {
+      status,
+      statusText: 'Error',
+      headers: { 'Content-Type': 'application/json' },
+    })
+  );
+}
