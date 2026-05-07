@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { ErrorButton } from './error-button';
 import userEvent from '@testing-library/user-event';
 import { ErrorBoundary } from '@/components/error-boundary/error-boundary';
