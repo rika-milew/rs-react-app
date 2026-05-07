@@ -1,7 +1,6 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { Header } from './header';
-import { waitFor } from '@testing-library/react';
 
 describe('header component', () => {
   afterEach(() => {
@@ -33,11 +32,12 @@ describe('header component', () => {
       writable: true,
     });
 
-    globalThis.dispatchEvent(new Event('scroll'));
-    const header = screen.getByRole('banner');
+    act(() => {
+      void globalThis.dispatchEvent(new Event('scroll'));
+    });
 
     await waitFor(() => {
-      expect(header.className).toMatch(/sticky/);
+      expect(screen.getByRole('banner').className).toMatch(/sticky/);
     });
   });
 
@@ -49,11 +49,12 @@ describe('header component', () => {
       writable: true,
     });
 
-    globalThis.dispatchEvent(new Event('scroll'));
-    const header = screen.getByRole('banner');
+    act(() => {
+      void globalThis.dispatchEvent(new Event('scroll'));
+    });
 
     await waitFor(() => {
-      expect(header.className).not.toMatch(/sticky/);
+      expect(screen.getByRole('banner').className).not.toMatch(/sticky/);
     });
   });
 });

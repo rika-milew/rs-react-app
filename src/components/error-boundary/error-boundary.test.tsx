@@ -9,11 +9,15 @@ const TestError = ({ isError }: { isError: boolean }) => {
   return <div>Expected content</div>;
 };
 
-const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(vi.fn());
+let consoleSpy: ReturnType<typeof vi.spyOn>;
 
 describe('ErrorBoundary component', () => {
-  afterAll(() => {
-    consoleErrorMock.mockRestore();
+  beforeEach(() => {
+    consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+  });
+
+  afterEach(() => {
+    consoleSpy.mockRestore();
   });
 
   it('renders children components when no error occurs', () => {
