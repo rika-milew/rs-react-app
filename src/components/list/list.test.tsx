@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { List } from './list';
+import userEvent from '@testing-library/user-event';
 
 import { mockPokemonFull, mockPokemonPartial } from '@/test-utils/api-mock';
 
@@ -157,6 +158,84 @@ describe('list component', () => {
 
     await waitFor(() => {
       expect(mockedData).toHaveBeenCalledWith(0, 'bulbasaur');
+    });
+  });
+
+  it('resets page to 0 when search changes', async () => {
+    mockedData.mockResolvedValue({
+      type: 'success',
+      data: [],
+      totalPages: 10,
+    });
+
+    const { rerender } = render(<List search="bulbasaur" />);
+
+    rerender(<List search="charmander" />);
+
+    await waitFor(() => {
+      expect(mockedData).toHaveBeenLastCalledWith(0, 'charmander');
+    });
+  });
+
+  it('loads next page when next button is clicked', async () => {
+    mockedData.mockResolvedValue({
+      type: 'success',
+      data: [],
+      totalPages: 10,
+    });
+
+    render(<List search="" />);
+
+    await waitFor(() => {
+      expect(mockedData).toHaveBeenCalledWith(0, '');
+    });
+
+    const nextButton = await screen.findByRole('button', { name: /next/i });
+
+    await userEvent.click(nextButton);
+
+    await waitFor(() => {
+      expect(mockedData).toHaveBeenLastCalledWith(1, '');
+    });
+  });
+
+  it('loads previous page when previous button is clicked', async () => {
+    mockedData.mockResolvedValue({
+      type: 'success',
+      data: [],
+      totalPages: 10,
+    });
+
+    render(<List search="" />);
+
+    const nextButton = await screen.findByRole('button', { name: /next/i });
+    await userEvent.click(nextButton);
+
+    const previousButton = await screen.findByRole('button', { name: /prev/i });
+    await userEvent.click(previousButton);
+
+    await waitFor(() => {
+      expect(mockedData).toHaveBeenLastCalledWith(0, '');
+    });
+  });
+
+  it('stays on first page when prev is clicked', async () => {
+    mockedData.mockResolvedValue({
+      type: 'success',
+      data: [],
+      totalPages: 3,
+    });
+
+    render(<List search="" />);
+
+    const nextButton = await screen.findByRole('button', { name: /next/i });
+    await userEvent.click(nextButton);
+
+    const previousButton = await screen.findByRole('button', { name: /prev/i });
+    await userEvent.click(previousButton);
+
+    await waitFor(() => {
+      expect(mockedData).toHaveBeenLastCalledWith(0, '');
     });
   });
 });
