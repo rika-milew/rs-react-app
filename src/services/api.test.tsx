@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { getPokemons, getPokemonByName, getPokemonSpecies } from './api';
+import {
+  getPokemons,
+  getPokemonByName,
+  getPokemonSpecies,
+  getPokemonFull,
+} from './api';
 
 import { mockFetchData, mockFetchDataError } from '@/test-utils/api-mock';
 
@@ -52,5 +57,39 @@ describe('fetchData service', () => {
     mockFetchDataError(HTTP_STATUS.INTERNAL_SERVER_ERROR);
 
     await expect(getPokemons(0, CARD_LIMIT)).rejects.toBeInstanceOf(ApiError);
+  });
+
+  it('returns full pokemon data correctly', async () => {
+    const mockFetchData = vi.spyOn(globalThis, 'fetch');
+
+    mockFetchData
+      .mockResolvedValueOnce(
+        Response.json({
+          id: 1,
+          name: 'bulbasaur',
+          sprites: {
+            front_default: 'image',
+          },
+          species: {
+            url: 'url',
+          },
+        })
+      )
+      .mockResolvedValueOnce(
+        Response.json({
+          flavor_text_entries: [
+            {
+              flavor_text: 'A strange seed was planted on its back at birth.',
+              language: { name: 'en' },
+            },
+          ],
+        })
+      );
+
+    const result = await getPokemonFull('bulbasaur');
+
+    expect(result.description).toBe(
+      'A strange seed was planted on its back at birth.'
+    );
   });
 });
