@@ -11,7 +11,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    setupFiles: './src/test/setupTests.ts',
+    setupFiles: './src/test-utils/setupTests.ts',
 
     coverage: {
       reporter: ['text', 'html'],
@@ -21,7 +21,7 @@ export default defineConfig({
         'src/**/*.test.{js,jsx,ts,tsx}',
         'src/**/*.spec.{js,jsx,ts,tsx}',
         'src/index.{js,jsx,ts,tsx}',
-        'src/test/setupTests.{js,ts}',
+        'src/test-utils/setupTests.{js,ts}',
         'src/**/*.d.ts',
       ],
 
