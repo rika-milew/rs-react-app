@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { ErrorBoundary } from './error-boundary';
+import userEvent from '@testing-library/user-event';
 
 const TestError = ({ isError }: { isError: boolean }) => {
   if (isError) {
@@ -63,5 +64,27 @@ describe('ErrorBoundary component', () => {
 
     expect(screen.getByText('App Content')).toBeInTheDocument();
     expect(screen.queryByText('Something went wrong')).not.toBeInTheDocument();
+  });
+
+  it('resets error state after clicking the reset button', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <ErrorBoundary>
+        <TestError isError={true} />
+      </ErrorBoundary>
+    );
+
+    expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
+
+    const button = screen.getByRole('button', {
+      name: /try again/i,
+    });
+
+    await user.click(button);
+
+    expect(
+      await screen.findByRole('button', { name: /try again/i })
+    ).toBeInTheDocument();
   });
 });
