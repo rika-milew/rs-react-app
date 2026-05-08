@@ -43,7 +43,7 @@ export const mockPokemonPartial: PokemonWithDescription = {
   abilities: [{ ability: { name: 'overgrow' }, is_hidden: false }],
   species: {
     name: 'ivysaur',
-    url: 'https://pokeapi.co/api/v2/pokemon-specqies/2/',
+    url: 'https://pokeapi.co/api/v2/pokemon-species/2/',
   },
   description: undefined,
 };
