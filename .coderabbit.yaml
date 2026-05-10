@@ -24,7 +24,7 @@ reviews:
     drafts: false
     ignore_title_keywords: ['coderabbit-ignore']
   path_instructions:
-    - path: "**/*.{ts,tsx}"
+    - path: '**/*.{ts,tsx}'
       instructions: |
         Student React/TS review:
           - Describe accessibility issues without ARIA code

@@ -67,10 +67,19 @@ export default defineConfig([
 
       // 🟡 Good practices
       'no-console': ['warn', { allow: ['info', 'error'] }],
-      'no-magic-numbers': ['error', { ignore: [0, 1, 2, -1, 10, 100, 1000, 1000000] }],
+      'no-magic-numbers': [
+        'error',
+        { ignore: [0, 1, 2, -1, 10, 100, 1000, 1000000] },
+      ],
       'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
-      'max-lines-per-function': ['warn', { max: 60, skipBlankLines: true, skipComments: true }],
-      '@typescript-eslint/consistent-type-assertions': ['error', { assertionStyle: 'never' }],
+      'max-lines-per-function': [
+        'warn',
+        { max: 60, skipBlankLines: true, skipComments: true },
+      ],
+      '@typescript-eslint/consistent-type-assertions': [
+        'error',
+        { assertionStyle: 'never' },
+      ],
       '@typescript-eslint/consistent-type-definitions': ['warn', 'type'],
       '@typescript-eslint/consistent-type-imports': [
         'error',
@@ -127,7 +136,10 @@ export default defineConfig([
       'no-restricted-exports': 'off',
       'react/prop-types': 'off',
       'react/react-in-jsx-scope': 'off',
-      'react-refresh/only-export-components': ['off', { allowConstantExport: true }],
+      'react-refresh/only-export-components': [
+        'off',
+        { allowConstantExport: true },
+      ],
 
       'unicorn/no-array-reduce': 'off',
       'unicorn/no-array-for-each': 'off',
@@ -142,8 +154,11 @@ export default defineConfig([
     files: ['**/*.tsx'],
     rules: {
       '@typescript-eslint/explicit-function-return-type': 'off',
-      'max-lines-per-function': ['warn', { max: 80, skipBlankLines: true, skipComments: true }],
-    }
+      'max-lines-per-function': [
+        'warn',
+        { max: 80, skipBlankLines: true, skipComments: true },
+      ],
+    },
   },
   {
     files: ['**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', '**/*.spec.tsx'],
@@ -153,7 +168,10 @@ export default defineConfig([
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
       '@typescript-eslint/await-thenable': 'off',
-       'max-lines-per-function': ['off', { max: 80, skipBlankLines: true, skipComments: true }],
+      'max-lines-per-function': [
+        'off',
+        { max: 80, skipBlankLines: true, skipComments: true },
+      ],
     },
   },
   {
@@ -162,7 +180,7 @@ export default defineConfig([
       '**/dist/**',
       '**/build/**',
       '**/*.d.ts',
-      '**/coverage/**', 
+      '**/coverage/**',
       'eslint.config.js',
       'lint-staged.config.js',
     ],

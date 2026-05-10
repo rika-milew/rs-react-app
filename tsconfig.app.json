@@ -20,7 +20,7 @@
       "@/*": ["./src/*"]
     },
 
-     /* Linting */
+    /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
