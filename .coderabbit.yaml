@@ -27,8 +27,8 @@ reviews:
     - path: '**/*.{ts,tsx}'
       instructions: |
         Student React/TS review:
-          - Describe accessibility issues without ARIA code
-          - Explain TypeScript errors without type definitions
+          - Prefer semantic HTML first; include ARIA guidance only when semantics are insufficient
+          - Explain TypeScript errors with minimal type-signature guidance (avoid full inline patches)
           - Hook issues: explain deps/memoization need
           - NEVER write FULL code fixes inline
 chat:
