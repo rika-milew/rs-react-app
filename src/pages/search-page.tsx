@@ -29,7 +29,7 @@ export class SearchPage extends React.Component<Record<string, never>, State> {
       <>
         <SearchBar value={searchQuery} onSearch={this.handleSearch} />
         <List search={searchQuery} />
-        <ErrorButton>Trigger Error</ErrorButton>
+        <ErrorButton />
       </>
     );
   }
