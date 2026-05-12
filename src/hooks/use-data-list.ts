@@ -30,10 +30,10 @@ export function useDataList(): DataList {
     requestId.current += 1;
     const currentRequestId = requestId.current;
 
-    try {
-      setStatus('loading');
-      setError(null);
+    setStatus('loading');
+    setError(null);
 
+    try {
       await delay(LOADING_DELAY_MS);
 
       const result = await getData(page, normalize(searchQuery));
