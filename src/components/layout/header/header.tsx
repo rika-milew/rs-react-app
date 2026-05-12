@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './header.module.css';
 
@@ -6,47 +6,41 @@ const cx = classNames.bind(styles);
 
 const SCROLL = 5;
 
-type Props = Record<string, never>;
+export function Header() {
+  const [isSticky, setIsSticky] = useState(false);
 
-type State = {
-  isSticky: boolean;
-};
+  useEffect(() => {
+    const handleScroll = () => {
+      const sticky = window.scrollY > SCROLL;
 
-export class Header extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
+      setIsSticky((previous) => {
+        if (previous === sticky) {
+          return previous;
+        }
 
-    this.state = {
-      isSticky: false,
+        return sticky;
+      });
     };
-  }
 
-  public handleScroll = () => {
-    this.setState({
-      isSticky: window.scrollY > SCROLL,
-    });
-  };
+    handleScroll();
 
-  public componentDidMount() {
-    window.addEventListener('scroll', this.handleScroll);
-  }
+    window.addEventListener('scroll', handleScroll);
 
-  public componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll);
-  }
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
-  public render() {
-    return (
-      <header
-        className={cx('header', {
-          sticky: this.state.isSticky,
-        })}
-      >
-        <h1 className={cx('logo')}>
-          RS <span>React App</span>
-        </h1>
-        <p className={cx('text')}>React Class Components</p>
-      </header>
-    );
-  }
+  return (
+    <header
+      className={cx('header', {
+        sticky: isSticky,
+      })}
+    >
+      <h1 className={cx('logo')}>
+        RS <span>React App</span>
+      </h1>
+      <p className={cx('text')}>React Class Components</p>
+    </header>
+  );
 }
