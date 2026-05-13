@@ -2,8 +2,6 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
 
-import tsconfigPaths from 'vite-tsconfig-paths';
-
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -11,7 +9,9 @@ export default defineConfig({
       target: 'react',
       autoCodeSplitting: true,
     }),
-    tsconfigPaths(),
     react()],
   base: '/',
+  resolve: {
+    tsconfigPaths: true,
+  },
 });
