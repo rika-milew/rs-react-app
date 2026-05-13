@@ -22,8 +22,7 @@ export function List({ search }: Props) {
 
   useEffect(() => {
     setPage(0);
-    void loadData(search, 0);
-  }, [search, loadData]);
+  }, [search, setPage]);
 
   useEffect(() => {
     void loadData(search, page);
