@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { Link } from '@tanstack/react-router';
+
 import classNames from 'classnames/bind';
 import styles from './header.module.css';
 
@@ -40,7 +42,22 @@ export function Header() {
       <h1 className={cx('logo')}>
         RS <span>React App</span>
       </h1>
-      <p className={cx('text')}>React Class Components</p>
+      <nav className={cx('nav')}>
+        <Link
+          to="/"
+          className={cx('link')}
+          activeProps={{ className: cx('active') }}
+        >
+          Home
+        </Link>
+        <Link
+          to="/about"
+          className={cx('link')}
+          activeProps={{ className: cx('active') }}
+        >
+          About
+        </Link>
+      </nav>
     </header>
   );
 }

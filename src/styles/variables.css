@@ -32,6 +32,8 @@
 
   /* Font weights */
   --font-weight-bold: 700;
+  --font-weight-semibold: 700;
+  --font-weight-medium: 500;
 
   /* Easing functions */
   --ease-in-cubic: cubic-bezier(0.4, 0, 0.2, 1);
