@@ -1,0 +1,33 @@
+.about {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  max-width: 58rem;
+}
+
+.text {
+  color: var(--color-gray-400);
+  text-align: center;
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+}
+
+.link {
+  text-decoration: none;
+  color: var(--color-white);
+  transition: all var(--transition-default) ease;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      color: var(--color-yellow-700);
+    }
+  }
+
+  @media (hover: none) {
+    &:active {
+      color: var(--color-yellow-700);
+    }
+  }
+}
