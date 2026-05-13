@@ -44,4 +44,4 @@ out/
 # tests
 coverage/
 
-src/routeTree.gen.ts
+**/routeTree.gen.ts
