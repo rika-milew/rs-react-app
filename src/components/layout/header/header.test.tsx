@@ -15,7 +15,8 @@ describe('header component', () => {
     expect(header).toBeInTheDocument();
     expect(screen.getByText('RS')).toBeInTheDocument();
     expect(screen.getByText('React App')).toBeInTheDocument();
-    expect(screen.getByText('React Class Components')).toBeInTheDocument();
+    expect(screen.getByText('Home')).toBeInTheDocument();
+    expect(screen.getByText('About')).toBeInTheDocument();
   });
 
   it('has banner role', () => {
