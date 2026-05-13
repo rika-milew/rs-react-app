@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/button/button';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+
 import classNames from 'classnames/bind';
 import styles from './search-bar.module.css';
 
@@ -11,7 +13,9 @@ type Props = {
 };
 
 export const SearchBar = ({ value = '', onSearch }: Props) => {
-  const [query, setQuery] = useState(value);
+  const [savedSearch, setSavedSearch] = useLocalStorage('search', value);
+
+  const [query, setQuery] = useState(savedSearch);
 
   const handleChange = (event_: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event_.target.value);
@@ -21,12 +25,7 @@ export const SearchBar = ({ value = '', onSearch }: Props) => {
     const trimmedQuery = query.trim();
 
     setQuery(trimmedQuery);
-
-    if (trimmedQuery) {
-      localStorage.setItem('search', trimmedQuery);
-    } else {
-      localStorage.removeItem('search');
-    }
+    setSavedSearch(trimmedQuery);
 
     onSearch(trimmedQuery);
   };

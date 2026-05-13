@@ -1,9 +1,6 @@
 import { useState } from 'react';
 
-type UseLocalStorage = readonly [
-  string,
-  React.Dispatch<React.SetStateAction<string>>,
-];
+type UseLocalStorage = readonly [string, (value: string) => void];
 
 export const useLocalStorage = (
   key: string,
@@ -15,5 +12,15 @@ export const useLocalStorage = (
     return savedSearch?.trim() ? savedSearch : initialValue;
   });
 
-  return [value, setValue] as const;
+  const setSavedValue = (newSearch: string): void => {
+    if (newSearch.trim()) {
+      localStorage.setItem(key, newSearch);
+    } else {
+      localStorage.removeItem(key);
+    }
+
+    setValue(newSearch);
+  };
+
+  return [value, setSavedValue] as const;
 };
