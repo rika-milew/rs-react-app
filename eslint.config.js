@@ -35,6 +35,11 @@ export default defineConfig([
       react: {
         version: 'detect',
       },
+      'import/resolver': {
+        typescript: {
+          project: './tsconfig.json',
+        },
+      },
     },
     linterOptions: {
       noInlineConfig: true,
