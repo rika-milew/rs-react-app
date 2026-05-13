@@ -1,0 +1,15 @@
+.not-found {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  max-width: 58rem;
+}
+
+.text {
+  color: var(--color-gray-400);
+  text-align: center;
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+}
