@@ -8,6 +8,7 @@ type Props = {
   onClick: () => void;
   disabled?: boolean;
   variant?: 'basic' | 'error';
+  className?: string;
 };
 
 export function Button({
@@ -15,13 +16,14 @@ export function Button({
   onClick,
   disabled = false,
   variant = 'basic',
+  className,
 }: Props) {
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={cx('button', variant, {
+      className={cx('button', variant, className, {
         disabled,
       })}
     >

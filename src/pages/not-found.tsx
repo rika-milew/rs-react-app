@@ -17,6 +17,7 @@ export function NotFoundPage() {
         onClick={() => {
           void navigate({ to: '/' });
         }}
+        className={cx('height')}
       />
     </div>
   );
