@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Link } from '@tanstack/react-router';
 
 import classNames from 'classnames/bind';
@@ -10,17 +10,23 @@ const SCROLL = 5;
 
 export function Header() {
   const [isSticky, setIsSticky] = useState(false);
+  const ticking = useRef(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      const sticky = window.scrollY > SCROLL;
-
-      setIsSticky((previous) => {
-        if (previous === sticky) {
-          return previous;
-        }
-
-        return sticky;
+      if (ticking.current) {
+        return;
+      }
+      ticking.current = true;
+      requestAnimationFrame(() => {
+        const sticky = window.scrollY > SCROLL;
+        setIsSticky((previous) => {
+          if (previous === sticky) {
+            return previous;
+          }
+          return sticky;
+        });
+        ticking.current = false;
       });
     };
 
