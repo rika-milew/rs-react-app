@@ -12,6 +12,15 @@
   border-top-color: var(--color-yellow-600);
   border-radius: 50%;
   animation: spin 1s linear infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    background: conic-gradient(
+      var(--color-yellow-600) 0deg 90deg,
+      var(--color-gray-500) 90deg 360deg
+    );
+    border: none;
+  }
 }
 
 .text {
