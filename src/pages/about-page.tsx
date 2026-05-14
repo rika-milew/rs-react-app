@@ -18,6 +18,7 @@ export const AboutPage = () => {
           rel="noreferrer"
         >
           rika-milew
+          <span className="visually-hidden"> (Opens in new tab)</span>
         </a>
       </p>
 
@@ -30,6 +31,7 @@ export const AboutPage = () => {
           rel="noreferrer"
         >
           RS School React Course
+          <span className="visually-hidden"> (Opens in new tab)</span>
         </a>{' '}
         demonstrating routing, pagination, and master-detail architecture using
         TanStack Router.

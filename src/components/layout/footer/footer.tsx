@@ -14,6 +14,7 @@ export function Footer() {
         rel="noreferrer"
       >
         Eryka Mileuskaya
+        <span className="visually-hidden"> (Opens in new tab)</span>
       </a>
       <span className={cx('year')}>© {new Date().getFullYear()}</span>
     </footer>
