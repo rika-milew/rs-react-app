@@ -22,9 +22,7 @@ export function isPokemon(data: unknown): data is Pokemon {
     return false;
   }
 
-  const name = data.name;
-  const id = data.id;
-  const sprites = data.sprites;
+  const { name, id, sprites, types, abilities, height, weight } = data;
 
   if (
     typeof name !== 'string' ||
@@ -45,11 +43,11 @@ export function isPokemon(data: unknown): data is Pokemon {
     return false;
   }
 
-  if (!Array.isArray(data.types)) {
+  if (!Array.isArray(types)) {
     return false;
   }
 
-  const areValidTypes = data.types.every((typeItem: unknown) => {
+  const areValidTypes = types.every((typeItem: unknown) => {
     if (!isObject(typeItem)) {
       return false;
     }
@@ -70,8 +68,8 @@ export function isPokemon(data: unknown): data is Pokemon {
     return false;
   }
 
-  if (Array.isArray(data.abilities)) {
-    const areValidAbilities = data.abilities.every((abilityItem: unknown) => {
+  if (Array.isArray(abilities)) {
+    const areValidAbilities = abilities.every((abilityItem: unknown) => {
       if (!isObject(abilityItem)) {
         return false;
       }
@@ -83,9 +81,6 @@ export function isPokemon(data: unknown): data is Pokemon {
       return false;
     }
   }
-
-  const height = data.height;
-  const weight = data.weight;
 
   if (typeof height !== 'number' || typeof weight !== 'number') {
     return false;
