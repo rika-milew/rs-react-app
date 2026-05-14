@@ -19,6 +19,15 @@
     opacity: var(--opacity-40);
     cursor: not-allowed;
   }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-gray-400);
+    outline-offset: 2px;
+  }
+
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
 }
 
 .basic {
