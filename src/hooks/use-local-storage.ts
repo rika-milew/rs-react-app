@@ -7,16 +7,25 @@ export const useLocalStorage = (
   initialValue = ''
 ): UseLocalStorage => {
   const [value, setValue] = useState(() => {
-    const savedSearch = localStorage.getItem(key);
-
-    return savedSearch?.trim() ? savedSearch : initialValue;
+    try {
+      const savedSearch = localStorage.getItem(key);
+      return savedSearch?.trim() ? savedSearch : initialValue;
+    } catch {
+      return initialValue;
+    }
   });
 
   const setSavedValue = (newSearch: string): void => {
-    if (newSearch.trim()) {
-      localStorage.setItem(key, newSearch);
-    } else {
-      localStorage.removeItem(key);
+    try {
+      if (newSearch.trim()) {
+        localStorage.setItem(key, newSearch);
+      } else {
+        localStorage.removeItem(key);
+      }
+    } catch (error) {
+      if (process.env.NODE_ENV === 'development') {
+        console.error('localStorage save failed:', error);
+      }
     }
 
     setValue(newSearch);
