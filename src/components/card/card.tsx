@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import styles from './card.module.css';
 import type { PokemonWithDescription } from '@/types/api';
 import classNames from 'classnames/bind';
 
 const cx = classNames.bind(styles);
+
+import mockImage from '@/assets/mock-image.png';
 
 export const ID_LENGTH = 3;
 
@@ -15,7 +18,19 @@ export function Card({ pokemon }: Props) {
     pokemon;
 
   const image =
-    sprites.other?.['official-artwork']?.front_default ?? sprites.front_default;
+    sprites.other?.['official-artwork']?.front_default ??
+    sprites.front_default ??
+    mockImage;
+
+  const [imgSource, setImgSource] = useState(image);
+
+  const handleImageError = () => {
+    if (imgSource !== sprites.front_default && sprites.front_default) {
+      setImgSource(sprites.front_default);
+    } else {
+      setImgSource(mockImage);
+    }
+  };
 
   const typeContent = types.map((t) => t.type.name).join(', ');
   const abilityContent = abilities.map((a) => a.ability.name).join(', ');
@@ -29,7 +44,12 @@ export function Card({ pokemon }: Props) {
         <span className={cx('id')}>
           #{id.toString().padStart(ID_LENGTH, '0')}
         </span>
-        <img className={cx('image')} src={image} alt={name} />
+        <img
+          className={cx('image')}
+          src={imgSource}
+          alt={name ? `${name} Pokémon` : 'Pokémon image'}
+          onError={handleImageError}
+        />
       </div>
       <h3 className={cx('name')}>{capitalizedName}</h3>
       <div className={cx('types')}>
