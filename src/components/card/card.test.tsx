@@ -52,7 +52,7 @@ describe('card component', () => {
       render(<Card pokemon={mockPokemonFull} />);
 
       const image = screen.getByRole('img', {
-        name: `${mockPokemonFull.name} Pokémon`,
+        name: `${mockPokemonFull.name} Pokémon image`,
       });
 
       expect(image).toHaveAttribute('src', artworkMockImage);
