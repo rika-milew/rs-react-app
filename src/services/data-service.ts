@@ -1,3 +1,5 @@
+import pLimit from 'p-limit';
+import { API_CONCURRENCY } from '@/constants/constants';
 import { getPokemons, getPokemonFull } from '@/services/api';
 import { ApiError } from '@/services/api-error';
 import { CARD_LIMIT, HTTP_STATUS } from '@/constants/constants';
@@ -35,13 +37,13 @@ export async function getData(
       }
     } else {
       const offset = page * CARD_LIMIT;
-
       const searchData = await getPokemons(offset, CARD_LIMIT);
-
       totalPages = Math.ceil(searchData.count / CARD_LIMIT);
 
+      const limit = pLimit(API_CONCURRENCY);
+
       data = await Promise.all(
-        searchData.results.map((item) => getPokemonFull(item.name))
+        searchData.results.map((item) => limit(() => getPokemonFull(item.name)))
       );
     }
 
@@ -58,7 +60,7 @@ export async function getData(
         message = 'Pokemon not found';
       } else if (error.status >= HTTP_STATUS.INTERNAL_SERVER_ERROR) {
         message = 'Server error. Try again later.';
-      } else if (error.status === 0) {
+      } else if (error.status === HTTP_STATUS.NETWORK_ERROR) {
         message = 'Network error. Check your internet connection.';
       }
     }
