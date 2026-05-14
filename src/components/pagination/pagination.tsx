@@ -21,6 +21,7 @@ export const Pagination = ({
   return (
     <div className={cx('pagination')}>
       <button
+        type="button"
         className={cx('pagination-button')}
         disabled={page === 0 || loading}
         onClick={onPrev}
@@ -32,6 +33,7 @@ export const Pagination = ({
         {totalPages}
       </span>
       <button
+        type="button"
         className={cx('pagination-button')}
         disabled={page + 1 >= totalPages || loading}
         onClick={onNext}
