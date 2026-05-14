@@ -6,6 +6,7 @@ import reactPlugin from 'eslint-plugin-react';
 import eslintConfigPrettier from 'eslint-config-prettier/flat';
 import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 import tseslint from 'typescript-eslint';
+import boundaries from 'eslint-plugin-boundaries';
 import { defineConfig, globalIgnores } from 'eslint/config';
 
 export default defineConfig([
