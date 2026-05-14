@@ -39,6 +39,7 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  border-radius: 1rem;
   background-color: var(--color-gray-750);
   z-index: 10;
 }

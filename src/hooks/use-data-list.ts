@@ -64,6 +64,10 @@ export function useDataList(): DataList {
         }
       }
     } catch {
+      if (currentRequestId !== requestId.current) {
+        return;
+      }
+
       setStatus('error');
       setError('Something went wrong. Try again later.');
     }
