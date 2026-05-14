@@ -11,6 +11,7 @@ export default defineConfig({
       autoCodeSplitting: true,
     }),
     tsconfigPaths(),
-    react()],
+    react(),
+  ],
   base: '/',
 });

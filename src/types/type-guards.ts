@@ -1,7 +1,20 @@
-import type { Pokemon, PokemonListResponse, PokemonSpecies } from '@/types/api';
+import type {
+  Pokemon,
+  PokemonListItem,
+  PokemonListResponse,
+  PokemonSpecies,
+} from '@/types/api';
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
+}
+
+export function isPokemonListItem(data: unknown): data is PokemonListItem {
+  if (!isObject(data)) {
+    return false;
+  }
+  const { name, url } = data;
+  return typeof name === 'string' && typeof url === 'string';
 }
 
 export function isPokemonListResponse(
@@ -11,10 +24,15 @@ export function isPokemonListResponse(
     return false;
   }
 
-  const results = data.results;
-  const count = data.count;
+  const { results, next, previous, count } = data;
 
-  return Array.isArray(results) && typeof count === 'number';
+  return (
+    Array.isArray(results) &&
+    results.every(isPokemonListItem) &&
+    (next === null || typeof next === 'string') &&
+    (previous === null || typeof previous === 'string') &&
+    typeof count === 'number'
+  );
 }
 
 export function isPokemon(data: unknown): data is Pokemon {
@@ -22,7 +40,7 @@ export function isPokemon(data: unknown): data is Pokemon {
     return false;
   }
 
-  const { name, id, sprites, types, abilities, height, weight } = data;
+  const { name, id, sprites, types, abilities, height, weight, species } = data;
 
   if (
     typeof name !== 'string' ||
@@ -32,14 +50,7 @@ export function isPokemon(data: unknown): data is Pokemon {
     return false;
   }
 
-  const isFrontDefaultImage = typeof sprites.front_default === 'string';
-
-  const isArtworkImage =
-    isObject(sprites.other) &&
-    isObject(sprites.other['official-artwork']) &&
-    typeof sprites.other['official-artwork'].front_default === 'string';
-
-  if (!isFrontDefaultImage && !isArtworkImage) {
+  if (!isValidSprites(sprites)) {
     return false;
   }
 
@@ -64,7 +75,7 @@ export function isPokemon(data: unknown): data is Pokemon {
     return false;
   }
 
-  if (data.abilities !== undefined && !Array.isArray(data.abilities)) {
+  if (data.abilities !== undefined && !Array.isArray(abilities)) {
     return false;
   }
 
@@ -82,6 +93,10 @@ export function isPokemon(data: unknown): data is Pokemon {
     }
   }
 
+  if (!isValidSpecies(species)) {
+    return false;
+  }
+
   if (typeof height !== 'number' || typeof weight !== 'number') {
     return false;
   }
@@ -89,28 +104,62 @@ export function isPokemon(data: unknown): data is Pokemon {
   return true;
 }
 
+function isValidSprites(sprites: unknown): boolean {
+  if (!isObject(sprites)) {
+    return false;
+  }
+
+  const isFrontDefaultImage = typeof sprites.front_default === 'string';
+  const isArtworkImage =
+    isObject(sprites.other) &&
+    isObject(sprites.other['official-artwork']) &&
+    typeof sprites.other['official-artwork'].front_default === 'string';
+
+  return isFrontDefaultImage || isArtworkImage;
+}
+
+function isValidSpecies(species: unknown): boolean {
+  return (
+    isObject(species) &&
+    typeof species.name === 'string' &&
+    typeof species.url === 'string'
+  );
+}
+
 export function isPokemonSpecies(data: unknown): data is PokemonSpecies {
   if (!isObject(data)) {
     return false;
   }
 
-  const entries = data.flavor_text_entries;
+  const { flavor_text_entries } = data;
 
-  if (!Array.isArray(entries)) {
+  if (!Array.isArray(flavor_text_entries)) {
     return false;
   }
 
-  return entries.every((item) => {
+  const areValidEntries = flavor_text_entries.every((item: unknown) => {
     if (!isObject(item)) {
       return false;
     }
-
-    const language = item.language;
-
+    const { flavor_text, language } = item;
     return (
-      typeof item.flavor_text === 'string' &&
+      typeof flavor_text === 'string' &&
       isObject(language) &&
       typeof language.name === 'string'
     );
   });
+
+  if (!areValidEntries) {
+    return false;
+  }
+
+  const isLanguageEntry = flavor_text_entries.some((item: unknown) => {
+    if (!isObject(item)) {
+      return false;
+    }
+    const { language } = item;
+    return isObject(language) && language.name === 'en';
+  });
+
+  return isLanguageEntry;
 }
