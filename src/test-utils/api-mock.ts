@@ -17,7 +17,10 @@ export const mockPokemonFull: PokemonWithDescription = {
       },
     },
   },
-  types: [{ type: { name: 'grass' } }, { type: { name: 'poison' } }],
+  types: [
+    { slot: 1, type: { name: 'grass' } },
+    { slot: 2, type: { name: 'poison' } },
+  ],
   abilities: [
     { ability: { name: 'overgrow' }, is_hidden: false },
     { ability: { name: 'chlorophyll' }, is_hidden: true },
@@ -39,7 +42,7 @@ export const mockPokemonPartial: PokemonWithDescription = {
     front_default: mockImage,
     other: {},
   },
-  types: [{ type: { name: 'grass' } }],
+  types: [{ slot: 1, type: { name: 'grass' } }],
   abilities: [{ ability: { name: 'overgrow' }, is_hidden: false }],
   species: {
     name: 'ivysaur',

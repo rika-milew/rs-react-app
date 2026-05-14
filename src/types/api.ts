@@ -32,6 +32,7 @@ export type Pokemon = {
   }[];
 
   types: {
+    slot: number;
     type: {
       name: string;
     };

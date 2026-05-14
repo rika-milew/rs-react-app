@@ -5,11 +5,12 @@ import {
   getPokemonSpecies,
   getPokemonFull,
 } from './api';
-
-import { mockFetchData, mockFetchDataError } from '@/test-utils/api-mock';
-
+import {
+  mockFetchData,
+  mockFetchDataError,
+  mockPokemonFull,
+} from '@/test-utils/api-mock';
 import { HTTP_STATUS, CARD_LIMIT } from '@/constants/constants';
-
 import { ApiError } from '@/services/api-error';
 
 describe('fetchData service', () => {
@@ -17,6 +18,8 @@ describe('fetchData service', () => {
     mockFetchData({
       count: 1,
       results: [{ name: 'bulbasaur', url: 'url' }],
+      previous: null,
+      next: null,
     });
 
     const result = await getPokemons(0, CARD_LIMIT);
@@ -26,12 +29,7 @@ describe('fetchData service', () => {
   });
 
   it('gets data by pokemon name correctly', async () => {
-    mockFetchData({
-      id: 1,
-      name: 'bulbasaur',
-      sprites: {},
-      species: { url: 'url' },
-    });
+    mockFetchData(mockPokemonFull);
 
     const result = await getPokemonByName('Bulbasaur');
 
@@ -63,18 +61,7 @@ describe('fetchData service', () => {
     const mockFetchData = vi.spyOn(globalThis, 'fetch');
 
     mockFetchData
-      .mockResolvedValueOnce(
-        Response.json({
-          id: 1,
-          name: 'bulbasaur',
-          sprites: {
-            front_default: 'image',
-          },
-          species: {
-            url: 'url',
-          },
-        })
-      )
+      .mockResolvedValueOnce(Response.json(mockPokemonFull))
       .mockResolvedValueOnce(
         Response.json({
           flavor_text_entries: [

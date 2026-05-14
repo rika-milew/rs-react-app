@@ -3,15 +3,20 @@ import {
   isPokemon,
   isPokemonSpecies,
 } from './type-guards';
+import { mockPokemonFull } from '@/test-utils/api-mock';
 
 describe('type guards', () => {
   describe('isPokemonListResponse', () => {
     it('returns true for valid data', () => {
       const data = {
         count: 2,
-        results: [{ name: 'charmeleon' }],
+        next: null,
+        previous: null,
+        results: [
+          { name: 'charmeleon', url: 'https://pokeapi.co/api/v2/pokemon/5/' },
+          { name: 'charizard', url: 'https://pokeapi.co/api/v2/pokemon/6/' },
+        ],
       };
-
       expect(isPokemonListResponse(data)).toBe(true);
     });
 
@@ -41,13 +46,7 @@ describe('type guards', () => {
 
   describe('isPokemon', () => {
     it('returns true for valid data', () => {
-      const data = {
-        id: 1,
-        name: 'bulbasaur',
-        sprites: {},
-      };
-
-      expect(isPokemon(data)).toBe(true);
+      expect(isPokemon(mockPokemonFull)).toBe(true);
     });
 
     it('returns false when sprites is not object', () => {
