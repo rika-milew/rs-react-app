@@ -14,7 +14,7 @@ export function Layout({ children }: Props) {
   return (
     <div className={cx('wrapper')}>
       <Header />
-      <main className={cx('main')}>
+      <main id="main-content" className={cx('main')}>
         <div className={cx('container')}>{children}</div>
       </main>
       <Footer />

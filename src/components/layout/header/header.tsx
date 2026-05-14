@@ -48,6 +48,9 @@ export function Header() {
       <h1 className={cx('logo')}>
         RS <span>React App</span>
       </h1>
+      <a href="#main-content" className={cx('skip-link')}>
+        Skip to the main content
+      </a>
       <nav className={cx('nav')}>
         <Link
           to="/"
