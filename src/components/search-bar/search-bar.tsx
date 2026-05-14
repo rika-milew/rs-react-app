@@ -30,6 +30,12 @@ export const SearchBar = ({ value = '', onSearch }: Props) => {
     onSearch(trimmedQuery);
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   return (
     <div className={cx('search-container')}>
       <label htmlFor="search-input" className={cx('visually-hidden')}>
@@ -40,11 +46,7 @@ export const SearchBar = ({ value = '', onSearch }: Props) => {
         type="text"
         value={query}
         onChange={handleChange}
-        onKeyDown={(event) => {
-          if (event.key === 'Enter') {
-            handleSearch();
-          }
-        }}
+        onKeyDown={handleKeyDown}
         placeholder="Search Pokémon..."
         className={cx('input')}
       />
