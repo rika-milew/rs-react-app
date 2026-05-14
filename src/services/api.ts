@@ -14,30 +14,52 @@ import {
 
 import { ApiError } from '@/services/api-error';
 
+const TIMEOUT_MS = 20_000;
+
 async function fetchData<T>(
   url: string,
   validator: TypeGuard<T>,
-  errorMessage: string
+  errorMessage: string,
+  timeoutMs: number = TIMEOUT_MS
 ): Promise<T> {
-  const res = await fetch(url);
-
-  if (!res.ok) {
-    throw new ApiError(res.status, errorMessage);
-  }
-
-  let data: unknown;
+  const abortController = new AbortController();
+  const timeoutId = setTimeout(() => {
+    abortController.abort();
+  }, timeoutMs);
 
   try {
-    data = await res.json();
-  } catch {
-    throw new Error('Invalid JSON response');
-  }
+    const res = await fetch(url, {
+      signal: abortController.signal,
+    });
 
-  if (!validator(data)) {
-    throw new Error('Invalid API response shape');
-  }
+    clearTimeout(timeoutId);
 
-  return data;
+    if (!res.ok) {
+      throw new ApiError(res.status, errorMessage);
+    }
+
+    let data: unknown;
+
+    try {
+      data = await res.json();
+    } catch {
+      throw new Error('Invalid JSON response');
+    }
+
+    if (!validator(data)) {
+      throw new Error('Invalid API response shape');
+    }
+
+    return data;
+  } catch (error) {
+    clearTimeout(timeoutId);
+
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error('Request timeout');
+    }
+
+    throw error;
+  }
 }
 
 export const getPokemons = (
