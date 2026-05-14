@@ -45,9 +45,11 @@ export class ErrorBoundary extends Component<
           <div className={cx('error-container')}>
             <h2 className={cx('title')}>Something went wrong</h2>
             <p className={cx('text')}>Please try again or reset the app.</p>
-            <div className={cx('button-container')}>
-              <Button text="Try again" onClick={this.resetError} />
-            </div>
+            <Button
+              text="Try again"
+              onClick={this.resetError}
+              className={cx('height')}
+            />
           </div>
         </Layout>
       );
