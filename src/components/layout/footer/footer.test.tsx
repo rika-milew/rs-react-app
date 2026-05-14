@@ -14,7 +14,7 @@ describe('footer component', () => {
     render(<Footer />);
 
     const link = screen.getByRole('link', {
-      name: 'Eryka Mileuskaya',
+      name: /Eryka Mileuskaya/i,
     });
 
     expect(link).toHaveAttribute('href', 'https://github.com/rika-milew');

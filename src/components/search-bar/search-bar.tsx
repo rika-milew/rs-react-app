@@ -32,7 +32,11 @@ export const SearchBar = ({ value = '', onSearch }: Props) => {
 
   return (
     <div className={cx('search-container')}>
+      <label htmlFor="search-input" className={cx('visually-hidden')}>
+        Search Pokémon
+      </label>
       <input
+        id="search-input"
         type="text"
         value={query}
         onChange={handleChange}

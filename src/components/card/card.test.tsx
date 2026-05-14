@@ -51,7 +51,10 @@ describe('card component', () => {
     it('renders artwork image with correct attributes', () => {
       render(<Card pokemon={mockPokemonFull} />);
 
-      const image = screen.getByRole('img', { name: mockPokemonFull.name });
+      const image = screen.getByRole('img', {
+        name: `${mockPokemonFull.name} Pokémon`,
+      });
+
       expect(image).toHaveAttribute('src', artworkMockImage);
     });
 
@@ -87,7 +90,10 @@ describe('card component', () => {
     it('uses front_default image when artwork image is missing', () => {
       render(<Card pokemon={mockPokemonPartial} />);
 
-      const image = screen.getByRole('img', { name: mockPokemonPartial.name });
+      const image = screen.getByRole('img', {
+        name: `${mockPokemonPartial.name} Pokémon`,
+      });
+
       expect(image).toHaveAttribute(
         'src',
         mockPokemonPartial.sprites.front_default
