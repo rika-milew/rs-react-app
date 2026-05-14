@@ -91,7 +91,7 @@ describe('card component', () => {
       render(<Card pokemon={mockPokemonPartial} />);
 
       const image = screen.getByRole('img', {
-        name: `${mockPokemonPartial.name} Pokémon`,
+        name: `${mockPokemonPartial.name} Pokémon image`,
       });
 
       expect(image).toHaveAttribute(

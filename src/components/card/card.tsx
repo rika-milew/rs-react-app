@@ -39,15 +39,15 @@ export function Card({ pokemon }: Props) {
     name.length > 0 ? name[0].toUpperCase() + name.slice(1) : name;
 
   return (
-    <div className={cx('card')}>
+    <article className={cx('card')}>
       <div className={cx('image-container')}>
-        <span className={cx('id')}>
+        <span className={cx('card-id')}>
           #{id.toString().padStart(ID_LENGTH, '0')}
         </span>
         <img
           className={cx('image')}
           src={imgSource}
-          alt={name ? `${name} Pokémon` : 'Pokémon image'}
+          alt={name ? `${name} Pokémon image` : 'Pokémon image'}
           onError={handleImageError}
         />
       </div>
@@ -78,6 +78,6 @@ export function Card({ pokemon }: Props) {
           <span className={cx('label')}>Weight:</span> {weight / 10} kg
         </p>
       </div>
-    </div>
+    </article>
   );
 }
