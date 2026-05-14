@@ -26,9 +26,72 @@ export function isPokemon(data: unknown): data is Pokemon {
   const id = data.id;
   const sprites = data.sprites;
 
-  return (
-    typeof name === 'string' && typeof id === 'number' && isObject(sprites)
-  );
+  if (
+    typeof name !== 'string' ||
+    typeof id !== 'number' ||
+    !isObject(sprites)
+  ) {
+    return false;
+  }
+
+  const isFrontDefaultImage = typeof sprites.front_default === 'string';
+
+  const isArtworkImage =
+    isObject(sprites.other) &&
+    isObject(sprites.other['official-artwork']) &&
+    typeof sprites.other['official-artwork'].front_default === 'string';
+
+  if (!isFrontDefaultImage && !isArtworkImage) {
+    return false;
+  }
+
+  if (!Array.isArray(data.types)) {
+    return false;
+  }
+
+  const areValidTypes = data.types.every((typeItem: unknown) => {
+    if (!isObject(typeItem)) {
+      return false;
+    }
+    const slot = typeItem.slot;
+    const type = typeItem.type;
+    return (
+      typeof slot === 'number' &&
+      isObject(type) &&
+      typeof type.name === 'string'
+    );
+  });
+
+  if (!areValidTypes) {
+    return false;
+  }
+
+  if (data.abilities !== undefined && !Array.isArray(data.abilities)) {
+    return false;
+  }
+
+  if (Array.isArray(data.abilities)) {
+    const areValidAbilities = data.abilities.every((abilityItem: unknown) => {
+      if (!isObject(abilityItem)) {
+        return false;
+      }
+      const ability = abilityItem.ability;
+      return isObject(ability) && typeof ability.name === 'string';
+    });
+
+    if (!areValidAbilities) {
+      return false;
+    }
+  }
+
+  const height = data.height;
+  const weight = data.weight;
+
+  if (typeof height !== 'number' || typeof weight !== 'number') {
+    return false;
+  }
+
+  return true;
 }
 
 export function isPokemonSpecies(data: unknown): data is PokemonSpecies {
