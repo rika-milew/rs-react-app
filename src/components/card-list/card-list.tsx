@@ -50,6 +50,8 @@ export function CardList({ search }: Props) {
     );
   }
 
+  const isListLoaded = status === 'success';
+
   return (
     <section className={cx('section')}>
       <h2 className={cx('title')}>Results</h2>
@@ -59,11 +61,11 @@ export function CardList({ search }: Props) {
           <Card key={card.id} item={card} />
         ))}
       </div>
-      {!search && (
+      {isListLoaded && (
         <Pagination
           page={page}
           totalPages={totalPages}
-          loading={status === 'loading'}
+          loading={false}
           onPrev={handlePrevious}
           onNext={handleNext}
         />
