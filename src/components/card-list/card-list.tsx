@@ -7,6 +7,7 @@ import { Loader } from '@/components/loader/loader';
 import { Pagination } from '@/components/pagination/pagination';
 import { StateView } from '@/components/state-view/state-view';
 import { usePagination } from '@/hooks/use-pagination';
+import { useDetailNavigation } from '@/hooks/use-detail-navigation';
 
 const cx = classNames.bind(styles);
 
@@ -19,6 +20,8 @@ export function CardList({ search }: Props) {
 
   const { page, handlePrevious, handleNext, setPage } =
     usePagination(totalPages);
+
+  const { openDetailView } = useDetailNavigation();
 
   useEffect(() => {
     setPage(0);
@@ -58,7 +61,13 @@ export function CardList({ search }: Props) {
       {status === 'loading' && <Loader />}
       <div className={cx('card-container')}>
         {data.map((card) => (
-          <Card key={card.id} item={card} />
+          <Card
+            key={card.id}
+            item={card}
+            onClick={() => {
+              openDetailView(card.id);
+            }}
+          />
         ))}
       </div>
       {isListLoaded && (

@@ -18,6 +18,7 @@ export const API_STATUS = {
   SUCCESS: 'success',
   NOT_FOUND: 'not-found',
   ERROR: 'error',
+  LOADING: 'loading',
 } as const;
 
 export type ApiStatus = (typeof API_STATUS)[keyof typeof API_STATUS];
@@ -25,6 +26,16 @@ export type ApiStatus = (typeof API_STATUS)[keyof typeof API_STATUS];
 export const ROUTES = {
   HOME: '/',
   ABOUT: '/about',
+  DETAILS: '/details',
 } as const;
 
 export type RoutePath = (typeof ROUTES)[keyof typeof ROUTES];
+
+export const ERROR_MESSAGES = {
+  DEFAULT: 'Something went wrong. Try again later.',
+  SERVER: 'Server error. Try again later.',
+  NETWORK: 'Network error. Check your internet connection.',
+} as const;
+
+export type ErrorMessageType =
+  (typeof ERROR_MESSAGES)[keyof typeof ERROR_MESSAGES];

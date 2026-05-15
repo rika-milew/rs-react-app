@@ -11,9 +11,10 @@ export const ID_LENGTH = 3;
 
 type Props = {
   item: PokemonWithDescription;
+  onClick?: () => void;
 };
 
-export function Card({ item }: Props) {
+export function Card({ item, onClick }: Props) {
   const { id, name, height, weight, sprites, types, abilities, description } =
     item;
 
@@ -38,8 +39,12 @@ export function Card({ item }: Props) {
   const capitalizedName =
     name.length > 0 ? name[0].toUpperCase() + name.slice(1) : name;
 
+  const handleClick = () => {
+    onClick?.();
+  };
+
   return (
-    <article className={cx('card')}>
+    <article className={cx('card')} onClick={handleClick}>
       <div className={cx('image-container')}>
         <span className={cx('card-id')}>
           #{id.toString().padStart(ID_LENGTH, '0')}

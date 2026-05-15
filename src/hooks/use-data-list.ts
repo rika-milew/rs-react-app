@@ -1,19 +1,22 @@
 import { useCallback, useRef, useState } from 'react';
 import type { PokemonWithDescription } from '@/types/api';
 import { getData } from '@/services/data-service';
-import { LOADING_DELAY_MS } from '@/constants/constants';
+import {
+  LOADING_DELAY_MS,
+  API_STATUS,
+  ERROR_MESSAGES,
+} from '@/constants/constants';
+import type { ApiStatus } from '@/constants/constants';
 
 const delay = (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
 const normalize = (value: string): string => value.trim().toLowerCase();
 
-type Status = 'loading' | 'error' | 'not-found' | 'success';
-
 type DataList = {
   data: PokemonWithDescription[];
   totalPages: number;
-  status: Status;
+  status: ApiStatus;
   error: string | null;
   loadData: (search: string, page: number) => Promise<void>;
 };
@@ -21,7 +24,7 @@ type DataList = {
 export function useDataList(): DataList {
   const [data, setData] = useState<PokemonWithDescription[]>([]);
   const [totalPages, setTotalPages] = useState(1);
-  const [status, setStatus] = useState<Status>('loading');
+  const [status, setStatus] = useState<ApiStatus>(API_STATUS.LOADING);
   const [error, setError] = useState<string | null>(null);
 
   const requestId = useRef(0);
@@ -30,7 +33,7 @@ export function useDataList(): DataList {
     requestId.current += 1;
     const currentRequestId = requestId.current;
 
-    setStatus('loading');
+    setStatus(API_STATUS.LOADING);
     setError(null);
 
     try {
@@ -43,22 +46,22 @@ export function useDataList(): DataList {
       }
 
       switch (result.type) {
-        case 'success': {
+        case API_STATUS.SUCCESS: {
           setData(result.data);
           setTotalPages(result.totalPages);
-          setStatus('success');
+          setStatus(API_STATUS.SUCCESS);
           break;
         }
 
-        case 'not-found': {
+        case API_STATUS.NOT_FOUND: {
           setData([]);
           setTotalPages(1);
-          setStatus('not-found');
+          setStatus(API_STATUS.NOT_FOUND);
           break;
         }
 
-        case 'error': {
-          setStatus('error');
+        case API_STATUS.ERROR: {
+          setStatus(API_STATUS.ERROR);
           setError(result.message);
           break;
         }
@@ -68,8 +71,8 @@ export function useDataList(): DataList {
         return;
       }
 
-      setStatus('error');
-      setError('Something went wrong. Try again later.');
+      setStatus(API_STATUS.ERROR);
+      setError(ERROR_MESSAGES.DEFAULT);
     }
   }, []);
 
