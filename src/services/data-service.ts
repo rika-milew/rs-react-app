@@ -2,14 +2,18 @@ import pLimit from 'p-limit';
 import { API_CONCURRENCY } from '@/constants/constants';
 import { getItems, getItemFull } from '@/services/api';
 import { ApiError } from '@/services/api-error';
-import { CARD_LIMIT, HTTP_STATUS } from '@/constants/constants';
+import { CARD_LIMIT, HTTP_STATUS, API_STATUS } from '@/constants/constants';
 
 import type { PokemonWithDescription } from '@/types/api';
 
 export type Result =
-  | { type: 'success'; data: PokemonWithDescription[]; totalPages: number }
-  | { type: 'not-found' }
-  | { type: 'error'; message: string };
+  | {
+      type: typeof API_STATUS.SUCCESS;
+      data: PokemonWithDescription[];
+      totalPages: number;
+    }
+  | { type: typeof API_STATUS.NOT_FOUND }
+  | { type: typeof API_STATUS.ERROR; message: string };
 
 export async function getData(
   page: number,
@@ -30,7 +34,7 @@ export async function getData(
           error instanceof ApiError &&
           error.status === HTTP_STATUS.NOT_FOUND
         ) {
-          return { type: 'not-found' };
+          return { type: API_STATUS.NOT_FOUND };
         }
 
         throw error;
@@ -48,10 +52,10 @@ export async function getData(
     }
 
     if (data.length === 0) {
-      return { type: 'not-found' };
+      return { type: API_STATUS.NOT_FOUND };
     }
 
-    return { type: 'success', data, totalPages };
+    return { type: API_STATUS.SUCCESS, data, totalPages };
   } catch (error) {
     let message = 'Something went wrong. Try again later.';
 
@@ -65,6 +69,6 @@ export async function getData(
       }
     }
 
-    return { type: 'error', message };
+    return { type: API_STATUS.ERROR, message };
   }
 }

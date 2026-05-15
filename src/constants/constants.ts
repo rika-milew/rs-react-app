@@ -13,3 +13,18 @@ export const HTTP_STATUS = {
   NOT_FOUND: 404,
   INTERNAL_SERVER_ERROR: 500,
 } as const;
+
+export const API_STATUS = {
+  SUCCESS: 'success',
+  NOT_FOUND: 'not-found',
+  ERROR: 'error',
+} as const;
+
+export type ApiStatus = (typeof API_STATUS)[keyof typeof API_STATUS];
+
+export const ROUTES = {
+  HOME: '/',
+  ABOUT: '/about',
+} as const;
+
+export type RoutePath = (typeof ROUTES)[keyof typeof ROUTES];

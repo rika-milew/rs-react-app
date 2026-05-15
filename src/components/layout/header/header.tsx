@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router';
+import { ROUTES } from '@/constants/constants';
 
 import classNames from 'classnames/bind';
 import styles from './header.module.css';
@@ -16,14 +17,14 @@ export function Header() {
       </a>
       <nav className={cx('nav')}>
         <Link
-          to="/"
+          to={ROUTES.HOME}
           className={cx('link')}
           activeProps={{ className: cx('active') }}
         >
           Home
         </Link>
         <Link
-          to="/about"
+          to={ROUTES.ABOUT}
           className={cx('link')}
           activeProps={{ className: cx('active') }}
         >

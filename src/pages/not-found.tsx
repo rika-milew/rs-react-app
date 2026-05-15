@@ -2,6 +2,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { Button } from '@/components/button/button';
 import styles from './not-found.module.css';
 import classNames from 'classnames/bind';
+import { ROUTES } from '@/constants/constants';
 
 const cx = classNames.bind(styles);
 
@@ -15,7 +16,7 @@ export function NotFoundPage() {
       <Button
         text="Back Home"
         onClick={() => {
-          void navigate({ to: '/' });
+          void navigate({ to: ROUTES.HOME });
         }}
         className={cx('height')}
       />
