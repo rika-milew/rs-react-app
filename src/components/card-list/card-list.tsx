@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDataList } from '@/hooks/use-data-list';
 import classNames from 'classnames/bind';
-import styles from './list.module.css';
+import styles from './card-list.module.css';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
 import { Pagination } from '@/components/pagination/pagination';
