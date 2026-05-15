@@ -4,7 +4,7 @@ import { HTTP_STATUS } from '@/constants/constants';
 export const artworkMockImage = '/assets/artwork-mock-image.png';
 const mockImage = '/assets/mock-image.png';
 
-export const mockPokemonFull: PokemonWithDescription = {
+export const mockItemFull: PokemonWithDescription = {
   id: 1,
   name: 'bulbasaur',
   height: 7,
@@ -33,7 +33,7 @@ export const mockPokemonFull: PokemonWithDescription = {
     'A strange seed was planted on its back at birth. The plant sprouts and grows with this POKéMON.',
 };
 
-export const mockPokemonPartial: PokemonWithDescription = {
+export const mockItemPartial: PokemonWithDescription = {
   id: 2,
   name: 'ivysaur',
   height: 10,

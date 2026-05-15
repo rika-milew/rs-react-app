@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { CardList } from './card-list';
 import userEvent from '@testing-library/user-event';
 
-import { mockPokemonFull, mockPokemonPartial } from '@/test-utils/api-mock';
+import { mockItemFull, mockItemPartial } from '@/test-utils/api-mock';
 
 import { getData } from '@/services/data-service';
 
@@ -63,10 +63,10 @@ describe('CardList component', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders pokemon cards after successful search', async () => {
+  it('renders item cards after successful search', async () => {
     mockedData.mockResolvedValue({
       type: 'success',
-      data: [mockPokemonFull],
+      data: [mockItemFull],
       totalPages: 1,
     });
 
@@ -87,7 +87,7 @@ describe('CardList component', () => {
   it('renders correct number of cards', async () => {
     mockedData.mockResolvedValue({
       type: 'success',
-      data: [mockPokemonFull, mockPokemonPartial],
+      data: [mockItemFull, mockItemPartial],
       totalPages: 1,
     });
 

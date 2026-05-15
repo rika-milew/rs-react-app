@@ -3,27 +3,27 @@ import { getData } from './data-service';
 import { ApiError } from '@/services/api-error';
 import { HTTP_STATUS } from '@/constants/constants';
 
-import { getPokemons, getPokemonFull } from '@/services/api';
+import { getItems, getItemFull } from '@/services/api';
 
 import type { PokemonListResponse } from '@/types/api';
 
-import { mockPokemonFull, mockPokemonPartial } from '@/test-utils/api-mock';
+import { mockItemFull, mockItemPartial } from '@/test-utils/api-mock';
 
 vi.mock('@/services/api', () => ({
-  getPokemons: vi.fn(),
-  getPokemonFull: vi.fn(),
+  getItems: vi.fn(),
+  getItemFull: vi.fn(),
 }));
 
-const mockedPokemons = vi.mocked(getPokemons);
-const mockedPokemonFull = vi.mocked(getPokemonFull);
+const mockedItems = vi.mocked(getItems);
+const mockedItemFull = vi.mocked(getItemFull);
 
 describe('getData service', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('returns single pokemon correctly', async () => {
-    mockedPokemonFull.mockResolvedValue(mockPokemonFull);
+  it('returns single item correctly', async () => {
+    mockedItemFull.mockResolvedValue(mockItemFull);
 
     const result = await getData(0, 'bulbasaur');
 
@@ -36,17 +36,17 @@ describe('getData service', () => {
   });
 
   it('returns not found when API responds with 404', async () => {
-    mockedPokemonFull.mockRejectedValue(
+    mockedItemFull.mockRejectedValue(
       new ApiError(HTTP_STATUS.NOT_FOUND, 'not found')
     );
 
-    const result = await getData(0, 'unknownPokemon');
+    const result = await getData(0, 'unknownItem');
 
     expect(result.type).toBe('not-found');
   });
 
   it('returns server error message when API responds with 500', async () => {
-    mockedPokemons.mockRejectedValue(
+    mockedItems.mockRejectedValue(
       new ApiError(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'server error')
     );
 
@@ -60,7 +60,7 @@ describe('getData service', () => {
   });
 
   it('returns network error message when API responds with 0', async () => {
-    mockedPokemons.mockRejectedValue(new ApiError(0, 'network error'));
+    mockedItems.mockRejectedValue(new ApiError(0, 'network error'));
 
     const result = await getData(0, '');
 
@@ -72,7 +72,7 @@ describe('getData service', () => {
   });
 
   it('returns error on unexpected API error', async () => {
-    mockedPokemons.mockRejectedValue(new Error('unknown error'));
+    mockedItems.mockRejectedValue(new Error('unknown error'));
 
     const result = await getData(0, '');
 
@@ -80,19 +80,19 @@ describe('getData service', () => {
   });
 
   it('returns paginated list when no search query', async () => {
-    mockedPokemons.mockResolvedValue({
+    mockedItems.mockResolvedValue({
       count: 2,
       results: [
-        { name: mockPokemonFull.name, url: 'url' },
-        { name: mockPokemonPartial.name, url: 'url' },
+        { name: mockItemFull.name, url: 'url' },
+        { name: mockItemPartial.name, url: 'url' },
       ],
       next: null,
       previous: null,
     } satisfies PokemonListResponse);
 
-    mockedPokemonFull
-      .mockResolvedValueOnce(mockPokemonFull)
-      .mockResolvedValueOnce(mockPokemonPartial);
+    mockedItemFull
+      .mockResolvedValueOnce(mockItemFull)
+      .mockResolvedValueOnce(mockItemPartial);
 
     const result = await getData(0, '');
 

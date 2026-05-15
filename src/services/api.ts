@@ -7,9 +7,9 @@ import type {
   PokemonSpecies,
 } from '@/types/api';
 import {
-  isPokemon,
-  isPokemonListResponse,
-  isPokemonSpecies,
+  isValidItem,
+  isValidListResponse,
+  isValidItemSpecies,
 } from '@/types/type-guards';
 
 import { ApiError } from '@/services/api-error';
@@ -62,7 +62,7 @@ async function fetchData<T>(
   }
 }
 
-export const getPokemons = (
+export const getItems = (
   offset: number,
   limit: number
 ): Promise<PokemonListResponse> => {
@@ -73,33 +73,33 @@ export const getPokemons = (
 
   return fetchData<PokemonListResponse>(
     `${API_BASE_URL}?${params.toString()}`,
-    isPokemonListResponse,
-    'Failed to get pokemons'
+    isValidListResponse,
+    'Failed to get items'
   );
 };
 
-export const getPokemonByName = (name: string): Promise<Pokemon> =>
+export const getItemByName = (name: string): Promise<Pokemon> =>
   fetchData<Pokemon>(
     `${API_BASE_URL}/${name.toLowerCase().trim()}`,
-    isPokemon,
+    isValidItem,
     'Pokemon not found'
   );
 
-export const getPokemonSpecies = (url: string): Promise<PokemonSpecies> =>
+export const getItemSpecies = (url: string): Promise<PokemonSpecies> =>
   fetchData<PokemonSpecies>(
     url,
-    isPokemonSpecies,
-    'Failed to get pokemon species'
+    isValidItemSpecies,
+    'Failed to get item species'
   );
 
-export const getPokemonFull = async (
+export const getItemFull = async (
   name: string
 ): Promise<PokemonWithDescription> => {
-  const pokemon = await getPokemonByName(name);
+  const item = await getItemByName(name);
 
-  const speciesUrl = pokemon.species.url;
+  const speciesUrl = item.species.url;
 
-  const species = await getPokemonSpecies(speciesUrl);
+  const species = await getItemSpecies(speciesUrl);
 
   const entries = species.flavor_text_entries;
 
@@ -108,7 +108,7 @@ export const getPokemonFull = async (
   const description = entry ? entry.flavor_text.replaceAll(/\f|\n/g, ' ') : '';
 
   return {
-    ...pokemon,
+    ...item,
     description,
   };
 };

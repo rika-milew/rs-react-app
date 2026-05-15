@@ -9,7 +9,7 @@ function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
 
-export function isPokemonListItem(data: unknown): data is PokemonListItem {
+export function isValidListItem(data: unknown): data is PokemonListItem {
   if (!isObject(data)) {
     return false;
   }
@@ -17,7 +17,7 @@ export function isPokemonListItem(data: unknown): data is PokemonListItem {
   return typeof name === 'string' && typeof url === 'string';
 }
 
-export function isPokemonListResponse(
+export function isValidListResponse(
   data: unknown
 ): data is PokemonListResponse {
   if (!isObject(data)) {
@@ -28,14 +28,14 @@ export function isPokemonListResponse(
 
   return (
     Array.isArray(results) &&
-    results.every(isPokemonListItem) &&
+    results.every(isValidListItem) &&
     (next === null || typeof next === 'string') &&
     (previous === null || typeof previous === 'string') &&
     typeof count === 'number'
   );
 }
 
-export function isPokemon(data: unknown): data is Pokemon {
+export function isValidItem(data: unknown): data is Pokemon {
   if (!isObject(data)) {
     return false;
   }
@@ -126,7 +126,7 @@ function isValidSpecies(species: unknown): boolean {
   );
 }
 
-export function isPokemonSpecies(data: unknown): data is PokemonSpecies {
+export function isValidItemSpecies(data: unknown): data is PokemonSpecies {
   if (!isObject(data)) {
     return false;
   }

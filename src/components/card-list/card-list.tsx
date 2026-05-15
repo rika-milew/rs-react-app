@@ -55,8 +55,8 @@ export function CardList({ search }: Props) {
       <h2 className={cx('title')}>Results</h2>
       {status === 'loading' && <Loader />}
       <div className={cx('card-container')}>
-        {data.map((pokemon) => (
-          <Card key={pokemon.id} pokemon={pokemon} />
+        {data.map((card) => (
+          <Card key={card.id} item={card} />
         ))}
       </div>
       {!search && (

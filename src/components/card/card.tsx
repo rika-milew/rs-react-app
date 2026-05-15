@@ -10,12 +10,12 @@ import mockImage from '@/assets/mock-image.png';
 export const ID_LENGTH = 3;
 
 type Props = {
-  pokemon: PokemonWithDescription;
+  item: PokemonWithDescription;
 };
 
-export function Card({ pokemon }: Props) {
+export function Card({ item }: Props) {
   const { id, name, height, weight, sprites, types, abilities, description } =
-    pokemon;
+    item;
 
   const image =
     sprites.other?.['official-artwork']?.front_default ??
