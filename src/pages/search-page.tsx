@@ -1,4 +1,4 @@
-import { List } from '@/components/list/list';
+import { List } from '@/components/card-list/card-list';
 import { SearchBar } from '@/components/search-bar/search-bar';
 import { ErrorButton } from '@/components/error-button/error-button';
 

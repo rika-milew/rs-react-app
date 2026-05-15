@@ -14,7 +14,7 @@ type Props = {
   search: string;
 };
 
-export function List({ search }: Props) {
+export function CardList({ search }: Props) {
   const { data, totalPages, status, error, loadData } = useDataList();
 
   const { page, handlePrevious, handleNext, setPage } =

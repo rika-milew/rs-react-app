@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { List } from './list';
+import { CardList } from './card-list';
 import userEvent from '@testing-library/user-event';
 
 import { mockPokemonFull, mockPokemonPartial } from '@/test-utils/api-mock';
@@ -13,7 +13,7 @@ vi.mock('@/services/data-service', () => ({
 
 const mockedData = vi.mocked(getData);
 
-describe('list component', () => {
+describe('CardList component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -25,7 +25,7 @@ describe('list component', () => {
       totalPages: 1,
     });
 
-    render(<List search="" />);
+    render(<CardList search="" />);
 
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
   });
@@ -37,7 +37,7 @@ describe('list component', () => {
       totalPages: 85,
     });
 
-    render(<List search="" />);
+    render(<CardList search="" />);
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: /next/i })).toBeInTheDocument();
@@ -52,7 +52,7 @@ describe('list component', () => {
       totalPages: 5,
     });
 
-    render(<List search="venusaur" />);
+    render(<CardList search="venusaur" />);
 
     expect(
       screen.queryByRole('button', { name: /next/i })
@@ -70,7 +70,7 @@ describe('list component', () => {
       totalPages: 1,
     });
 
-    render(<List search="" />);
+    render(<CardList search="" />);
 
     const image = await screen.findByRole('img', {
       name: /bulbasaur/i,
@@ -91,7 +91,7 @@ describe('list component', () => {
       totalPages: 1,
     });
 
-    render(<List search="" />);
+    render(<CardList search="" />);
 
     expect(await screen.findByText(/bulbasaur/i)).toBeInTheDocument();
     expect(screen.getByText(/ivysaur/i)).toBeInTheDocument();
@@ -105,7 +105,7 @@ describe('list component', () => {
       type: 'not-found',
     });
 
-    render(<List search="unknown" />);
+    render(<CardList search="unknown" />);
 
     expect(await screen.findByText(/pokemon not found/i)).toBeInTheDocument();
   });
@@ -117,7 +117,7 @@ describe('list component', () => {
       totalPages: 1,
     });
 
-    render(<List search="" />);
+    render(<CardList search="" />);
 
     const cards = screen.queryAllByRole('img');
 
@@ -130,7 +130,7 @@ describe('list component', () => {
       message: 'Server error',
     });
 
-    render(<List search="" />);
+    render(<CardList search="" />);
 
     expect(await screen.findByText(/server error/i)).toBeInTheDocument();
   });
@@ -138,7 +138,7 @@ describe('list component', () => {
   it('shows error state when API request fails', async () => {
     mockedData.mockRejectedValue(new Error('Network failed'));
 
-    render(<List search="" />);
+    render(<CardList search="" />);
 
     expect(
       await screen.findByText(/something went wrong/i)
@@ -152,7 +152,7 @@ describe('list component', () => {
       totalPages: 1,
     });
 
-    render(<List search="   BulBAsaur   " />);
+    render(<CardList search="   BulBAsaur   " />);
 
     await waitFor(() => {
       expect(mockedData).toHaveBeenCalledWith(0, 'bulbasaur');
@@ -166,9 +166,9 @@ describe('list component', () => {
       totalPages: 10,
     });
 
-    const { rerender } = render(<List search="bulbasaur" />);
+    const { rerender } = render(<CardList search="bulbasaur" />);
 
-    rerender(<List search="charmander" />);
+    rerender(<CardList search="charmander" />);
 
     await waitFor(() => {
       expect(mockedData).toHaveBeenLastCalledWith(0, 'charmander');
@@ -182,7 +182,7 @@ describe('list component', () => {
       totalPages: 10,
     });
 
-    render(<List search="" />);
+    render(<CardList search="" />);
 
     await waitFor(() => {
       expect(mockedData).toHaveBeenCalledWith(0, '');
@@ -204,7 +204,7 @@ describe('list component', () => {
       totalPages: 10,
     });
 
-    render(<List search="" />);
+    render(<CardList search="" />);
 
     const nextButton = await screen.findByRole('button', { name: /next/i });
     await userEvent.click(nextButton);
@@ -224,7 +224,7 @@ describe('list component', () => {
       totalPages: 3,
     });
 
-    render(<List search="" />);
+    render(<CardList search="" />);
 
     const nextButton = await screen.findByRole('button', { name: /next/i });
     await userEvent.click(nextButton);
