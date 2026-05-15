@@ -53,11 +53,7 @@ export function CardList({ search }: Props) {
   return (
     <section className={cx('section')}>
       <h2 className={cx('title')}>Results</h2>
-      {status === 'loading' && (
-        <div className={cx('loader-container')}>
-          <Loader />
-        </div>
-      )}
+      {status === 'loading' && <Loader />}
       <div className={cx('card-container')}>
         {data.map((pokemon) => (
           <Card key={pokemon.id} pokemon={pokemon} />

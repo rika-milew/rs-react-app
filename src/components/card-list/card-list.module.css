@@ -31,15 +31,3 @@
     grid-template-columns: repeat(1, minmax(10rem, 1fr));
   }
 }
-
-.loader-container {
-  position: absolute;
-  inset: 0;
-  padding-top: 6rem;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  border-radius: 1rem;
-  background-color: var(--color-gray-750);
-  z-index: 10;
-}

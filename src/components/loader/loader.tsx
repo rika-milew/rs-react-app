@@ -14,9 +14,11 @@ export function Loader({ loading = true }: Props) {
   }
 
   return (
-    <div className={cx('loader')}>
-      <div className={cx('spinner')} />
-      <span className={cx('text')}>Loading…</span>
+    <div className={cx('loader-container')}>
+      <div className={cx('loader')}>
+        <div className={cx('spinner')} />
+        <span className={cx('text')}>Loading…</span>
+      </div>
     </div>
   );
 }
