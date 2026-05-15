@@ -53,29 +53,25 @@ export function Card({ pokemon }: Props) {
       </div>
       <h3 className={cx('name')}>{capitalizedName}</h3>
       <div className={cx('types')}>
-        <p className={cx('label')}>Types:</p>
-        <div className={cx('list')}>
-          <span>{typeContent}</span>
-        </div>
+        <p className={cx('params-label')}>Types:</p>
+        <div className={cx('params-list')}>{typeContent}</div>
       </div>
       <div className={cx('abilities')}>
-        <p className={cx('label')}>Abilities:</p>
-        <div className={cx('list')}>
-          <span>{abilityContent}</span>
-        </div>
+        <p className={cx('params-label')}>Abilities:</p>
+        <div className={cx('params-list')}>{abilityContent}</div>
       </div>
       {description && (
         <div className={cx('description')}>
-          <p className={cx('label')}>Description:</p>
+          <p className={cx('params-label')}>Description:</p>
           <p>{description}</p>
         </div>
       )}
       <div className={cx('info')}>
         <p>
-          <span className={cx('label')}>Height:</span> {height * 10} cm
+          <span className={cx('params-label')}>Height:</span> {height * 10} cm
         </p>
         <p>
-          <span className={cx('label')}>Weight:</span> {weight / 10} kg
+          <span className={cx('params-label')}>Weight:</span> {weight / 10} kg
         </p>
       </div>
     </article>

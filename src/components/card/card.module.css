@@ -39,7 +39,7 @@
   color: var(--color-white);
 }
 
-.list {
+.params-list {
   white-space: normal;
   word-break: normal;
   overflow-wrap: break-word;
@@ -84,6 +84,6 @@
   pointer-events: none;
 }
 
-.label {
+.params-label {
   font-weight: 700;
 }
