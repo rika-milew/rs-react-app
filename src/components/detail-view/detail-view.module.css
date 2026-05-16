@@ -1,4 +1,46 @@
 .detail-view {
+  width: 100%;
   height: 100%;
+  max-width: 100%;
   padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.header {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.title {
+  margin: 0 auto;
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-semibold);
+  line-height: 2rem;
+  text-align: center;
+}
+
+.close-button {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  background: none;
+  cursor: pointer;
+  transition: background-color var(--transition-default) var(--ease-in-cubic);
+}
+
+.close-button:hover {
+  color: var(--color-yellow-600);
 }

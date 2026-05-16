@@ -10,53 +10,63 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as DetailsDetailIdRouteImport } from './routes/details.$detailId'
+import { Route as LayoutRouteImport } from './routes/_layout'
+import { Route as LayoutIndexRouteImport } from './routes/_layout.index'
+import { Route as LayoutDetailsDetailIdRouteImport } from './routes/_layout.details.$detailId'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const LayoutRoute = LayoutRouteImport.update({
+  id: '/_layout',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DetailsDetailIdRoute = DetailsDetailIdRouteImport.update({
+const LayoutIndexRoute = LayoutIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => LayoutRoute,
+} as any)
+const LayoutDetailsDetailIdRoute = LayoutDetailsDetailIdRouteImport.update({
   id: '/details/$detailId',
   path: '/details/$detailId',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => LayoutRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof LayoutIndexRoute
   '/about': typeof AboutRoute
-  '/details/$detailId': typeof DetailsDetailIdRoute
+  '/details/$detailId': typeof LayoutDetailsDetailIdRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/details/$detailId': typeof DetailsDetailIdRoute
+  '/': typeof LayoutIndexRoute
+  '/details/$detailId': typeof LayoutDetailsDetailIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_layout': typeof LayoutRouteWithChildren
   '/about': typeof AboutRoute
-  '/details/$detailId': typeof DetailsDetailIdRoute
+  '/_layout/': typeof LayoutIndexRoute
+  '/_layout/details/$detailId': typeof LayoutDetailsDetailIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths: '/' | '/about' | '/details/$detailId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/details/$detailId'
-  id: '__root__' | '/' | '/about' | '/details/$detailId'
+  to: '/about' | '/' | '/details/$detailId'
+  id:
+    | '__root__'
+    | '/_layout'
+    | '/about'
+    | '/_layout/'
+    | '/_layout/details/$detailId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  LayoutRoute: typeof LayoutRouteWithChildren
   AboutRoute: typeof AboutRoute
-  DetailsDetailIdRoute: typeof DetailsDetailIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -68,27 +78,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
+    '/_layout': {
+      id: '/_layout'
+      path: ''
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof LayoutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/details/$detailId': {
-      id: '/details/$detailId'
+    '/_layout/': {
+      id: '/_layout/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof LayoutIndexRouteImport
+      parentRoute: typeof LayoutRoute
+    }
+    '/_layout/details/$detailId': {
+      id: '/_layout/details/$detailId'
       path: '/details/$detailId'
       fullPath: '/details/$detailId'
-      preLoaderRoute: typeof DetailsDetailIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof LayoutDetailsDetailIdRouteImport
+      parentRoute: typeof LayoutRoute
     }
   }
 }
 
+interface LayoutRouteChildren {
+  LayoutIndexRoute: typeof LayoutIndexRoute
+  LayoutDetailsDetailIdRoute: typeof LayoutDetailsDetailIdRoute
+}
+
+const LayoutRouteChildren: LayoutRouteChildren = {
+  LayoutIndexRoute: LayoutIndexRoute,
+  LayoutDetailsDetailIdRoute: LayoutDetailsDetailIdRoute,
+}
+
+const LayoutRouteWithChildren =
+  LayoutRoute._addFileChildren(LayoutRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  LayoutRoute: LayoutRouteWithChildren,
   AboutRoute: AboutRoute,
-  DetailsDetailIdRoute: DetailsDetailIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

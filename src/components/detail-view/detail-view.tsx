@@ -4,15 +4,17 @@ import { useDetailNavigation } from '@/hooks/use-detail-navigation';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
 import { StateView } from '@/components/state-view/state-view';
-import { useParams } from '@tanstack/react-router';
 import classNames from 'classnames/bind';
 import styles from './detail-view.module.css';
 import { API_STATUS } from '@/constants/constants';
 
 const cx = classNames.bind(styles);
 
-export function DetailView() {
-  const { detailId } = useParams({ from: '/details/$detailId' });
+type DetailViewProps = {
+  detailId: string;
+};
+
+export function DetailView({ detailId }: DetailViewProps) {
   const result = useDetailData(detailId);
   const { closeDetailView } = useDetailNavigation();
 
