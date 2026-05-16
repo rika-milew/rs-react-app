@@ -44,7 +44,7 @@ export function Card({ item, onClick }: Props) {
   };
 
   return (
-    <article className={cx('card')} onClick={handleClick}>
+    <article data-card className={cx('card')} onClick={handleClick}>
       <div className={cx('image-container')}>
         <span className={cx('card-id')}>
           #{id.toString().padStart(ID_LENGTH, '0')}

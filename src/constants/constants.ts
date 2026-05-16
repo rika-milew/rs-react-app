@@ -3,7 +3,7 @@ export const API_CONCURRENCY = 5;
 
 export const SEARCH_LIMIT = 500;
 
-export const CARD_LIMIT = 16;
+export const CARD_LIMIT = 18;
 
 export const LOADING_DELAY_MS = 300;
 

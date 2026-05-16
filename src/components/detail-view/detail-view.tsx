@@ -24,9 +24,24 @@ export function DetailView({ detailId }: DetailViewProps) {
         closeDetailView();
       }
     };
+
+    const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) {
+        return;
+      }
+      if (target.closest('[data-detail]') || target.closest('[data-card]')) {
+        return;
+      }
+
+      closeDetailView();
+    };
+
     globalThis.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('click', handleOutsideClick);
     return () => {
       globalThis.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('click', handleOutsideClick);
     };
   }, [closeDetailView]);
 
@@ -57,7 +72,7 @@ export function DetailView({ detailId }: DetailViewProps) {
   }
 
   return (
-    <aside className={cx('detail-view')}>
+    <aside data-detail className={cx('detail-view')}>
       <div className={cx('header')}>
         <h2 className={cx('title')}>Pokémon Details</h2>
         <button className={cx('close-button')} onClick={closeDetailView}>
