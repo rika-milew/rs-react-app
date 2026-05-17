@@ -48,5 +48,6 @@
   @media (max-width: 768px) {
     flex: unset;
     overflow-y: auto;
+    max-height: none;
   }
 }
