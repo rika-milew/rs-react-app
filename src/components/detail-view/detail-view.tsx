@@ -79,7 +79,11 @@ export function DetailView({ detailId }: DetailViewProps) {
           ✕
         </button>
       </div>
-      {result.status === API_STATUS.LOADING && <Loader />}
+      {result.status === API_STATUS.LOADING && (
+        <div className={cx('loader-overlay')}>
+          <Loader />
+        </div>
+      )}
       {result.status === API_STATUS.SUCCESS && (
         <Card item={result.data} variant="detailed" />
       )}
