@@ -49,7 +49,7 @@ export const cardConfig = (item: PokemonWithDescription): CardConfig => {
       },
       {
         label: 'Weight:',
-        value: `${String(weight / 10)} cm`,
+        value: `${String(weight / 10)} kg`,
         visible: 'detailed' as const,
         variant: 'inline' as const,
       },
