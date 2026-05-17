@@ -4,7 +4,7 @@ import {
   useRouterState,
 } from '@tanstack/react-router';
 import classNames from 'classnames/bind';
-import styles from '@/pages/search-page.module.css';
+import styles from '@/pages/search/search-page.module.css';
 import { SearchPage } from '@/pages/search/search-page';
 import { ROUTES } from '@/constants/constants';
 
