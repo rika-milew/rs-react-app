@@ -50,7 +50,8 @@
 .error {
   width: 12rem;
   height: 3rem;
-  margin-top: 1.5rem;
+  margin: 1.5rem 0 0 auto;
+  float: right;
   background-color: var(--color-red-500);
 
   @media (hover: hover) and (pointer: fine) {
