@@ -1,5 +1,5 @@
 import pLimit from 'p-limit';
-import { API_CONCURRENCY } from '@/constants/constants';
+import { API_CONCURRENCY, ERROR_MESSAGES } from '@/constants/constants';
 import { getItems, getItemFull } from '@/services/api';
 import { ApiError } from '@/services/api-error';
 import { CARD_LIMIT, HTTP_STATUS, API_STATUS } from '@/constants/constants';
@@ -57,15 +57,15 @@ export async function getData(
 
     return { type: API_STATUS.SUCCESS, data, totalPages };
   } catch (error) {
-    let message = 'Something went wrong. Try again later.';
+    let message: string = ERROR_MESSAGES.DEFAULT;
 
     if (error instanceof ApiError) {
       if (error.status === HTTP_STATUS.NOT_FOUND) {
-        message = 'Pokemon not found';
+        message = ERROR_MESSAGES.NOTFOUND;
       } else if (error.status >= HTTP_STATUS.INTERNAL_SERVER_ERROR) {
-        message = 'Server error. Try again later.';
+        message = ERROR_MESSAGES.SERVER;
       } else if (error.status === HTTP_STATUS.NETWORK_ERROR) {
-        message = 'Network error. Check your internet connection.';
+        message = ERROR_MESSAGES.NETWORK;
       }
     }
 

@@ -6,7 +6,7 @@ import { Loader } from '@/components/loader/loader';
 import { StateView } from '@/components/state-view/state-view';
 import classNames from 'classnames/bind';
 import styles from './detail-view.module.css';
-import { API_STATUS } from '@/constants/constants';
+import { API_STATUS, ERROR_MESSAGES } from '@/constants/constants';
 
 const cx = classNames.bind(styles);
 
@@ -52,7 +52,7 @@ export function DetailView({ detailId }: DetailViewProps) {
   if (result.status === API_STATUS.NOT_FOUND) {
     return (
       <StateView
-        message="Pokemon not found"
+        message={ERROR_MESSAGES.NOTFOUND}
         onReload={() => {
           globalThis.location.reload();
         }}

@@ -27,6 +27,7 @@ export const ROUTES = {
   HOME: '/',
   ABOUT: '/about',
   DETAILS: '/details',
+  DETAIL: '/details/$detailId',
 } as const;
 
 export type RoutePath = (typeof ROUTES)[keyof typeof ROUTES];
@@ -35,6 +36,7 @@ export const ERROR_MESSAGES = {
   DEFAULT: 'Something went wrong. Try again later.',
   SERVER: 'Server error. Try again later.',
   NETWORK: 'Network error. Check your internet connection.',
+  NOTFOUND: 'Pokemon not found.',
 } as const;
 
 export type ErrorMessageType =

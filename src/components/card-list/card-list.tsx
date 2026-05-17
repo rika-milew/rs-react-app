@@ -8,6 +8,7 @@ import { Pagination } from '@/components/pagination/pagination';
 import { StateView } from '@/components/state-view/state-view';
 import { usePagination } from '@/hooks/use-pagination';
 import { useDetailNavigation } from '@/hooks/use-detail-navigation';
+import { ERROR_MESSAGES } from '@/constants/constants';
 
 const cx = classNames.bind(styles);
 
@@ -34,7 +35,7 @@ export function CardList({ search }: Props) {
   if (status === 'error') {
     return (
       <StateView
-        message={error ?? 'Something went wrong'}
+        message={error ?? ERROR_MESSAGES.DEFAULT}
         onReload={() => {
           void loadData(search, page);
         }}
@@ -45,7 +46,7 @@ export function CardList({ search }: Props) {
   if (status === 'not-found') {
     return (
       <StateView
-        message="Pokemon not found"
+        message={ERROR_MESSAGES.NOTFOUND}
         onReload={() => {
           void loadData(search, page);
         }}

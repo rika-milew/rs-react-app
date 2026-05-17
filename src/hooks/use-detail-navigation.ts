@@ -1,4 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
+import { ROUTES } from '@/constants/constants';
 
 type UseDetailNavigation = {
   openDetailView: (id: number) => void;
@@ -13,7 +14,7 @@ export function useDetailNavigation(): UseDetailNavigation {
     const page = Number(parameters.get('page')) || 1;
 
     void navigate({
-      to: '/details/$detailId',
+      to: ROUTES.DETAIL,
       params: { detailId: String(id) },
       search: { page },
     });
@@ -24,7 +25,7 @@ export function useDetailNavigation(): UseDetailNavigation {
     const page = Number(parameters.get('page')) || 1;
 
     void navigate({
-      to: '/',
+      to: ROUTES.HOME,
       search: { page },
     });
   };
