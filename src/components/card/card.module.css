@@ -5,6 +5,7 @@
   gap: 0.5rem;
   padding: 1rem;
   font-size: 0.875rem;
+  font-weight: var(--font-weight-normal);
   line-height: 1.25rem;
   font-weight: 500;
   color: var(--color-gray-400);
@@ -109,5 +110,5 @@
 }
 
 .params-label {
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
 }
