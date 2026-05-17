@@ -64,6 +64,7 @@ export function CardList({ search }: Props) {
           <Card
             key={card.id}
             item={card}
+            variant="short"
             onClick={() => {
               openDetailView(card.id);
             }}

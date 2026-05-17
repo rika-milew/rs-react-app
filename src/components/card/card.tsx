@@ -11,10 +11,11 @@ export const ID_LENGTH = 3;
 
 type Props = {
   item: PokemonWithDescription;
+  variant?: 'detailed' | 'short';
   onClick?: () => void;
 };
 
-export function Card({ item, onClick }: Props) {
+export function Card({ item, variant = 'detailed', onClick }: Props) {
   const { id, name, height, weight, sprites, types, abilities, description } =
     item;
 
@@ -39,6 +40,8 @@ export function Card({ item, onClick }: Props) {
   const capitalizedName =
     name.length > 0 ? name[0].toUpperCase() + name.slice(1) : name;
 
+  const isDetailed = variant === 'detailed';
+
   const handleClick = () => {
     onClick?.();
   };
@@ -57,28 +60,34 @@ export function Card({ item, onClick }: Props) {
         />
       </div>
       <h3 className={cx('name')}>{capitalizedName}</h3>
-      <div className={cx('types')}>
-        <p className={cx('params-label')}>Types:</p>
-        <div className={cx('params-list')}>{typeContent}</div>
-      </div>
-      <div className={cx('abilities')}>
-        <p className={cx('params-label')}>Abilities:</p>
-        <div className={cx('params-list')}>{abilityContent}</div>
-      </div>
+      {isDetailed && (
+        <div className={cx('types')}>
+          <p className={cx('params-label')}>Types:</p>
+          <div className={cx('params-list')}>{typeContent}</div>
+        </div>
+      )}
+      {isDetailed && (
+        <div className={cx('abilities')}>
+          <p className={cx('params-label')}>Abilities:</p>
+          <div className={cx('params-list')}>{abilityContent}</div>
+        </div>
+      )}
       {description && (
         <div className={cx('description')}>
           <p className={cx('params-label')}>Description:</p>
           <p>{description}</p>
         </div>
       )}
-      <div className={cx('info')}>
-        <p>
-          <span className={cx('params-label')}>Height:</span> {height * 10} cm
-        </p>
-        <p>
-          <span className={cx('params-label')}>Weight:</span> {weight / 10} kg
-        </p>
-      </div>
+      {isDetailed && (
+        <div className={cx('info')}>
+          <p>
+            <span className={cx('params-label')}>Height:</span> {height * 10} cm
+          </p>
+          <p>
+            <span className={cx('params-label')}>Weight:</span> {weight / 10} kg
+          </p>
+        </div>
+      )}
     </article>
   );
 }
