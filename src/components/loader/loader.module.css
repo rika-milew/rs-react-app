@@ -1,10 +1,8 @@
 .loader-container {
-  position: absolute;
-  inset: 0;
-  padding-top: 6rem;
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  padding-top: 6rem;
   border-radius: 1rem;
   background-color: var(--color-gray-750);
   z-index: 10;
