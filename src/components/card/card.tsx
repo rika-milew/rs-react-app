@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import styles from './card.module.css';
 import type { PokemonWithDescription } from '@/types/api';
 import classNames from 'classnames/bind';
+import { cardConfig } from './card.config';
+import styles from './card.module.css';
 
 const cx = classNames.bind(styles);
 
@@ -16,8 +17,7 @@ type Props = {
 };
 
 export function Card({ item, variant = 'detailed', onClick }: Props) {
-  const { id, name, height, weight, sprites, types, abilities, description } =
-    item;
+  const { id, name, sprites } = item;
 
   const image =
     sprites.other?.['official-artwork']?.front_default ??
@@ -34,13 +34,17 @@ export function Card({ item, variant = 'detailed', onClick }: Props) {
     }
   };
 
-  const typeContent = types.map((t) => t.type.name).join(', ');
-  const abilityContent = abilities.map((a) => a.ability.name).join(', ');
-
   const capitalizedName =
     name.length > 0 ? name[0].toUpperCase() + name.slice(1) : name;
 
   const isDetailed = variant === 'detailed';
+
+  const config = cardConfig(item);
+
+  const options = config.data.filter(
+    (option) =>
+      (option.visible === 'always' || isDetailed) && option.condition !== false
+  );
 
   const handleClick = () => {
     onClick?.();
@@ -64,34 +68,43 @@ export function Card({ item, variant = 'detailed', onClick }: Props) {
         />
       </div>
       <h3 className={cx('name')}>{capitalizedName}</h3>
-      {isDetailed && (
-        <div className={cx('types')}>
-          <p className={cx('params-label')}>Types:</p>
-          <div className={cx('params-list')}>{typeContent}</div>
-        </div>
-      )}
-      {isDetailed && (
-        <div className={cx('abilities')}>
-          <p className={cx('params-label')}>Abilities:</p>
-          <div className={cx('params-list')}>{abilityContent}</div>
-        </div>
-      )}
-      {description && (
-        <div className={cx('description')}>
-          <p className={cx('params-label')}>Description:</p>
-          <p>{description}</p>
-        </div>
-      )}
-      {isDetailed && (
-        <div className={cx('info')}>
-          <p>
-            <span className={cx('params-label')}>Height:</span> {height * 10} cm
-          </p>
-          <p>
-            <span className={cx('params-label')}>Weight:</span> {weight / 10} kg
-          </p>
-        </div>
-      )}
+      <div className={cx('card-options')}>
+        {options.map((option, index) => (
+          <CardOption
+            key={`${option.label}-${String(index)}`}
+            label={option.label}
+            value={option.value ?? '—'}
+            variant={option.variant}
+          />
+        ))}
+      </div>
     </article>
+  );
+}
+
+type CardOptionProps = {
+  label: string;
+  value: string | number;
+  variant?: 'inline' | 'block';
+};
+
+export function CardOption({
+  label,
+  value,
+  variant = 'block',
+}: CardOptionProps) {
+  if (variant === 'inline') {
+    return (
+      <p className={cx('card-option', 'inline')}>
+        <span className={cx('params-label')}>{label}</span> {value}
+      </p>
+    );
+  }
+
+  return (
+    <div className={cx('card-option')}>
+      <p className={cx('params-label')}>{label}</p>
+      <div className={cx('params-list')}>{value}</div>
+    </div>
   );
 }

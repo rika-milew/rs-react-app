@@ -50,6 +50,12 @@
   }
 }
 
+.card-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .name {
   font-size: 1rem;
   line-height: 1.5rem;
@@ -64,17 +70,16 @@
   overflow-wrap: break-word;
 }
 
-.types,
-.abilities {
+.card-option {
   display: flex;
-  gap: 0.25rem;
+  gap: 0.125rem;
   flex-wrap: wrap;
+  flex-direction: column;
 }
 
-.info {
-  display: flex;
-  flex-direction: column;
+.inline {
   gap: 0.25rem;
+  flex-direction: row;
 }
 
 .image-container {
