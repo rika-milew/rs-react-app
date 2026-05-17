@@ -1,5 +1,5 @@
-import styles from './footer.module.css';
 import classNames from 'classnames/bind';
+import styles from './footer.module.css';
 
 const cx = classNames.bind(styles);
 

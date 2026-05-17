@@ -1,6 +1,6 @@
+import classNames from 'classnames/bind';
 import { useState } from 'react';
 import type { PokemonWithDescription } from '@/types/api';
-import classNames from 'classnames/bind';
 import { cardConfig } from './card.config';
 import styles from './card.module.css';
 

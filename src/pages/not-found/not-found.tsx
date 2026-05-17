@@ -1,8 +1,8 @@
+import classNames from 'classnames/bind';
 import { useNavigate } from '@tanstack/react-router';
 import { Button } from '@/components/button/button';
-import styles from './not-found.module.css';
-import classNames from 'classnames/bind';
 import { ROUTES } from '@/constants/constants';
+import styles from './not-found.module.css';
 
 const cx = classNames.bind(styles);
 

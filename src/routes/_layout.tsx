@@ -1,12 +1,12 @@
+import classNames from 'classnames/bind';
 import {
   createFileRoute,
   Outlet,
   useRouterState,
 } from '@tanstack/react-router';
-import classNames from 'classnames/bind';
-import styles from '@/pages/search/search-page.module.css';
 import { SearchPage } from '@/pages/search/search-page';
 import { ROUTES } from '@/constants/constants';
+import styles from '@/pages/search/search-page.module.css';
 
 const cx = classNames.bind(styles);
 

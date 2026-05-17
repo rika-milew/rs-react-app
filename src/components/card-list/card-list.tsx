@@ -1,7 +1,6 @@
+import classNames from 'classnames/bind';
 import { useEffect } from 'react';
 import { useDataList } from '@/hooks/use-data-list';
-import classNames from 'classnames/bind';
-import styles from './card-list.module.css';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
 import { Pagination } from '@/components/pagination/pagination';
@@ -9,6 +8,7 @@ import { StateView } from '@/components/state-view/state-view';
 import { usePagination } from '@/hooks/use-pagination';
 import { useDetailNavigation } from '@/hooks/use-detail-navigation';
 import { ERROR_MESSAGES } from '@/constants/constants';
+import styles from './card-list.module.css';
 
 const cx = classNames.bind(styles);
 

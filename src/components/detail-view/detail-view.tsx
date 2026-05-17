@@ -1,12 +1,12 @@
+import classNames from 'classnames/bind';
 import { useEffect } from 'react';
 import { useDetailData } from '@/hooks/use-detail-data';
 import { useDetailNavigation } from '@/hooks/use-detail-navigation';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
 import { StateView } from '@/components/state-view/state-view';
-import classNames from 'classnames/bind';
-import styles from './detail-view.module.css';
 import { API_STATUS, ERROR_MESSAGES } from '@/constants/constants';
+import styles from './detail-view.module.css';
 
 const cx = classNames.bind(styles);
 

@@ -1,8 +1,7 @@
+import classNames from 'classnames/bind';
 import { useState } from 'react';
 import { Button } from '@/components/button/button';
 import { useLocalStorage } from '@/hooks/use-local-storage';
-
-import classNames from 'classnames/bind';
 import styles from './search-bar.module.css';
 
 const cx = classNames.bind(styles);

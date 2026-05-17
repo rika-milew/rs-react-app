@@ -1,7 +1,6 @@
+import classNames from 'classnames/bind';
 import { Link } from '@tanstack/react-router';
 import { ROUTES } from '@/constants/constants';
-
-import classNames from 'classnames/bind';
 import styles from './header.module.css';
 
 const cx = classNames.bind(styles);

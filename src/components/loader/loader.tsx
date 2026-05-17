@@ -1,6 +1,5 @@
-import styles from './loader.module.css';
-
 import classNames from 'classnames/bind';
+import styles from './loader.module.css';
 
 const cx = classNames.bind(styles);
 

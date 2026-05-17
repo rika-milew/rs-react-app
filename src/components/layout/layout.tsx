@@ -1,8 +1,7 @@
-import styles from './layout.module.css';
+import classNames from 'classnames/bind';
 import { Header } from '@/components/layout/header/header';
 import { Footer } from '@/components/layout/footer/footer';
-
-import classNames from 'classnames/bind';
+import styles from './layout.module.css';
 
 const cx = classNames.bind(styles);
 
