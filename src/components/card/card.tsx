@@ -63,7 +63,7 @@ export function Card({ item, variant = 'detailed', onClick }: Props) {
         <img
           className={cx('image')}
           src={imgSource}
-          alt={name ? `${name} Pokémon image` : 'Pokémon image'}
+          alt={name || 'Pokémon image'}
           onError={handleImageError}
         />
       </div>
