@@ -49,7 +49,7 @@ describe('card component', () => {
       render(<Card item={mockItemFull} />);
 
       const image = screen.getByRole('img', {
-        name: `${mockItemFull.name} Pokémon image`,
+        name: mockItemFull.name,
       });
 
       expect(image).toHaveAttribute('src', artworkMockImage);
@@ -88,7 +88,7 @@ describe('card component', () => {
       render(<Card item={mockItemPartial} />);
 
       const image = screen.getByRole('img', {
-        name: `${mockItemPartial.name} Pokémon image`,
+        name: mockItemPartial.name,
       });
 
       expect(image).toHaveAttribute(
