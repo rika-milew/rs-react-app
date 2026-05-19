@@ -21,6 +21,9 @@ export default defineConfig([
   eslintConfigPrettier,
   {
     files: ['**/*.{ts,tsx}'],
+    plugins: {
+      boundaries,
+    },
     languageOptions: {
       globals: {
         ...globals.browser,
