@@ -55,6 +55,15 @@ export function Card({ item, variant = 'detailed', onClick }: Props) {
       data-card
       className={cx('card', { detailed: variant === 'detailed' })}
       onClick={handleClick}
+      onKeyDown={(event_) => {
+        if (event_.key === 'Enter' || event_.key === ' ') {
+          event_.preventDefault();
+          handleClick();
+        }
+      }}
+      tabIndex={0}
+      role="button"
+      aria-label={`View details for ${name}`}
     >
       <div className={cx('image-container')}>
         <span className={cx('card-id')}>
