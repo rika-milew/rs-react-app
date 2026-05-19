@@ -13,22 +13,19 @@ function getPageUrl(): number {
   return Number.isFinite(parsedNumber) && parsedNumber > 0 ? parsedNumber : 1;
 }
 
-function boundPageIndex(page: number, totalPages: number): number {
-  return Math.max(0, Math.min(page, totalPages - 1));
-}
-
 export function usePagination(totalPages: number): UsePagination {
-  const [newPage, setNewPageState] = useState(getPageUrl);
+  const [newPage, setNewPageState] = useState(() => getPageUrl() - 1);
 
   useEffect(() => {
     const handlePageState = (): void => {
-      setNewPageState(getPageUrl());
+      const initialPage = getPageUrl();
+      setNewPageState(Math.max(0, Math.min(initialPage - 1, totalPages - 1)));
     };
     globalThis.addEventListener('popstate', handlePageState);
     return (): void => {
       globalThis.removeEventListener('popstate', handlePageState);
     };
-  }, []);
+  }, [totalPages]);
 
   const setPageUrl = useCallback((currentPage: number) => {
     const pageParams = new URLSearchParams(globalThis.location.search);
@@ -42,11 +39,11 @@ export function usePagination(totalPages: number): UsePagination {
 
   const setPage = useCallback(
     (value: number) => {
-      const pageIndex = Math.max(0, value);
+      const pageIndex = Math.max(0, Math.min(value, totalPages - 1));
       setPageUrl(pageIndex);
       setNewPageState(pageIndex);
     },
-    [setPageUrl]
+    [setPageUrl, totalPages]
   );
 
   const handlePrevious = useCallback(() => {
@@ -59,13 +56,13 @@ export function usePagination(totalPages: number): UsePagination {
 
   const handleNext = useCallback(() => {
     setNewPageState((previous) => {
-      const newPage = previous + 1;
+      const newPage = Math.min(previous + 1, totalPages - 1);
       setPageUrl(newPage);
       return newPage;
     });
-  }, [setPageUrl]);
+  }, [setPageUrl, totalPages]);
 
-  const page = boundPageIndex(newPage, totalPages);
+  const page = newPage;
 
   return { page, setPage, handlePrevious, handleNext };
 }
