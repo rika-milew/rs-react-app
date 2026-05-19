@@ -75,7 +75,11 @@ export function DetailView({ detailId }: DetailViewProps) {
     <aside data-detail className={cx('detail-view')}>
       <div className={cx('header')}>
         <h2 className={cx('title')}>Pokémon Details</h2>
-        <button className={cx('close-button')} onClick={closeDetailView}>
+        <button
+          className={cx('close-button')}
+          onClick={closeDetailView}
+          aria-label="Close details"
+        >
           ✕
         </button>
       </div>
