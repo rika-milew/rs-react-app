@@ -1,5 +1,9 @@
 import pLimit from 'p-limit';
-import { API_CONCURRENCY, ERROR_MESSAGES } from '@/constants/constants';
+import {
+  API_CONCURRENCY,
+  ERROR_MESSAGES,
+  MAX_ITEMS,
+} from '@/constants/constants';
 import { getItems, getItemFull } from '@/services/api';
 import { ApiError } from '@/services/api-error';
 import { CARD_LIMIT, HTTP_STATUS, API_STATUS } from '@/constants/constants';
@@ -42,7 +46,9 @@ export async function getData(
     } else {
       const offset = page * CARD_LIMIT;
       const searchData = await getItems(offset, CARD_LIMIT);
-      totalPages = Math.ceil(searchData.count / CARD_LIMIT);
+      totalPages = Math.ceil(
+        Math.min(searchData.count, MAX_ITEMS) / CARD_LIMIT
+      );
 
       const limit = pLimit(API_CONCURRENCY);
 
