@@ -8,7 +8,11 @@ export const SearchPage = () => {
 
   return (
     <>
-      <SearchBar value={searchQuery} onSearch={setSearchQuery} />
+      <SearchBar
+        key={searchQuery}
+        value={searchQuery}
+        onSearch={setSearchQuery}
+      />
       <CardList search={searchQuery} />
       <ErrorButton />
     </>

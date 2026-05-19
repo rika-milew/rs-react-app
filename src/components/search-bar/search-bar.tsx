@@ -14,7 +14,7 @@ type Props = {
 export const SearchBar = ({ value = '', onSearch }: Props) => {
   const [savedSearch, setSavedSearch] = useLocalStorage('search', value);
 
-  const [query, setQuery] = useState(savedSearch);
+  const [query, setQuery] = useState(() => value || savedSearch);
 
   const handleChange = (event_: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event_.target.value);
