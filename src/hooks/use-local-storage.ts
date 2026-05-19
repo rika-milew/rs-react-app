@@ -23,9 +23,7 @@ export const useLocalStorage = (
         localStorage.removeItem(key);
       }
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('localStorage save failed:', error);
-      }
+      console.error('localStorage save failed:', error);
     }
 
     setValue(newSearch);
