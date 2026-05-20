@@ -1,6 +1,7 @@
 import classNames from 'classnames/bind';
 import { Header } from '@/components/layout/header/header';
 import { Footer } from '@/components/layout/footer/footer';
+import { Flyout } from '@/components/flyout/flyout';
 import styles from './layout.module.css';
 
 const cx = classNames.bind(styles);
@@ -16,6 +17,7 @@ export function Layout({ children }: Props) {
       <main id="main-content" className={cx('main')}>
         <div className={cx('container')}>{children}</div>
       </main>
+      <Flyout />
       <Footer />
     </div>
   );
