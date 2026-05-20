@@ -1,12 +1,13 @@
 import classNames from 'classnames/bind';
-import { useEffect } from 'react';
-import { useDetailData } from '@/hooks/use-detail-data';
+import { useEffect, useState } from 'react';
 import { useDetailNavigation } from '@/hooks/use-detail-navigation';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
 import { StateView } from '@/components/state-view/state-view';
 import { API_STATUS, ERROR_MESSAGES } from '@/constants/constants';
 import styles from './detail-view.module.css';
+import type { DetailResult } from '@/services/detail-service';
+import { getDetailData } from '@/services/detail-service';
 
 const cx = classNames.bind(styles);
 
@@ -14,9 +15,25 @@ type DetailViewProps = {
   detailId: string;
 };
 
+type ViewState = { type: typeof API_STATUS.LOADING } | DetailResult;
+
 export function DetailView({ detailId }: DetailViewProps) {
-  const result = useDetailData(detailId);
+  const [result, setResult] = useState<ViewState>({ type: API_STATUS.LOADING });
   const { closeDetailView } = useDetailNavigation();
+
+  useEffect(() => {
+    let cancelled = false;
+
+    void getDetailData(detailId).then((data) => {
+      if (!cancelled) {
+        setResult(data);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [detailId]);
 
   useEffect(() => {
     const handleKeyDown = (event_: KeyboardEvent) => {
@@ -45,11 +62,7 @@ export function DetailView({ detailId }: DetailViewProps) {
     };
   }, [closeDetailView]);
 
-  if (!result) {
-    return null;
-  }
-
-  if (result.status === API_STATUS.NOT_FOUND) {
+  if (result.type === API_STATUS.NOT_FOUND) {
     return (
       <StateView
         message={ERROR_MESSAGES.NOTFOUND}
@@ -60,7 +73,7 @@ export function DetailView({ detailId }: DetailViewProps) {
     );
   }
 
-  if (result.status === API_STATUS.ERROR) {
+  if (result.type === API_STATUS.ERROR) {
     return (
       <StateView
         message={result.message}
@@ -83,12 +96,11 @@ export function DetailView({ detailId }: DetailViewProps) {
           ✕
         </button>
       </div>
-      {result.status === API_STATUS.LOADING && (
+      {result.type === API_STATUS.LOADING ? (
         <div className={cx('loader-overlay')}>
           <Loader />
         </div>
-      )}
-      {result.status === API_STATUS.SUCCESS && (
+      ) : (
         <Card item={result.data} variant="detailed" />
       )}
     </aside>
