@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-type UseLocalStorage = readonly [string, (value: string) => void];
+type UseLocalStorage = readonly [string | null, (value: string) => void];
 
 export const useLocalStorage = (
   key: string,
@@ -9,24 +9,27 @@ export const useLocalStorage = (
   const [value, setValue] = useState(() => {
     try {
       const savedSearch = localStorage.getItem(key);
-      return savedSearch?.trim() ? savedSearch : initialValue;
-    } catch {
-      return initialValue;
+      return savedSearch ?? initialValue;
+    } catch (error) {
+      console.error('localStorage read failed:', error);
+      return null;
     }
   });
 
-  const setSavedValue = (newSearch: string): void => {
+  useEffect(() => {
     try {
-      if (newSearch.trim()) {
-        localStorage.setItem(key, newSearch);
+      if (value) {
+        localStorage.setItem(key, value);
       } else {
         localStorage.removeItem(key);
       }
     } catch (error) {
       console.error('localStorage save failed:', error);
     }
+  }, [key, value]);
 
-    setValue(newSearch);
+  const setSavedValue = (newSearch: string): void => {
+    setValue(newSearch.trim() || null);
   };
 
   return [value, setSavedValue] as const;
