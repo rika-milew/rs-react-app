@@ -4,14 +4,35 @@ import { ErrorButton } from './error-button';
 import userEvent from '@testing-library/user-event';
 import { ErrorBoundary } from '@/components/error-boundary/error-boundary';
 import { waitFor } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+
+const createMockStore = (preloadedState?: Record<string, unknown>) => {
+  const defaultState = { selectedItems: { selectedItems: [] } };
+
+  return configureStore({
+    reducer: {
+      selectedItems: (state, _action) => state ?? { selectedItems: [] },
+    },
+    preloadedState: preloadedState ?? defaultState,
+  });
+};
 
 describe('ErrorButton component', () => {
+  const renderWithProvider = (ui: React.ReactElement, initialState = {}) => {
+    const store = createMockStore(initialState);
+    return {
+      ...render(<Provider store={store}>{ui}</Provider>),
+      store,
+    };
+  };
+
   beforeEach(() => {
     vi.spyOn(console, 'error').mockImplementation(() => undefined);
   });
 
   it('renders error button', () => {
-    render(<ErrorButton />);
+    renderWithProvider(<ErrorButton />);
     expect(
       screen.getByRole('button', { name: 'Trigger error' })
     ).toBeInTheDocument();
@@ -20,7 +41,7 @@ describe('ErrorButton component', () => {
   it('triggers error boundary when clicked', async () => {
     const user = userEvent.setup();
 
-    render(
+    renderWithProvider(
       <ErrorBoundary>
         <ErrorButton />
       </ErrorBoundary>
@@ -34,7 +55,7 @@ describe('ErrorButton component', () => {
   });
 
   it('has error variant class', () => {
-    render(<ErrorButton />);
+    renderWithProvider(<ErrorButton />);
 
     const button = screen.getByRole('button');
     expect(button.className).toMatch(/error/);
