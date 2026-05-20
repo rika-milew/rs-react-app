@@ -158,6 +158,7 @@ export function Checkbox({ id, name }: CheckboxProps) {
     <input
       type="checkbox"
       data-checkbox
+      className={cx('checkbox')}
       checked={isSelectedItem}
       onChange={handleCheckboxClick}
       onClick={(event) => {
