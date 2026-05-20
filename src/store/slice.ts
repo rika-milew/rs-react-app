@@ -2,11 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 export type SelectedItemsState = {
-  SelectedItems: string[];
+  selectedItems: string[];
 };
 
 const initialState: SelectedItemsState = {
-  SelectedItems: [],
+  selectedItems: [],
 };
 
 export const selectedItemsSlice = createSlice({
@@ -15,16 +15,16 @@ export const selectedItemsSlice = createSlice({
   reducers: {
     toggleItem: (state, action: PayloadAction<string>) => {
       const id = action.payload;
-      const isSelected = state.SelectedItems.includes(id);
+      const isSelected = state.selectedItems.includes(id);
 
       if (isSelected) {
-        state.SelectedItems = state.SelectedItems.filter((item) => item !== id);
+        state.selectedItems = state.selectedItems.filter((item) => item !== id);
       } else {
-        state.SelectedItems.push(id);
+        state.selectedItems.push(id);
       }
     },
     clearAllItems: (state) => {
-      state.SelectedItems = [];
+      state.selectedItems = [];
     },
   },
 });

@@ -2,6 +2,9 @@ import classNames from 'classnames/bind';
 import { useState } from 'react';
 import type { PokemonWithDescription } from '@/types/api';
 import { cardConfig } from './card.config';
+import { useSelector, useDispatch } from 'react-redux';
+import type { RootState } from '@/store';
+import { toggleItem } from '@/store/slice';
 import styles from './card.module.css';
 
 const cx = classNames.bind(styles);
@@ -46,7 +49,13 @@ export function Card({ item, variant = 'detailed', onClick }: Props) {
       (option.visible === 'always' || isDetailed) && option.condition !== false
   );
 
-  const handleClick = () => {
+  const handleClick = (event: React.MouseEvent | React.KeyboardEvent) => {
+    if (
+      event.target instanceof HTMLElement &&
+      event.target.closest('[data-checkbox]')
+    ) {
+      return;
+    }
     onClick?.();
   };
 
@@ -58,13 +67,16 @@ export function Card({ item, variant = 'detailed', onClick }: Props) {
       onKeyDown={(event_) => {
         if (event_.key === 'Enter' || event_.key === ' ') {
           event_.preventDefault();
-          handleClick();
+          handleClick(event_);
         }
       }}
       tabIndex={0}
       role="button"
       aria-label={`View details for ${name}`}
     >
+      <div className={cx('checkbox-container')}>
+        <Checkbox id={id} name={name} />
+      </div>
       <div className={cx('image-container')}>
         <span className={cx('card-id')}>
           #{id.toString().padStart(ID_LENGTH, '0')}
@@ -115,5 +127,43 @@ export function CardOption({
       <p className={cx('params-label')}>{label}</p>
       <div className={cx('params-list')}>{value}</div>
     </div>
+  );
+}
+
+type CheckboxProps = {
+  id: number;
+  name: string;
+};
+
+export function Checkbox({ id, name }: CheckboxProps) {
+  const dispatch = useDispatch();
+  const selectedItems = useSelector(
+    (state: RootState) => state.selectedItems.selectedItems
+  );
+  const isSelectedItem = selectedItems.includes(id.toString());
+
+  const handleCheckboxClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.stopPropagation();
+
+    // TODO: remove after tests
+    dispatch(toggleItem(id.toString()));
+    const newSelectedIds = isSelectedItem
+      ? selectedItems.filter((item) => item !== id.toString())
+      : [...selectedItems, id.toString()];
+
+    console.log('Selected IDs:', newSelectedIds);
+  };
+
+  return (
+    <input
+      type="checkbox"
+      data-checkbox
+      checked={isSelectedItem}
+      onChange={handleCheckboxClick}
+      onClick={(event) => {
+        event.stopPropagation();
+      }}
+      aria-label={`Select ${name}`}
+    />
   );
 }
