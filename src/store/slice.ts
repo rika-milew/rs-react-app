@@ -17,14 +17,18 @@ export const selectedItemsSlice = createSlice({
       const id = action.payload;
       const isSelected = state.selectedItems.includes(id);
 
-      if (isSelected) {
-        state.selectedItems = state.selectedItems.filter((item) => item !== id);
-      } else {
-        state.selectedItems.push(id);
-      }
+      return {
+        ...state,
+        selectedItems: isSelected
+          ? state.selectedItems.filter((item) => item !== id)
+          : [...state.selectedItems, id],
+      };
     },
     clearAllItems: (state) => {
-      state.selectedItems = [];
+      return {
+        ...state,
+        selectedItems: [],
+      };
     },
   },
 });
