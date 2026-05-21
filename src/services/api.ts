@@ -93,9 +93,9 @@ export const getItemSpecies = (url: string): Promise<PokemonSpecies> =>
   );
 
 export const getItemFull = async (
-  name: string
+  identifier: string
 ): Promise<PokemonWithDescription> => {
-  const item = await getItemByName(name);
+  const item = await getItemByName(identifier);
 
   const speciesUrl = item.species.url;
 
@@ -111,4 +111,23 @@ export const getItemFull = async (
     ...item,
     description,
   };
+};
+
+export const getItemsById = async (
+  selectedIds: string[]
+): Promise<PokemonWithDescription[]> => {
+  const promises = selectedIds.map(async (id) => {
+    try {
+      return await getItemFull(id);
+    } catch (error) {
+      console.error(`Failed to fetch pokemon ${id}:`, error);
+      return null;
+    }
+  });
+
+  const results = await Promise.all(promises);
+
+  return results.filter(
+    (item): item is PokemonWithDescription => item !== null
+  );
 };
