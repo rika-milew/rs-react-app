@@ -1,28 +1,34 @@
 import js from '@eslint/js';
-import globals from 'globals';
+import { defineConfig, globalIgnores } from 'eslint/config';
+import reactPlugin from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
-import reactPlugin from 'eslint-plugin-react';
-import eslintConfigPrettier from 'eslint-config-prettier/flat';
 import eslintPluginUnicorn from 'eslint-plugin-unicorn';
+import eslintConfigPrettier from 'eslint-config-prettier/flat';
+import globals from 'globals';
 import tseslint from 'typescript-eslint';
-import boundaries from 'eslint-plugin-boundaries';
-import { defineConfig, globalIgnores } from 'eslint/config';
 
 export default defineConfig([
   js.configs.recommended,
-  ...tseslint.configs.strictTypeChecked,
-  ...tseslint.configs.stylisticTypeChecked,
+  tseslint.configs.strictTypeChecked,
+  tseslint.configs.stylisticTypeChecked,
+  reactPlugin.configs.flat.recommended,
   reactHooks.configs.flat.recommended,
   reactRefresh.configs.vite,
-  reactPlugin.configs.flat.recommended,
-  reactPlugin.configs.flat['jsx-runtime'],
   eslintPluginUnicorn.configs.recommended,
   eslintConfigPrettier,
   {
     files: ['**/*.{ts,tsx}'],
     plugins: {
-      boundaries,
+      // 'react': react,
+      // 'react-hooks': reactHooks,
+      // 'react-refresh': reactRefresh,
+      // 'import': importPlugin,
+      // 'vitest': vitest,
+      // 'sort-exports': sortExports,
+      // 'import-newlines': importNewlines,
+      // '@stylistic': stylistic,
+      // 'unicorn': eslintPluginUnicorn,
     },
     languageOptions: {
       globals: {
@@ -30,9 +36,15 @@ export default defineConfig([
         ...globals.es2021,
         ...globals.node,
       },
+      ecmaVersion: 'latest',
+      sourceType: 'module',
       parserOptions: {
         projectService: true,
         tsconfigRootDir: import.meta.dirname,
+        ecmaFeatures: {
+          globalReturn: false,
+          jsx: true,
+        },
       },
     },
     settings: {
@@ -50,8 +62,8 @@ export default defineConfig([
     },
     rules: {
       // 🔴 Mandatory
-      ...reactPlugin.configs.recommended.rules,
-      ...reactHooks.configs.recommended.rules,
+      ...reactPlugin.configs.recommended.rules, //?
+      ...reactHooks.configs.recommended.rules, //?
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
@@ -69,8 +81,7 @@ export default defineConfig([
       '@typescript-eslint/no-unsafe-argument': 'error',
       '@typescript-eslint/no-unsafe-member-access': 'error',
       '@typescript-eslint/no-unsafe-return': 'error',
-      '@typescript-eslint/no-unsafe-assignment': 'off', //* switched off for now
-      '@typescript-eslint/no-unsafe-call': 'off', //* switched off for now
+      '@typescript-eslint/no-unsafe-call': 'error',
 
       'react-hooks/exhaustive-deps': 'warn',
 
@@ -140,15 +151,10 @@ export default defineConfig([
       'max-len': ['warn', { code: 120, ignoreComments: true }],
 
       // 🔧 Switched off
-      'boundaries/element-types': 'off',
       'no-undef': 'off',
       'no-restricted-exports': 'off',
       'react/prop-types': 'off',
       'react/react-in-jsx-scope': 'off',
-      'react-refresh/only-export-components': [
-        'off',
-        { allowConstantExport: true },
-      ],
 
       'unicorn/no-array-reduce': 'off',
       'unicorn/no-array-for-each': 'off',
