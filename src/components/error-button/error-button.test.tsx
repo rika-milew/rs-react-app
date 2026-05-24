@@ -7,6 +7,10 @@ import { waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 
+vi.mock('@/components/theme-toggle/theme-toggle', () => ({
+  ThemeToggle: () => <button>Toggle theme</button>,
+}));
+
 const createMockStore = (preloadedState?: Record<string, unknown>) => {
   const defaultState = { selectedItems: { selectedItems: [] } };
 

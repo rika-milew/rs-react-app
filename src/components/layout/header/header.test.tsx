@@ -2,6 +2,10 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { Header } from './header';
 
+vi.mock('@/components/theme-toggle/theme-toggle', () => ({
+  ThemeToggle: () => <button>Toggle theme</button>,
+}));
+
 describe('header component', () => {
   afterEach(() => {
     vi.restoreAllMocks();

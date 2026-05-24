@@ -23,6 +23,10 @@ const TestError = ({ isError }: { isError: boolean }) => {
   return <div>Expected content</div>;
 };
 
+vi.mock('@/components/theme-toggle/theme-toggle', () => ({
+  ThemeToggle: () => <div>Toggle theme</div>,
+}));
+
 describe('ErrorBoundary component', () => {
   const renderWithProvider = (ui: React.ReactElement, initialState = {}) => {
     const store = createMockStore(initialState);
