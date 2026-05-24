@@ -9,8 +9,8 @@
   justify-content: space-between;
   padding: 1.25rem 1.5rem;
   color: var(--text-basic);
-  background: var(----background);
-  border-bottom: 1px solid var(--color-gray-700);
+  background: var(--background);
+  border-bottom: 1px solid var(--card-background);
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -28,7 +28,7 @@
 }
 
 .logo span {
-  color: var(--color-yellow-600);
+  color: var(--accent-background);
 }
 
 .menu {
@@ -48,14 +48,14 @@
 .link {
   font-size: 1rem;
   line-height: 1.25rem;
-  color: var(--color-gray-400);
+  color: var(--text-muted);
   font-weight: var(--font-weight-semibold);
   text-decoration: none;
   transition: color var(--transition-default) var(--ease-in-cubic);
 }
 
 .active {
-  color: var(--color-yellow-600);
+  color: var(--accent-background);
 }
 
 .skip-link {
@@ -72,6 +72,6 @@
   width: auto;
   height: auto;
   padding: 0.75rem 1rem;
-  color: var(--color-gray-400);
+  color: var(--text-muted);
   text-decoration: none;
 }

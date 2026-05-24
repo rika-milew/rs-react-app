@@ -6,9 +6,9 @@
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   padding: 1.25rem 1.5rem;
-  color: var(--color-gray-400);
-  background: var(----background);
-  border-top: 1px solid var(--color-gray-700);
+  color: var(--text-muted);
+  background: var(--background);
+  border-top: 1px solid var(--card-background);
 }
 
 .logo {
@@ -18,18 +18,18 @@
 .github {
   justify-self: center;
   text-decoration: none;
-  color: var(--color-gray-400);
+  color: var(--text-muted);
   transition: all var(--transition-default) ease;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      color: var(--color-yellow-700);
+      color: var(--accent-background-hover);
     }
   }
 
   @media (hover: none) {
     &:active {
-      color: var(--color-yellow-700);
+      color: var(--accent-background-hover);
     }
   }
 }

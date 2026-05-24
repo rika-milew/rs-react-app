@@ -51,15 +51,15 @@
   transition: background-color var(--transition-default) var(--ease-in-cubic);
 
   &:hover {
-    color: var(--color-yellow-600);
+    color: var(--accent-background);
   }
 
   &:active {
-    color: var(--color-yellow-600);
+    color: var(--accent-background);
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-gray-400);
+    outline: 2px solid var(--text-muted);
     outline-offset: 2px;
   }
 

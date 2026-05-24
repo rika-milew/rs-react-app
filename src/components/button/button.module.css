@@ -21,7 +21,7 @@
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-gray-400);
+    outline: 2px solid var(--text-muted);
     outline-offset: 2px;
   }
 
@@ -31,35 +31,35 @@
 }
 
 .basic {
-  color: var(--background);
-  background-color: var(--color-yellow-600);
+  color: var(--text-accent);
+  background-color: var(--accent-background);
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: var(--color-yellow-700);
+      background-color: var(--accent-background-hover);
     }
   }
 
   @media (hover: none) {
     &:active {
-      background-color: var(--color-yellow-700);
+      background-color: var(--accent-background-hover);
     }
   }
 }
 
 .gray {
   color: var(--text-basic);
-  background-color: var(--color-gray-700);
+  background-color: var(--card-background);
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: var(--color-gray-750);
+      background-color: var(--container-background);
     }
   }
 
   @media (hover: none) {
     &:active {
-      background-color: var(--color-gray-750);
+      background-color: var(--container-background);
     }
   }
 }
@@ -69,17 +69,17 @@
   height: 3rem;
   margin: 1.5rem 0 0 auto;
   float: right;
-  background-color: var(--color-red-500);
+  background-color: var(--error-color);
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: var(--color-red-700);
+      background-color: var(--error-color-hover);
     }
   }
 
   @media (hover: none) {
     &:active {
-      background-color: var(--color-red-700);
+      background-color: var(--error-color-hover);
     }
   }
 }

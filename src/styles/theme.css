@@ -2,15 +2,43 @@
 [data-theme='dark'] {
   /* Background colors */
   --background: var(--color-gray-800);
+  --card-background: var(--color-gray-700);
+  --container-background: var(--color-gray-750);
+  --accent-background: var(--color-yellow-600);
+  --accent-background-hover: var(--color-yellow-700);
 
   /* Text colors */
   --text-basic: var(--color-white);
+  --text-accent: var(--color-gray-800);
+  --text-muted: var(--color-gray-400);
+
+  /* Border colors */
+  --border-basic: var(--color-gray-700);
+  --border-light: var(--color-gray-500);
+
+  /* Status colors */
+  --error-color: var(--color-red-500);
+  --error-color-hover: var(--color-red-700);
 }
 
 [data-theme='light'] {
   /* Background colors */
-  --background: var(--color-white);
+  --background: var(--color-yellow-200);
+  --card-background: var(--color-yellow-100);
+  --container-background: var(--color-white);
+  --accent-background: var(--color-orange-600);
+  --accent-background-hover: var(--color-orange-500);
 
   /* Text colors */
   --text-basic: var(--color-gray-800);
+  --text-accent: var(--color-white);
+  --text-muted: var(--color-gray-700);
+
+  /* Border colors */
+  --border-basic: var(--color-gray-400);
+  --border-light: var(--color-orange-600);
+
+  /* Status colors */
+  --error-color: var(--color-red-500);
+  --error-color-hover: var(--color-red-600);
 }

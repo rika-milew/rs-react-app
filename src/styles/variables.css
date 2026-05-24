@@ -14,11 +14,18 @@
   --color-gray-950: hsl(240, 20%, 4%);
 
   /* Yellow colors */
+  --color-yellow-100: hsl(40, 27%, 81%);
+  --color-yellow-200: hsl(39, 25%, 75%);
   --color-yellow-600: hsl(38, 92%, 55%);
   --color-yellow-700: hsl(38 100% 65%);
 
+  /* Orange colors */
+  --color-orange-500: hsl(32, 81%, 43%);
+  --color-orange-600: hsl(24, 90%, 45%);
+
   /* Red colors */
   --color-red-500: hsl(0, 84%, 60%);
+  --color-red-600: hsl(0, 59%, 44%);
   --color-red-700: hsl(0, 59%, 36%);
 
   /* OPACITY  */

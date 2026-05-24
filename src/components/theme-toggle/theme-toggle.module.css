@@ -33,19 +33,19 @@
 }
 
 .theme-toggle[data-theme='dark'] .icon {
-  color: var(--color-yellow-600);
+  color: var(--accent-background);
 }
 
 .theme-toggle[data-theme='dark']:hover .visible {
-  filter: drop-shadow(0 0 10px var(--color-yellow-600));
+  filter: drop-shadow(0 0 10px var(--accent-background));
 }
 
 .theme-toggle[data-theme='light'] .icon {
-  color: var(--color-gray-700);
+  color: var(--text-muted);
 }
 
 .theme-toggle[data-theme='light']:hover .visible {
-  filter: drop-shadow(0 0 10px var(--color-gray-700));
+  filter: drop-shadow(0 0 10px var(--text-muted));
 }
 
 @keyframes pulse {
