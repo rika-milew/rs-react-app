@@ -11,7 +11,7 @@
   width: 100%;
   margin: 0 auto;
   padding: 1.25rem 1.5rem;
-  background-color: var(--color-gray-800);
+  background-color: var(----background);
   border-top: 1px solid var(--color-gray-700);
 }
 
@@ -19,7 +19,7 @@
   font-size: 0.875rem;
   line-height: 1.25rem;
   font-weight: var(--font-weight-bold);
-  color: var(--color-white);
+  color: var(--text-basic);
 }
 
 .count span {

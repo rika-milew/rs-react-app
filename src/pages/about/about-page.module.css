@@ -16,7 +16,7 @@
 
 .link {
   text-decoration: none;
-  color: var(--color-white);
+  color: var(---text-basic);
   transition: all var(--transition-default) ease;
 
   @media (hover: hover) and (pointer: fine) {

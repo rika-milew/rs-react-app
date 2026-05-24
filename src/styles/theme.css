@@ -1,0 +1,16 @@
+:root,
+[data-theme='dark'] {
+  /* Background colors */
+  --background: var(--color-gray-800);
+
+  /* Text colors */
+  --text-basic: var(--color-white);
+}
+
+[data-theme='light'] {
+  /* Background colors */
+  --background: var(--color-white);
+
+  /* Text colors */
+  --text-basic: var(--color-gray-800);
+}
