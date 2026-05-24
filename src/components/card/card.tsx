@@ -144,14 +144,7 @@ export function Checkbox({ id, name }: CheckboxProps) {
 
   const handleCheckboxClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.stopPropagation();
-
-    // TODO: remove after tests
     dispatch(toggleItem(id.toString()));
-    const newSelectedIds = isSelectedItem
-      ? selectedItems.filter((item) => item !== id.toString())
-      : [...selectedItems, id.toString()];
-
-    console.log('Selected IDs:', newSelectedIds);
   };
 
   return (
