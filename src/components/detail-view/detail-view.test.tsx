@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { DetailView } from './detail-view';
 import { getDetailData } from '@/services/detail-service';
-import { useDetailNavigation } from '@/hooks/use-detail-navigation';
 import { API_STATUS, ERROR_MESSAGES } from '@/constants/constants';
 import type { PokemonWithDescription } from '@/types/api';
 import { mockItemFull } from '@/test-utils/api-mock';
@@ -12,8 +11,10 @@ vi.mock('@/services/detail-service', () => ({
   getDetailData: vi.fn(),
 }));
 
-vi.mock('@/hooks/use-detail-navigation', () => ({
-  useDetailNavigation: vi.fn(),
+const mockNavigate = vi.fn();
+
+vi.mock('@tanstack/react-router', () => ({
+  useNavigate: () => mockNavigate,
 }));
 
 vi.mock('@/components/card/card', () => ({
@@ -44,14 +45,8 @@ vi.mock('@/components/state-view/state-view', () => ({
 }));
 
 describe('DetailView', () => {
-  const mockCloseDetailView = vi.fn();
-
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(useDetailNavigation).mockReturnValue({
-      openDetailView: vi.fn(),
-      closeDetailView: mockCloseDetailView,
-    });
   });
 
   it('renders card with data when correctly', async () => {
@@ -119,7 +114,11 @@ describe('DetailView', () => {
     const closeButton = screen.getByText('✕');
     await user.click(closeButton);
 
-    expect(mockCloseDetailView).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledWith({
+      to: '/',
+      search: { page: 1 },
+    });
   });
 
   it('does not close the card when clicking on the detail card', async () => {
@@ -136,7 +135,7 @@ describe('DetailView', () => {
 
     await user.click(detailElement);
 
-    expect(mockCloseDetailView).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   it('closes the card when clicking outside detail and card elements', async () => {
@@ -151,6 +150,6 @@ describe('DetailView', () => {
 
     await user.click(document.body);
 
-    expect(mockCloseDetailView).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
   });
 });

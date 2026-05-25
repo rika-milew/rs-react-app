@@ -1,13 +1,13 @@
 import classNames from 'classnames/bind';
-import { useEffect, useState } from 'react';
-import { useDetailNavigation } from '@/hooks/use-detail-navigation';
+import { useEffect, useState, useCallback } from 'react';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
 import { StateView } from '@/components/state-view/state-view';
-import { API_STATUS, ERROR_MESSAGES } from '@/constants/constants';
+import { API_STATUS, ERROR_MESSAGES, ROUTES } from '@/constants/constants';
 import styles from './detail-view.module.css';
 import type { DetailResult } from '@/services/detail-service';
 import { getDetailData } from '@/services/detail-service';
+import { useNavigate } from '@tanstack/react-router';
 
 const cx = classNames.bind(styles);
 
@@ -17,9 +17,23 @@ type DetailViewProps = {
 
 type ViewState = { type: typeof API_STATUS.LOADING } | DetailResult;
 
+function renderErrorState(message: string, onReload: () => void) {
+  return <StateView message={message} onReload={onReload} />;
+}
+
 export function DetailView({ detailId }: DetailViewProps) {
   const [result, setResult] = useState<ViewState>({ type: API_STATUS.LOADING });
-  const { closeDetailView } = useDetailNavigation();
+  const navigate = useNavigate();
+
+  const closeDetailView = useCallback((): void => {
+    const parameters = new URLSearchParams(globalThis.location.search);
+    const page = Number(parameters.get('page')) || 1;
+
+    void navigate({
+      to: ROUTES.HOME,
+      search: { page },
+    });
+  }, [navigate]);
 
   useEffect(() => {
     let cancelled = false;
@@ -63,25 +77,15 @@ export function DetailView({ detailId }: DetailViewProps) {
   }, [closeDetailView]);
 
   if (result.type === API_STATUS.NOT_FOUND) {
-    return (
-      <StateView
-        message={ERROR_MESSAGES.NOTFOUND}
-        onReload={() => {
-          globalThis.location.reload();
-        }}
-      />
-    );
+    return renderErrorState(ERROR_MESSAGES.NOTFOUND, () => {
+      globalThis.location.reload();
+    });
   }
 
   if (result.type === API_STATUS.ERROR) {
-    return (
-      <StateView
-        message={result.message}
-        onReload={() => {
-          globalThis.location.reload();
-        }}
-      />
-    );
+    return renderErrorState(result.message, () => {
+      globalThis.location.reload();
+    });
   }
 
   return (

@@ -1,14 +1,14 @@
 import classNames from 'classnames/bind';
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useDataList } from '@/hooks/use-data-list';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
 import { Pagination } from '@/components/pagination/pagination';
 import { StateView } from '@/components/state-view/state-view';
 import { usePagination } from '@/hooks/use-pagination';
-import { useDetailNavigation } from '@/hooks/use-detail-navigation';
-import { ERROR_MESSAGES } from '@/constants/constants';
+import { ERROR_MESSAGES, ROUTES } from '@/constants/constants';
 import styles from './card-list.module.css';
+import { useNavigate } from '@tanstack/react-router';
 
 const cx = classNames.bind(styles);
 
@@ -22,7 +22,21 @@ export function CardList({ search }: Props) {
   const { page, handlePrevious, handleNext, setPage } =
     usePagination(totalPages);
 
-  const { openDetailView } = useDetailNavigation();
+  const navigate = useNavigate();
+
+  const openDetailView = useCallback(
+    (id: number): void => {
+      const parameters = new URLSearchParams(globalThis.location.search);
+      const currentPage = Number(parameters.get('page')) || 1;
+
+      void navigate({
+        to: ROUTES.DETAIL,
+        params: { detailId: String(id) },
+        search: { page: currentPage },
+      });
+    },
+    [navigate]
+  );
 
   useEffect(() => {
     setPage(0);
