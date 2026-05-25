@@ -6,7 +6,12 @@
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
-    "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom", "vite-plugin-svgr/client"],
+    "types": [
+      "vite/client",
+      "vitest/globals",
+      "@testing-library/jest-dom",
+      "vite-plugin-svgr/client"
+    ],
 
     /* Bundler mode */
     "moduleResolution": "Bundler",
