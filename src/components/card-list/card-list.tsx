@@ -32,6 +32,7 @@ export function CardList({ search }: Props) {
   const {
     data: listResult,
     isLoading: listLoading,
+    isFetching: listFetching,
     isError: listError,
     refetch: refetchList,
   } = useGetListQuery({ search: '', page }, { skip: isSearch });
@@ -39,6 +40,7 @@ export function CardList({ search }: Props) {
   const {
     data: searchResult,
     isLoading: searchLoading,
+    isFetching: searchFetching,
     isError: searchError,
     refetch: refetchSearch,
   } = useSearchQuery(normalizedSearch, { skip: !isSearch });
@@ -93,6 +95,8 @@ export function CardList({ search }: Props) {
     setTotalPages(totalPages);
   }, [totalPages, setTotalPages]);
 
+  const isRefreshing = isSearch ? searchFetching : listFetching;
+
   if (status === 'error') {
     return (
       <StateView
@@ -114,6 +118,7 @@ export function CardList({ search }: Props) {
     <section className={cx('section')}>
       <h2 className={cx('title')}>Results</h2>
       {status === 'loading' && <Loader />}
+
       <div className={cx('card-container')}>
         {data.map((card) => (
           <Card
@@ -137,7 +142,8 @@ export function CardList({ search }: Props) {
       )}
       <Button
         onClick={refreshData}
-        text="Refresh"
+        text={isRefreshing ? 'Updating...' : 'Refresh'}
+        disabled={isRefreshing}
         className="refresh-button"
       ></Button>
     </section>

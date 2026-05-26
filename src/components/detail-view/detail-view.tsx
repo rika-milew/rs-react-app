@@ -17,7 +17,12 @@ type DetailViewProps = {
 
 export function DetailView({ detailId }: DetailViewProps) {
   const navigate = useNavigate();
-  const { data: result, isLoading, refetch } = useGetDetailQuery(detailId);
+  const {
+    data: result,
+    isLoading,
+    isFetching,
+    refetch,
+  } = useGetDetailQuery(detailId);
 
   const closeDetailView = useCallback((): void => {
     const parameters = new URLSearchParams(globalThis.location.search);
@@ -92,7 +97,8 @@ export function DetailView({ detailId }: DetailViewProps) {
       )}
       <Button
         onClick={() => void refetch()}
-        text="Refresh"
+        text={isFetching ? 'Updating...' : 'Refresh'}
+        disabled={isFetching}
         className="refresh-button"
       />
     </DetailLayout>
@@ -116,7 +122,7 @@ function DetailLayout({
           aria-label="Close details"
         >
           ✕
-        </button>
+        </button>{' '}
       </div>
       {children}
     </aside>
