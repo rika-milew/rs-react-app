@@ -1,28 +1,74 @@
 import classNames from 'classnames/bind';
-import { useEffect, useCallback } from 'react';
-import { useDataList } from '@/hooks/use-data-list';
+import { useEffect, useCallback, useMemo } from 'react';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
 import { Pagination } from '@/components/pagination/pagination';
 import { StateView } from '@/components/state-view/state-view';
+import { Button } from '@/components/button/button';
 import { usePagination } from '@/hooks/use-pagination';
 import { ERROR_MESSAGES, ROUTES } from '@/constants/constants';
 import styles from './card-list.module.css';
 import { useNavigate } from '@tanstack/react-router';
+import { useGetListQuery, useSearchQuery } from '@/store/api/api-endpoints';
+import { getCardListState } from './helpers/card-list-state';
 
 const cx = classNames.bind(styles);
+
+const normalize = (value: string): string => value.trim().toLowerCase();
 
 type Props = {
   search: string;
 };
 
 export function CardList({ search }: Props) {
-  const { data, totalPages, status, error, loadData } = useDataList();
-
-  const { page, handlePrevious, handleNext, setPage } =
-    usePagination(totalPages);
-
   const navigate = useNavigate();
+
+  const normalizedSearch = normalize(search);
+  const isSearch = !!normalizedSearch;
+
+  const { page, handlePrevious, handleNext, setPage } = usePagination(0);
+
+  const {
+    data: listResult,
+    isLoading: listLoading,
+    isError: listError,
+    refetch: refetchList,
+  } = useGetListQuery({ search: '', page }, { skip: isSearch });
+
+  const {
+    data: searchResult,
+    isLoading: searchLoading,
+    isError: searchError,
+    refetch: refetchSearch,
+  } = useSearchQuery(normalizedSearch, { skip: !isSearch });
+
+  const { data, totalPages, status, error } = useMemo(
+    () =>
+      getCardListState(
+        isSearch ? searchLoading : listLoading,
+        isSearch ? searchError : listError,
+        isSearch,
+        searchResult,
+        listResult
+      ),
+    [
+      searchLoading,
+      listLoading,
+      searchError,
+      listError,
+      isSearch,
+      searchResult,
+      listResult,
+    ]
+  );
+
+  const refreshData = useCallback(() => {
+    if (search) {
+      void refetchSearch();
+    } else {
+      void refetchList();
+    }
+  }, [search, refetchSearch, refetchList]);
 
   const openDetailView = useCallback(
     (id: number): void => {
@@ -40,31 +86,20 @@ export function CardList({ search }: Props) {
 
   useEffect(() => {
     setPage(0);
-  }, [search, setPage]);
-
-  useEffect(() => {
-    void loadData(search, page);
-  }, [search, page, loadData]);
+  }, [normalizedSearch, setPage]);
 
   if (status === 'error') {
     return (
       <StateView
         message={error ?? ERROR_MESSAGES.DEFAULT}
-        onReload={() => {
-          void loadData(search, page);
-        }}
+        onReload={refreshData}
       />
     );
   }
 
   if (status === 'not-found') {
     return (
-      <StateView
-        message={ERROR_MESSAGES.NOTFOUND}
-        onReload={() => {
-          void loadData(search, page);
-        }}
-      />
+      <StateView message={ERROR_MESSAGES.NOTFOUND} onReload={refreshData} />
     );
   }
 
@@ -95,6 +130,11 @@ export function CardList({ search }: Props) {
           onNext={handleNext}
         />
       )}
+      <Button
+        onClick={refreshData}
+        text="Refresh"
+        className="refresh-button"
+      ></Button>
     </section>
   );
 }

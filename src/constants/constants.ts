@@ -8,6 +8,8 @@ export const CARD_LIMIT = 18;
 
 export const LOADING_DELAY_MS = 300;
 
+export const DEFAULT_CACHE_TTL = 300;
+
 export const HTTP_STATUS = {
   NETWORK_ERROR: 0,
   OK: 200,

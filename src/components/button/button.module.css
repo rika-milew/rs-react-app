@@ -83,3 +83,9 @@
     }
   }
 }
+
+.refresh-button {
+  width: 12rem;
+  height: 3rem;
+  margin: 1.5rem 0 auto;
+}
