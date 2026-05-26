@@ -74,7 +74,7 @@ export const apiEndpoints = apiSlice.injectEndpoints({
       },
       providesTags: (_result, _error, id) => [{ type: 'Detail', id }],
     }),
-    download: builder.query<PokemonWithDescription[], string[]>({
+    download: builder.mutation<PokemonWithDescription[], string[]>({
       queryFn: async (ids: string[]) => {
         try {
           const result = await getItemsById(ids);
@@ -83,7 +83,6 @@ export const apiEndpoints = apiSlice.injectEndpoints({
           return handleQueryError(error);
         }
       },
-      providesTags: ['Download'],
     }),
   }),
 });
@@ -124,5 +123,5 @@ export const {
   useGetListQuery,
   useSearchQuery,
   useGetDetailQuery,
-  useLazyDownloadQuery,
+  useDownloadMutation,
 } = apiEndpoints;

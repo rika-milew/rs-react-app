@@ -11,6 +11,6 @@ export const apiSlice = createApi({
     timeout: TIMEOUT,
   }),
   keepUnusedDataFor: CACHE_TTL,
-  tagTypes: ['List', 'Search', 'Detail', 'Download'],
+  tagTypes: ['List', 'Search', 'Detail'],
   endpoints: () => ({}),
 });

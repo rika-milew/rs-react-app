@@ -1,11 +1,10 @@
-import { useState } from 'react';
 import classNames from 'classnames/bind';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '@/store';
 import { clearAllItems } from '@/store/slice';
 import { Button } from '@/components/button/button';
 import { downloadCSV } from '@/utils/download-csv';
-import { getItemsById } from '@/services/api';
+import { useDownloadMutation } from '@/store/api/api-endpoints';
 import styles from './flyout.module.css';
 
 const cx = classNames.bind(styles);
@@ -16,8 +15,7 @@ export function Flyout() {
     (state: RootState) => state.selectedItems.selectedItems
   );
   const count = selectedItems.length;
-  const [isDownloading, setIsDownloading] = useState(false);
-
+  const [downloadItems, { isLoading }] = useDownloadMutation();
   if (count === 0) {
     return null;
   }
@@ -26,23 +24,21 @@ export function Flyout() {
     dispatch(clearAllItems());
   };
 
-  const handleDownload = async () => {
-    if (isDownloading) {
+  const handleDownload = () => {
+    if (isLoading) {
       return;
     }
 
-    setIsDownloading(true);
-
-    try {
-      const items = await getItemsById(selectedItems);
-      if (items.length > 0) {
-        downloadCSV(items);
-      }
-    } catch (error) {
-      console.error('Failed to download CSV:', error);
-    } finally {
-      setIsDownloading(false);
-    }
+    void downloadItems(selectedItems)
+      .unwrap()
+      .then((items) => {
+        if (items.length > 0) {
+          downloadCSV(items);
+        }
+      })
+      .catch((error: unknown) => {
+        console.error('Failed to download CSV:', error);
+      });
   };
 
   return (
@@ -59,7 +55,7 @@ export function Flyout() {
         <Button
           variant="basic"
           onClick={() => {
-            void handleDownload();
+            handleDownload();
           }}
           text="Download"
         />
