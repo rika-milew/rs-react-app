@@ -6,11 +6,16 @@ import { Pagination } from '@/components/pagination/pagination';
 import { StateView } from '@/components/state-view/state-view';
 import { Button } from '@/components/button/button';
 import { usePagination } from '@/hooks/use-pagination';
-import { ERROR_MESSAGES, ROUTES } from '@/constants/constants';
+import { ERROR_MESSAGES } from '@/constants/constants';
 import styles from './card-list.module.css';
 import { useNavigate } from '@tanstack/react-router';
 import { useGetListQuery, useSearchQuery } from '@/store/api/api-endpoints';
-import { getCardListState } from './helpers/card-list-state';
+import {
+  getCardListState,
+  getCurrentPage,
+  getDetailParams,
+} from './helpers/card-list-state';
+import type { PokemonWithDescription } from '@/types/api';
 
 const cx = classNames.bind(styles);
 
@@ -74,16 +79,7 @@ export function CardList({ search }: Props) {
   }, [search, refetchSearch, refetchList]);
 
   const openDetailView = useCallback(
-    (id: number): void => {
-      const parameters = new URLSearchParams(globalThis.location.search);
-      const currentPage = Number(parameters.get('page')) || 1;
-
-      void navigate({
-        to: ROUTES.DETAIL,
-        params: { detailId: String(id) },
-        search: { page: currentPage },
-      });
-    },
+    (id: number) => void navigate(getDetailParams(id, getCurrentPage())),
     [navigate]
   );
 
@@ -95,30 +91,59 @@ export function CardList({ search }: Props) {
     setTotalPages(totalPages);
   }, [totalPages, setTotalPages]);
 
-  const isRefreshing = isSearch ? searchFetching : listFetching;
+  const stateMessages = {
+    error: error ?? ERROR_MESSAGES.DEFAULT,
+    'not-found': ERROR_MESSAGES.NOTFOUND,
+  };
 
-  if (status === 'error') {
-    return (
-      <StateView
-        message={error ?? ERROR_MESSAGES.DEFAULT}
-        onReload={refreshData}
-      />
-    );
-  }
-
-  if (status === 'not-found') {
-    return (
-      <StateView message={ERROR_MESSAGES.NOTFOUND} onReload={refreshData} />
-    );
+  if (status === 'error' || status === 'not-found') {
+    return <StateView message={stateMessages[status]} onReload={refreshData} />;
   }
 
   const isListLoaded = status === 'success';
 
   return (
+    <CardListView
+      data={data}
+      status={isListLoaded ? 'success' : 'loading'}
+      page={page}
+      totalPages={totalPages}
+      onPrev={handlePrevious}
+      onNext={handleNext}
+      onCardClick={openDetailView}
+      onRefresh={refreshData}
+      isRefreshing={isSearch ? searchFetching : listFetching}
+    />
+  );
+}
+
+type CardListViewProps = {
+  data: PokemonWithDescription[];
+  status: 'loading' | 'success';
+  page: number;
+  totalPages: number;
+  onPrev: () => void;
+  onNext: () => void;
+  onCardClick: (id: number) => void;
+  onRefresh: () => void;
+  isRefreshing: boolean;
+};
+
+export function CardListView({
+  data,
+  status,
+  page,
+  totalPages,
+  onPrev,
+  onNext,
+  onCardClick,
+  onRefresh,
+  isRefreshing,
+}: CardListViewProps) {
+  return (
     <section className={cx('section')}>
       <h2 className={cx('title')}>Results</h2>
       {status === 'loading' && <Loader />}
-
       <div className={cx('card-container')}>
         {data.map((card) => (
           <Card
@@ -126,26 +151,26 @@ export function CardList({ search }: Props) {
             item={card}
             variant="short"
             onClick={() => {
-              openDetailView(card.id);
+              onCardClick(card.id);
             }}
           />
         ))}
       </div>
-      {isListLoaded && (
+      {status === 'success' && (
         <Pagination
           page={page}
           totalPages={totalPages}
           loading={false}
-          onPrev={handlePrevious}
-          onNext={handleNext}
+          onPrev={onPrev}
+          onNext={onNext}
         />
       )}
       <Button
-        onClick={refreshData}
+        onClick={onRefresh}
         text={isRefreshing ? 'Updating...' : 'Refresh'}
         disabled={isRefreshing}
         className="refresh-button"
-      ></Button>
+      />
     </section>
   );
 }

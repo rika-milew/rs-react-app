@@ -182,9 +182,9 @@ export default defineConfig([
   {
     files: ['**/store/**/*.ts', '**/store/**/*.tsx'],
     rules: {
-    'unicorn/prefer-spread': 'off',
+      'unicorn/prefer-spread': 'off',
+    },
   },
-},
   {
     ignores: [
       '**/node_modules/**',

@@ -1,4 +1,4 @@
-import { ERROR_MESSAGES, API_STATUS } from '@/constants/constants';
+import { ERROR_MESSAGES, API_STATUS, ROUTES } from '@/constants/constants';
 import type { PokemonWithDescription } from '@/types/api';
 
 type CardState = {
@@ -52,3 +52,15 @@ export function getCardListState(
 
   return { data: [], totalPages: 0, status: 'not-found', error: null };
 }
+
+export const getCurrentPage = (): number =>
+  Number(new URLSearchParams(globalThis.location.search).get('page')) || 1;
+
+export const getDetailParams = (
+  id: number,
+  page: number
+): { to: string; params: { detailId: string }; search: { page: number } } => ({
+  to: ROUTES.DETAIL,
+  params: { detailId: String(id) },
+  search: { page },
+});
