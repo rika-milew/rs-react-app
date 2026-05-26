@@ -1,5 +1,5 @@
 import js from '@eslint/js';
-import { defineConfig, globalIgnores } from 'eslint/config';
+import { defineConfig } from 'eslint/config';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
@@ -62,8 +62,6 @@ export default defineConfig([
     },
     rules: {
       // 🔴 Mandatory
-      ...reactPlugin.configs.recommended.rules, //?
-      ...reactHooks.configs.recommended.rules, //?
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
@@ -178,15 +176,7 @@ export default defineConfig([
   {
     files: ['**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', '**/*.spec.tsx'],
     rules: {
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/await-thenable': 'off',
-      'max-lines-per-function': [
-        'off',
-        { max: 80, skipBlankLines: true, skipComments: true },
-      ],
+      'max-lines-per-function': 'off',
     },
   },
   {
