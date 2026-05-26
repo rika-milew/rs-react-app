@@ -2,7 +2,9 @@ import { useState, useCallback, useEffect } from 'react';
 
 type UsePagination = {
   page: number;
+  totalPages: number;
   setPage: (value: number) => void;
+  setTotalPages: (value: number) => void;
   handlePrevious: () => void;
   handleNext: () => void;
 };
@@ -13,8 +15,9 @@ function getPageUrl(): number {
   return Number.isFinite(parsedNumber) && parsedNumber > 0 ? parsedNumber : 1;
 }
 
-export function usePagination(totalPages: number): UsePagination {
+export function usePagination(initialTotalPages: number): UsePagination {
   const [newPage, setNewPageState] = useState(() => getPageUrl() - 1);
+  const [totalPages, setTotalPages] = useState(initialTotalPages);
 
   useEffect(() => {
     const pageParams = new URLSearchParams(globalThis.location.search);
@@ -29,7 +32,8 @@ export function usePagination(totalPages: number): UsePagination {
   useEffect(() => {
     const handlePageState = (): void => {
       const initialPage = getPageUrl();
-      setNewPageState(Math.max(0, Math.min(initialPage - 1, totalPages - 1)));
+      const maxPage = totalPages > 0 ? totalPages - 1 : 0;
+      setNewPageState(Math.max(0, Math.min(initialPage - 1, maxPage)));
     };
     globalThis.addEventListener('popstate', handlePageState);
     return (): void => {
@@ -39,7 +43,8 @@ export function usePagination(totalPages: number): UsePagination {
 
   const setPage = useCallback(
     (value: number) => {
-      setNewPageState(Math.max(0, Math.min(value, totalPages - 1)));
+      const maxPage = totalPages > 0 ? totalPages - 1 : value;
+      setNewPageState(Math.max(0, Math.min(value, maxPage)));
     },
     [totalPages]
   );
@@ -49,10 +54,17 @@ export function usePagination(totalPages: number): UsePagination {
   }, []);
 
   const handleNext = useCallback(() => {
-    setNewPageState((previous) => Math.min(previous + 1, totalPages - 1));
-  }, [totalPages]);
+    setNewPageState((previous) => previous + 1);
+  }, []);
 
   const page = newPage;
 
-  return { page, setPage, handlePrevious, handleNext };
+  return {
+    page,
+    totalPages,
+    setPage,
+    setTotalPages,
+    handlePrevious,
+    handleNext,
+  };
 }

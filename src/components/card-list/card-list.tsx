@@ -26,7 +26,8 @@ export function CardList({ search }: Props) {
   const normalizedSearch = normalize(search);
   const isSearch = !!normalizedSearch;
 
-  const { page, handlePrevious, handleNext, setPage } = usePagination(0);
+  const { page, setPage, setTotalPages, handlePrevious, handleNext } =
+    usePagination(0);
 
   const {
     data: listResult,
@@ -87,6 +88,10 @@ export function CardList({ search }: Props) {
   useEffect(() => {
     setPage(0);
   }, [normalizedSearch, setPage]);
+
+  useEffect(() => {
+    setTotalPages(totalPages);
+  }, [totalPages, setTotalPages]);
 
   if (status === 'error') {
     return (
