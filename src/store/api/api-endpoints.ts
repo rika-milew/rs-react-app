@@ -1,6 +1,6 @@
 import { apiSlice } from './api-slice';
 import { getData } from '@/services/data-service';
-import { getItemFull } from '@/services/api';
+import { getItemFull, getItemsById } from '@/services/api';
 import { API_STATUS, HTTP_STATUS, ERROR_MESSAGES } from '@/constants/constants';
 import { ApiError } from '@/services/api-error';
 import type { PokemonWithDescription } from '@/types/api';
@@ -74,10 +74,35 @@ export const apiEndpoints = apiSlice.injectEndpoints({
       },
       providesTags: (_result, _error, id) => [{ type: 'Detail', id }],
     }),
+    download: builder.query<PokemonWithDescription[], string[]>({
+      queryFn: async (ids: string[]) => {
+        try {
+          const result = await getItemsById(ids);
+          return { data: result };
+        } catch (error) {
+          return handleQueryError(error);
+        }
+      },
+      providesTags: ['Download'],
+    }),
   }),
 });
 
-function handleSearchError(error: unknown): SearchResult {
+const handleQueryError = (
+  error: unknown
+): { error: { status: number; data: string } } => {
+  if (error instanceof ApiError) {
+    return { error: { status: error.status, data: error.message } };
+  }
+  return {
+    error: {
+      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      data: ERROR_MESSAGES.DEFAULT,
+    },
+  };
+};
+
+const handleSearchError = (error: unknown): SearchResult => {
   if (error instanceof ApiError) {
     if (error.status === HTTP_STATUS.NOT_FOUND) {
       return { data: null };
@@ -93,7 +118,11 @@ function handleSearchError(error: unknown): SearchResult {
       data: ERROR_MESSAGES.DEFAULT,
     },
   };
-}
+};
 
-export const { useGetListQuery, useSearchQuery, useGetDetailQuery } =
-  apiEndpoints;
+export const {
+  useGetListQuery,
+  useSearchQuery,
+  useGetDetailQuery,
+  useLazyDownloadQuery,
+} = apiEndpoints;
