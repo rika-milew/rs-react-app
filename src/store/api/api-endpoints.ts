@@ -95,4 +95,5 @@ function handleSearchError(error: unknown): SearchResult {
   };
 }
 
-export const { useGetListQuery, useSearchQuery } = apiEndpoints;
+export const { useGetListQuery, useSearchQuery, useGetDetailQuery } =
+  apiEndpoints;

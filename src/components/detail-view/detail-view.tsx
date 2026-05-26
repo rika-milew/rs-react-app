@@ -1,13 +1,13 @@
 import classNames from 'classnames/bind';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useCallback } from 'react';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
 import { StateView } from '@/components/state-view/state-view';
+import { Button } from '@/components/button/button';
 import { API_STATUS, ERROR_MESSAGES, ROUTES } from '@/constants/constants';
 import styles from './detail-view.module.css';
-import type { DetailResult } from '@/services/detail-service';
-import { getDetailData } from '@/services/detail-service';
 import { useNavigate } from '@tanstack/react-router';
+import { useGetDetailQuery } from '@/store/api/api-endpoints';
 
 const cx = classNames.bind(styles);
 
@@ -15,15 +15,9 @@ type DetailViewProps = {
   detailId: string;
 };
 
-type ViewState = { type: typeof API_STATUS.LOADING } | DetailResult;
-
-function renderErrorState(message: string, onReload: () => void) {
-  return <StateView message={message} onReload={onReload} />;
-}
-
 export function DetailView({ detailId }: DetailViewProps) {
-  const [result, setResult] = useState<ViewState>({ type: API_STATUS.LOADING });
   const navigate = useNavigate();
+  const { data: result, isLoading, refetch } = useGetDetailQuery(detailId);
 
   const closeDetailView = useCallback((): void => {
     const parameters = new URLSearchParams(globalThis.location.search);
@@ -34,20 +28,6 @@ export function DetailView({ detailId }: DetailViewProps) {
       search: { page },
     });
   }, [navigate]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    void getDetailData(detailId).then((data) => {
-      if (!cancelled) {
-        setResult(data);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [detailId]);
 
   useEffect(() => {
     const handleKeyDown = (event_: KeyboardEvent) => {
@@ -76,18 +56,56 @@ export function DetailView({ detailId }: DetailViewProps) {
     };
   }, [closeDetailView]);
 
-  if (result.type === API_STATUS.NOT_FOUND) {
-    return renderErrorState(ERROR_MESSAGES.NOTFOUND, () => {
-      globalThis.location.reload();
-    });
+  if (isLoading) {
+    return (
+      <DetailLayout closeDetailView={closeDetailView}>
+        <div className={cx('loader-overlay')}>
+          <Loader />
+        </div>
+      </DetailLayout>
+    );
   }
 
-  if (result.type === API_STATUS.ERROR) {
-    return renderErrorState(result.message, () => {
-      globalThis.location.reload();
-    });
+  if (result?.type === API_STATUS.NOT_FOUND) {
+    return (
+      <DetailLayout closeDetailView={closeDetailView}>
+        <StateView
+          message={ERROR_MESSAGES.NOTFOUND}
+          onReload={() => void refetch()}
+        />
+      </DetailLayout>
+    );
   }
 
+  if (result?.type === API_STATUS.ERROR) {
+    return (
+      <DetailLayout closeDetailView={closeDetailView}>
+        <StateView message={result.message} onReload={() => void refetch()} />
+      </DetailLayout>
+    );
+  }
+
+  return (
+    <DetailLayout closeDetailView={closeDetailView}>
+      {result?.type === API_STATUS.SUCCESS && (
+        <Card item={result.data} variant="detailed" />
+      )}
+      <Button
+        onClick={() => void refetch()}
+        text="Refresh"
+        className="refresh-button"
+      />
+    </DetailLayout>
+  );
+}
+
+function DetailLayout({
+  closeDetailView,
+  children,
+}: {
+  closeDetailView: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <aside data-detail className={cx('detail-view')}>
       <div className={cx('header')}>
@@ -100,13 +118,7 @@ export function DetailView({ detailId }: DetailViewProps) {
           ✕
         </button>
       </div>
-      {result.type === API_STATUS.LOADING ? (
-        <div className={cx('loader-overlay')}>
-          <Loader />
-        </div>
-      ) : (
-        <Card item={result.data} variant="detailed" />
-      )}
+      {children}
     </aside>
   );
 }
