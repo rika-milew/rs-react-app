@@ -113,6 +113,7 @@ export function CardList({ search }: Props) {
       onCardClick={openDetailView}
       onRefresh={refreshData}
       isRefreshing={isSearch ? searchFetching : listFetching}
+      isSearch={isSearch}
     />
   );
 }
@@ -127,6 +128,7 @@ type CardListViewProps = {
   onCardClick: (id: number) => void;
   onRefresh: () => void;
   isRefreshing: boolean;
+  isSearch: boolean;
 };
 
 export function CardListView({
@@ -139,6 +141,7 @@ export function CardListView({
   onCardClick,
   onRefresh,
   isRefreshing,
+  isSearch,
 }: CardListViewProps) {
   return (
     <section className={cx('section')}>
@@ -156,7 +159,7 @@ export function CardListView({
           />
         ))}
       </div>
-      {status === 'success' && (
+      {status === 'success' && !isSearch && (
         <Pagination
           page={page}
           totalPages={totalPages}
