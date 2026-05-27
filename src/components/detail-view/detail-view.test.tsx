@@ -1,14 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { DetailView } from './detail-view';
-import { getDetailData } from '@/services/detail-service';
 import { API_STATUS, ERROR_MESSAGES } from '@/constants/constants';
 import type { PokemonWithDescription } from '@/types/api';
 import { mockItemFull } from '@/test-utils/api-mock';
 import userEvent from '@testing-library/user-event';
+import { useGetDetailQuery } from '@/store/api/api-endpoints';
 
-vi.mock('@/services/detail-service', () => ({
-  getDetailData: vi.fn(),
+vi.mock('@/store/api/api-endpoints', () => ({
+  useGetDetailQuery: vi.fn(),
 }));
 
 const mockNavigate = vi.fn();
@@ -50,9 +50,14 @@ describe('DetailView', () => {
   });
 
   it('renders card with data when correctly', async () => {
-    vi.mocked(getDetailData).mockResolvedValue({
-      type: API_STATUS.SUCCESS,
-      data: mockItemFull,
+    vi.mocked(useGetDetailQuery).mockReturnValue({
+      data: {
+        type: API_STATUS.SUCCESS,
+        data: mockItemFull,
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
     });
 
     render(<DetailView detailId="1" />);
@@ -64,7 +69,12 @@ describe('DetailView', () => {
   });
 
   it('renders loader when the content is loading', () => {
-    vi.mocked(getDetailData).mockReturnValue(new Promise(vi.fn()));
+    vi.mocked(useGetDetailQuery).mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isFetching: true,
+      refetch: vi.fn(),
+    });
 
     render(<DetailView detailId="1" />);
 
@@ -75,9 +85,15 @@ describe('DetailView', () => {
 
   it('renders error message when status is error', async () => {
     const errorMessage = 'Failed to get data';
-    vi.mocked(getDetailData).mockResolvedValue({
-      type: API_STATUS.ERROR,
-      message: errorMessage,
+
+    vi.mocked(useGetDetailQuery).mockReturnValue({
+      data: {
+        type: API_STATUS.ERROR,
+        message: errorMessage,
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
     });
 
     render(<DetailView detailId="1" />);
@@ -89,8 +105,13 @@ describe('DetailView', () => {
   });
 
   it('renders not found message when status is not found error', async () => {
-    vi.mocked(getDetailData).mockResolvedValue({
-      type: API_STATUS.NOT_FOUND,
+    vi.mocked(useGetDetailQuery).mockReturnValue({
+      data: {
+        type: API_STATUS.NOT_FOUND,
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
     });
 
     render(<DetailView detailId="1" />);
@@ -104,9 +125,14 @@ describe('DetailView', () => {
   it('close the card when close button is clicked', async () => {
     const user = userEvent.setup();
 
-    vi.mocked(getDetailData).mockResolvedValue({
-      type: API_STATUS.SUCCESS,
-      data: mockItemFull,
+    vi.mocked(useGetDetailQuery).mockReturnValue({
+      data: {
+        type: API_STATUS.SUCCESS,
+        data: mockItemFull,
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
     });
 
     render(<DetailView detailId="1" />);
@@ -124,9 +150,14 @@ describe('DetailView', () => {
   it('does not close the card when clicking on the detail card', async () => {
     const user = userEvent.setup();
 
-    vi.mocked(getDetailData).mockResolvedValue({
-      type: API_STATUS.SUCCESS,
-      data: mockItemFull,
+    vi.mocked(useGetDetailQuery).mockReturnValue({
+      data: {
+        type: API_STATUS.SUCCESS,
+        data: mockItemFull,
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
     });
 
     render(<DetailView detailId="1" />);
@@ -141,9 +172,14 @@ describe('DetailView', () => {
   it('closes the card when clicking outside detail and card elements', async () => {
     const user = userEvent.setup();
 
-    vi.mocked(getDetailData).mockResolvedValue({
-      type: API_STATUS.SUCCESS,
-      data: mockItemFull,
+    vi.mocked(useGetDetailQuery).mockReturnValue({
+      data: {
+        type: API_STATUS.SUCCESS,
+        data: mockItemFull,
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
     });
 
     render(<DetailView detailId="1" />);
