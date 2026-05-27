@@ -42,7 +42,7 @@ export const SearchBar = ({ value = '', onSearch }: Props) => {
       </label>
       <input
         id="search-input"
-        type="text"
+        type="search"
         value={query}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
