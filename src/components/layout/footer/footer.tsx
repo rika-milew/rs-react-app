@@ -11,7 +11,7 @@ export function Footer() {
         className={cx('github')}
         href="https://github.com/rika-milew"
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
       >
         Eryka Mileuskaya
         <span className={cx('visually-hidden')}> (Opens in new tab)</span>

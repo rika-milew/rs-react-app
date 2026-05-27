@@ -15,7 +15,7 @@ export const AboutPage = () => {
           className={cx('link')}
           href="https://github.com/rika-milew"
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
         >
           rika-milew
           <span className={cx('visually-hidden')}> (Opens in new tab)</span>
@@ -28,7 +28,7 @@ export const AboutPage = () => {
           className={cx('link')}
           href="https://rs.school/courses/reactjs"
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
         >
           RS School React Course
           <span className={cx('visually-hidden')}> (Opens in new tab)</span>
