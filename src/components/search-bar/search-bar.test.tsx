@@ -22,7 +22,7 @@ describe('SearchBar component', () => {
   it('displays initial search term value from props', () => {
     render(<SearchBar value="bulbasaur" onSearch={vi.fn()} />);
 
-    expect(screen.getByRole('textbox')).toHaveValue('bulbasaur');
+    expect(screen.getByRole('searchbox')).toHaveValue('bulbasaur');
   });
 
   it('saves search term to localStorage when search button is clicked', async () => {
@@ -30,7 +30,7 @@ describe('SearchBar component', () => {
 
     render(<SearchBar onSearch={onSearch} />);
 
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole('searchbox');
 
     await user.type(input, 'ivysaur');
     await user.click(screen.getByRole('button', { name: /search/i }));
@@ -41,7 +41,7 @@ describe('SearchBar component', () => {
   it('shows empty input when no saved term exists', () => {
     render(<SearchBar onSearch={onSearch} />);
 
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole('searchbox');
     expect(input).toHaveValue('');
   });
 
@@ -50,7 +50,7 @@ describe('SearchBar component', () => {
 
     render(<SearchBar onSearch={vi.fn()} />);
 
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole('searchbox');
     await user.type(input, 'bulbasaur');
 
     expect(input).toHaveValue('bulbasaur');
@@ -61,7 +61,7 @@ describe('SearchBar component', () => {
 
     render(<SearchBar onSearch={vi.fn()} />);
 
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole('searchbox');
     await user.type(input, '   bulbasaur   ');
 
     await user.click(screen.getByRole('button', { name: /search/i }));
@@ -77,7 +77,7 @@ describe('SearchBar component', () => {
 
     render(<SearchBar onSearch={onSearch} />);
 
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole('searchbox');
 
     await user.type(input, '  bulbasaur   ');
     await user.click(screen.getByRole('button', { name: /search/i }));
@@ -92,7 +92,7 @@ describe('SearchBar component', () => {
 
     render(<SearchBar onSearch={vi.fn()} />);
 
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole('searchbox');
 
     await user.clear(input);
     await user.type(input, 'blastoise');
@@ -108,7 +108,7 @@ describe('SearchBar component', () => {
 
     render(<SearchBar onSearch={onSearch} />);
 
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole('searchbox');
 
     await user.clear(input);
     await user.click(screen.getByRole('button', { name: /search/i }));

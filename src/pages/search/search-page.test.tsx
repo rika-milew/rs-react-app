@@ -15,7 +15,7 @@ describe('SearchPage', () => {
   it('renders page components correctly', () => {
     render(<SearchPage />);
 
-    expect(screen.getByRole('textbox')).toBeInTheDocument();
+    expect(screen.getByRole('searchbox')).toBeInTheDocument();
     expect(screen.getByText(/trigger error/i)).toBeInTheDocument();
   });
 
@@ -24,7 +24,7 @@ describe('SearchPage', () => {
 
     render(<SearchPage />);
 
-    const input = screen.getByRole('textbox');
+    const input = screen.getByRole('searchbox');
 
     await user.type(input, 'bulbasaur');
 

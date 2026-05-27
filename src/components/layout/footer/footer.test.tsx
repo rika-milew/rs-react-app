@@ -19,7 +19,7 @@ describe('footer component', () => {
 
     expect(link).toHaveAttribute('href', 'https://github.com/rika-milew');
     expect(link).toHaveAttribute('target', '_blank');
-    expect(link).toHaveAttribute('rel', 'noreferrer');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
   it('shows current year', () => {
