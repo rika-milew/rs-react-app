@@ -20,7 +20,7 @@ describe('CardList component', () => {
 
   it('renders loading state initially', () => {
     mockedData.mockResolvedValue({
-      type: 'success',
+      status: 'success',
       data: [],
       totalPages: 1,
     });
@@ -32,7 +32,7 @@ describe('CardList component', () => {
 
   it('shows pagination component when search input is empty', async () => {
     mockedData.mockResolvedValue({
-      type: 'success',
+      status: 'success',
       data: [],
       totalPages: 85,
     });
@@ -47,7 +47,7 @@ describe('CardList component', () => {
 
   it('does not render pagination during search', () => {
     mockedData.mockResolvedValue({
-      type: 'success',
+      status: 'success',
       data: [],
       totalPages: 5,
     });
@@ -65,7 +65,7 @@ describe('CardList component', () => {
 
   it('renders item cards after successful search', async () => {
     mockedData.mockResolvedValue({
-      type: 'success',
+      status: 'success',
       data: [mockItemFull],
       totalPages: 1,
     });
@@ -86,7 +86,7 @@ describe('CardList component', () => {
 
   it('renders correct number of cards', async () => {
     mockedData.mockResolvedValue({
-      type: 'success',
+      status: 'success',
       data: [mockItemFull, mockItemPartial],
       totalPages: 1,
     });
@@ -102,7 +102,7 @@ describe('CardList component', () => {
 
   it('displays not found message when when api returns not-found state', async () => {
     mockedData.mockResolvedValue({
-      type: 'not-found',
+      status: 'not-found',
     });
 
     render(<CardList search="unknown" />);
@@ -112,7 +112,7 @@ describe('CardList component', () => {
 
   it('renders no cards when data is empty', () => {
     mockedData.mockResolvedValue({
-      type: 'success',
+      status: 'success',
       data: [],
       totalPages: 1,
     });
@@ -126,7 +126,7 @@ describe('CardList component', () => {
 
   it('renders api error message when when api returns error state', async () => {
     mockedData.mockResolvedValue({
-      type: 'error',
+      status: 'error',
       message: 'Server error',
     });
 
@@ -147,7 +147,7 @@ describe('CardList component', () => {
 
   it('calls api with normalized search query', async () => {
     mockedData.mockResolvedValue({
-      type: 'success',
+      status: 'success',
       data: [],
       totalPages: 1,
     });
@@ -161,7 +161,7 @@ describe('CardList component', () => {
 
   it('resets page to 0 when search changes', async () => {
     mockedData.mockResolvedValue({
-      type: 'success',
+      status: 'success',
       data: [],
       totalPages: 10,
     });
@@ -177,7 +177,7 @@ describe('CardList component', () => {
 
   it('loads next page when next button is clicked', async () => {
     mockedData.mockResolvedValue({
-      type: 'success',
+      status: 'success',
       data: [],
       totalPages: 10,
     });
@@ -199,7 +199,7 @@ describe('CardList component', () => {
 
   it('loads previous page when previous button is clicked', async () => {
     mockedData.mockResolvedValue({
-      type: 'success',
+      status: 'success',
       data: [],
       totalPages: 10,
     });
@@ -219,7 +219,7 @@ describe('CardList component', () => {
 
   it('stays on first page when prev is clicked', async () => {
     mockedData.mockResolvedValue({
-      type: 'success',
+      status: 'success',
       data: [],
       totalPages: 3,
     });

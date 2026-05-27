@@ -4,16 +4,12 @@ import { getItems, getItemFull } from '@/services/api';
 import { ApiError } from '@/services/api-error';
 import { CARD_LIMIT, HTTP_STATUS, API_STATUS } from '@/constants/constants';
 
-import type { PokemonWithDescription } from '@/types/api';
+import type { PokemonWithDescription, ApiResult } from '@/types/api';
 
-export type Result =
-  | {
-      type: typeof API_STATUS.SUCCESS;
-      data: PokemonWithDescription[];
-      totalPages: number;
-    }
-  | { type: typeof API_STATUS.NOT_FOUND }
-  | { type: typeof API_STATUS.ERROR; message: string };
+export type Result = ApiResult<
+  PokemonWithDescription[],
+  { totalPages: number }
+>;
 
 export async function getData(
   page: number,
@@ -34,7 +30,7 @@ export async function getData(
           error instanceof ApiError &&
           error.status === HTTP_STATUS.NOT_FOUND
         ) {
-          return { type: API_STATUS.NOT_FOUND };
+          return { status: API_STATUS.NOT_FOUND };
         }
 
         throw error;
@@ -52,10 +48,10 @@ export async function getData(
     }
 
     if (data.length === 0) {
-      return { type: API_STATUS.NOT_FOUND };
+      return { status: API_STATUS.NOT_FOUND };
     }
 
-    return { type: API_STATUS.SUCCESS, data, totalPages };
+    return { status: API_STATUS.SUCCESS, data, totalPages };
   } catch (error) {
     let message: string = ERROR_MESSAGES.DEFAULT;
 
@@ -69,6 +65,6 @@ export async function getData(
       }
     }
 
-    return { type: API_STATUS.ERROR, message };
+    return { status: API_STATUS.ERROR, message };
   }
 }

@@ -2,16 +2,9 @@ import { useState, useEffect } from 'react';
 import { getItemFull } from '@/services/api';
 import { ApiError } from '@/services/api-error';
 import { HTTP_STATUS, API_STATUS, ERROR_MESSAGES } from '@/constants/constants';
-import type { PokemonWithDescription } from '@/types/api';
+import type { PokemonWithDescription, ApiResult } from '@/types/api';
 
-export type DetailResult =
-  | {
-      status: typeof API_STATUS.SUCCESS;
-      data: PokemonWithDescription;
-    }
-  | { status: typeof API_STATUS.NOT_FOUND }
-  | { status: typeof API_STATUS.ERROR; message: string }
-  | { status: typeof API_STATUS.LOADING };
+export type DetailResult = ApiResult<PokemonWithDescription>;
 
 export function useDetailData(id: string | null): DetailResult | null {
   const [result, setResult] = useState<DetailResult | null>(null);
