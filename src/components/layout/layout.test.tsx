@@ -3,25 +3,27 @@ import { describe, it, expect } from 'vitest';
 import { Layout } from './layout';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
+import { apiSlice } from '@/store/api/api-slice';
 
 vi.mock('@/components/theme-toggle/theme-toggle', () => ({
   ThemeToggle: () => <button>Toggle theme</button>,
 }));
 
-const createMockStore = (preloadedState?: Record<string, unknown>) => {
-  const defaultState = { selectedItems: { selectedItems: [] } };
+const EMPTY_STORE: string[] = [];
+const INITIAL_SELECTED_ITEMS = { selectedItems: EMPTY_STORE };
 
+const createMockStore = () => {
   return configureStore({
     reducer: {
-      selectedItems: (state, _action) => state ?? { selectedItems: [] },
+      selectedItems: (state = INITIAL_SELECTED_ITEMS) => state,
+      [apiSlice.reducerPath]: apiSlice.reducer,
     },
-    preloadedState: preloadedState ?? defaultState,
   });
 };
 
 describe('layout component', () => {
-  const renderWithProvider = (ui: React.ReactElement, initialState = {}) => {
-    const store = createMockStore(initialState);
+  const renderWithProvider = (ui: React.ReactElement) => {
+    const store = createMockStore();
     return {
       ...render(<Provider store={store}>{ui}</Provider>),
       store,

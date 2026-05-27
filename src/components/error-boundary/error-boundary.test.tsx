@@ -4,15 +4,17 @@ import { ErrorBoundary } from './error-boundary';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
+import { apiSlice } from '@/store/api/api-slice';
 
-const createMockStore = (preloadedState?: Record<string, unknown>) => {
-  const defaultState = { selectedItems: { selectedItems: [] } };
+const EMPTY_STORE: string[] = [];
+const INITIAL_SELECTED_ITEMS = { selectedItems: EMPTY_STORE };
 
+const createMockStore = () => {
   return configureStore({
     reducer: {
-      selectedItems: (state, _action) => state ?? { selectedItems: [] },
+      selectedItems: (state = INITIAL_SELECTED_ITEMS) => state,
+      [apiSlice.reducerPath]: apiSlice.reducer,
     },
-    preloadedState: preloadedState ?? defaultState,
   });
 };
 
@@ -28,8 +30,8 @@ vi.mock('@/components/theme-toggle/theme-toggle', () => ({
 }));
 
 describe('ErrorBoundary component', () => {
-  const renderWithProvider = (ui: React.ReactElement, initialState = {}) => {
-    const store = createMockStore(initialState);
+  const renderWithProvider = (ui: React.ReactElement) => {
+    const store = createMockStore();
     return {
       ...render(<Provider store={store}>{ui}</Provider>),
       store,
