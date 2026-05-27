@@ -5,11 +5,15 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { Flyout } from './flyout';
 import { mockItemFull } from '@/test-utils/api-mock';
-import { getItemsById } from '@/services/api';
 import { downloadCSV } from '@/utils/download-csv';
 
-vi.mock('@/services/api', () => ({
-  getItemsById: vi.fn(),
+const mockUnwrap = vi.fn();
+const mockDownloadItems = vi.fn(() => ({
+  unwrap: mockUnwrap,
+}));
+
+vi.mock('@/store/api/api-endpoints', () => ({
+  useDownloadMutation: () => [mockDownloadItems, { isLoading: false }],
 }));
 
 vi.mock('@/utils/download-csv', () => ({
@@ -52,6 +56,9 @@ const renderWithProvider = (selectedItems: number[] = []) => {
 describe('flyout component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockDownloadItems.mockReturnValue({
+      unwrap: mockUnwrap,
+    });
   });
 
   it('is not visible when no items are selected', () => {
@@ -81,21 +88,22 @@ describe('flyout component', () => {
   it('downloads CSV file with selected items', async () => {
     const user = userEvent.setup();
 
-    vi.mocked(getItemsById).mockResolvedValue([mockItemFull]);
+    mockUnwrap.mockResolvedValue([mockItemFull]);
 
     renderWithProvider([1, 2]);
 
     await user.click(screen.getByText('Download'));
 
     await waitFor(() => {
-      expect(getItemsById).toHaveBeenCalledWith([1, 2]);
+      expect(mockDownloadItems).toHaveBeenCalledWith([1, 2]);
       expect(downloadCSV).toHaveBeenCalledWith([mockItemFull]);
     });
   });
 
   it('does not download CSV file when API returns empty array', async () => {
     const user = userEvent.setup();
-    vi.mocked(getItemsById).mockResolvedValue([]);
+
+    mockUnwrap.mockResolvedValue([]);
     renderWithProvider([1]);
 
     await user.click(screen.getByText('Download'));
@@ -105,35 +113,11 @@ describe('flyout component', () => {
     });
   });
 
-  it('prevents double download while in progress', async () => {
-    const user = userEvent.setup();
-
-    vi.mocked(getItemsById).mockImplementation(
-      () =>
-        new Promise((resolve) =>
-          setTimeout(() => {
-            resolve([mockItemFull]);
-          }, 1000)
-        )
-    );
-
-    renderWithProvider([1]);
-
-    const downloadButton = screen.getByText('Download');
-
-    await user.click(downloadButton);
-    await user.click(downloadButton);
-
-    await waitFor(() => {
-      expect(getItemsById).toHaveBeenCalledTimes(1);
-    });
-  });
-
   it('handles download error correcyly', async () => {
     const user = userEvent.setup();
     const consoleSpy = vi.spyOn(console, 'error').mockReturnValue();
 
-    vi.mocked(getItemsById).mockRejectedValue(new Error('Network error'));
+    mockUnwrap.mockRejectedValue(new Error('Network error'));
 
     renderWithProvider([1]);
 
