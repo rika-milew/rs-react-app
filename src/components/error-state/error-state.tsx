@@ -9,7 +9,7 @@ type Props = {
   onReload: () => void;
 };
 
-export const StateView = ({ message, onReload }: Props) => {
+export const ErrorState = ({ message, onReload }: Props) => {
   return (
     <div className={cx('state')}>
       <p>{message}</p>

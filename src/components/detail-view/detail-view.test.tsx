@@ -31,7 +31,7 @@ vi.mock('@/components/loader/loader', () => ({
 }));
 
 vi.mock('@/components/state-view/state-view', () => ({
-  StateView: vi.fn(
+  ErrorState: vi.fn(
     ({ message, onReload }: { message: string; onReload: () => void }) => (
       <div data-testid="state-view">
         <span>{message}</span>

@@ -4,7 +4,7 @@ import { useDetailData } from '@/hooks/use-detail-data';
 import { useDetailNavigation } from '@/hooks/use-detail-navigation';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
-import { StateView } from '@/components/state-view/state-view';
+import { ErrorState } from '@/components/error-state/error-state';
 import { API_STATUS, ERROR_MESSAGES } from '@/constants/constants';
 import styles from './detail-view.module.css';
 
@@ -51,7 +51,7 @@ export function DetailView({ detailId }: DetailViewProps) {
 
   if (result.status === API_STATUS.NOT_FOUND) {
     return (
-      <StateView
+      <ErrorState
         message={ERROR_MESSAGES.NOTFOUND}
         onReload={() => {
           globalThis.location.reload();
@@ -62,7 +62,7 @@ export function DetailView({ detailId }: DetailViewProps) {
 
   if (result.status === API_STATUS.ERROR) {
     return (
-      <StateView
+      <ErrorState
         message={result.message}
         onReload={() => {
           globalThis.location.reload();

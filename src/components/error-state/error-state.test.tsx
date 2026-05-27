@@ -1,17 +1,17 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
-import { StateView } from './state-view';
+import { ErrorState } from './error-state';
 
-describe('StateView component', () => {
+describe('ErrorState component', () => {
   it('displays message text correctly', () => {
-    render(<StateView message="Something went wrong" onReload={vi.fn()} />);
+    render(<ErrorState message="Something went wrong" onReload={vi.fn()} />);
 
     expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
   });
 
   it('renders try again button', () => {
-    render(<StateView message="Error" onReload={vi.fn()} />);
+    render(<ErrorState message="Error" onReload={vi.fn()} />);
 
     expect(
       screen.getByRole('button', { name: /try again/i })
@@ -22,7 +22,7 @@ describe('StateView component', () => {
     const user = userEvent.setup();
     const onReload = vi.fn();
 
-    render(<StateView message="Error" onReload={onReload} />);
+    render(<ErrorState message="Error" onReload={onReload} />);
 
     await user.click(screen.getByRole('button', { name: /try again/i }));
 

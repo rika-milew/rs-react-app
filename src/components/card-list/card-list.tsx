@@ -4,7 +4,7 @@ import { useDataList } from '@/hooks/use-data-list';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
 import { Pagination } from '@/components/pagination/pagination';
-import { StateView } from '@/components/state-view/state-view';
+import { ErrorState } from '@/components/error-state/error-state';
 import { usePagination } from '@/hooks/use-pagination';
 import { useDetailNavigation } from '@/hooks/use-detail-navigation';
 import { ERROR_MESSAGES } from '@/constants/constants';
@@ -34,7 +34,7 @@ export function CardList({ search }: Props) {
 
   if (status === 'error') {
     return (
-      <StateView
+      <ErrorState
         message={error ?? ERROR_MESSAGES.DEFAULT}
         onReload={() => {
           void loadData(search, page);
@@ -45,7 +45,7 @@ export function CardList({ search }: Props) {
 
   if (status === 'not-found') {
     return (
-      <StateView
+      <ErrorState
         message={ERROR_MESSAGES.NOTFOUND}
         onReload={() => {
           void loadData(search, page);
