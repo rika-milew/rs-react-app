@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { DetailView } from './detail-view';
 import { useDetailData } from '@/hooks/use-detail-data';
 import { useDetailNavigation } from '@/hooks/use-detail-navigation';
-import { API_STATUS } from '@/constants/constants';
+import { API_STATUS, ERROR_MESSAGES } from '@/constants/constants';
 import type { PokemonWithDescription } from '@/types/api';
 import { mockItemFull } from '@/test-utils/api-mock';
 import userEvent from '@testing-library/user-event';
@@ -89,6 +89,19 @@ describe('DetailView', () => {
 
     expect(screen.getByTestId('state-view')).toBeInTheDocument();
     expect(screen.getByText(errorMessage)).toBeInTheDocument();
+    expect(screen.queryByTestId('card')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('loader')).not.toBeInTheDocument();
+  });
+
+  it('renders not-found message when status is not found', () => {
+    vi.mocked(useDetailData).mockReturnValue({
+      status: API_STATUS.NOT_FOUND,
+    });
+
+    render(<DetailView detailId="1" />);
+
+    expect(screen.getByTestId('state-view')).toBeInTheDocument();
+    expect(screen.getByText(ERROR_MESSAGES.NOTFOUND)).toBeInTheDocument();
     expect(screen.queryByTestId('card')).not.toBeInTheDocument();
     expect(screen.queryByTestId('loader')).not.toBeInTheDocument();
   });
