@@ -7,5 +7,5 @@ export const Route = createFileRoute('/_layout/details/$detailId')({
 
 function DetailViewRoute() {
   const { detailId } = Route.useParams();
-  return <DetailView detailId={detailId} />;
+  return <DetailView key={detailId} detailId={detailId} />;
 }
