@@ -2,7 +2,12 @@ import pLimit from 'p-limit';
 import { API_CONCURRENCY, ERROR_MESSAGES } from '@/constants/constants';
 import { getItems, getItemFull } from '@/services/api';
 import { ApiError } from '@/services/api-error';
-import { CARD_LIMIT, HTTP_STATUS, API_STATUS } from '@/constants/constants';
+import {
+  CARD_LIMIT,
+  HTTP_STATUS,
+  API_STATUS,
+  MAX_ITEMS,
+} from '@/constants/constants';
 
 import type { PokemonWithDescription, ApiResult } from '@/types/api';
 
@@ -25,6 +30,7 @@ export async function getData(
       try {
         const item = await getItemFull(query);
         data = [item];
+        totalPages = 1;
       } catch (error) {
         if (
           error instanceof ApiError &&
@@ -38,7 +44,9 @@ export async function getData(
     } else {
       const offset = page * CARD_LIMIT;
       const searchData = await getItems(offset, CARD_LIMIT);
-      totalPages = Math.ceil(searchData.count / CARD_LIMIT);
+      totalPages = Math.ceil(
+        Math.min(searchData.count, MAX_ITEMS) / CARD_LIMIT,
+      );
 
       const limit = pLimit(API_CONCURRENCY);
 

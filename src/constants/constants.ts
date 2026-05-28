@@ -2,6 +2,7 @@ export const API_BASE_URL = 'https://pokeapi.co/api/v2/pokemon';
 export const API_CONCURRENCY = 5;
 
 export const SEARCH_LIMIT = 500;
+export const MAX_ITEMS = 1200;
 
 export const CARD_LIMIT = 18;
 

@@ -5,7 +5,6 @@ import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
 import { Pagination } from '@/components/pagination/pagination';
 import { ErrorState } from '@/components/error-state/error-state';
-import { usePagination } from '@/hooks/use-pagination';
 import { useDetailNavigation } from '@/hooks/use-detail-navigation';
 import { ERROR_MESSAGES } from '@/constants/constants';
 import styles from './card-list.module.css';
@@ -14,22 +13,22 @@ const cx = classNames.bind(styles);
 
 type Props = {
   search: string;
+  page: number;
+  onPageChange: (page: number) => void;
 };
 
-export function CardList({ search }: Props) {
+export function CardList({ search, page, onPageChange }: Props) {
   const { data, totalPages, status, error, loadData } = useDataList();
-
-  const { page, handlePrevious, handleNext, setPage } =
-    usePagination(totalPages);
-
   const { openDetailView } = useDetailNavigation();
 
   useEffect(() => {
-    setPage(0);
-  }, [search, setPage]);
+    if (status === 'success' && totalPages > 0 && page > totalPages) {
+      onPageChange(totalPages);
+    }
+  }, [status, totalPages, page, onPageChange]);
 
   useEffect(() => {
-    void loadData(search, page);
+    void loadData(search, page - 1);
   }, [search, page, loadData]);
 
   if (status === 'error') {
@@ -37,7 +36,7 @@ export function CardList({ search }: Props) {
       <ErrorState
         message={error ?? ERROR_MESSAGES.DEFAULT}
         onReload={() => {
-          void loadData(search, page);
+          void loadData(search, page - 1);
         }}
       />
     );
@@ -48,13 +47,14 @@ export function CardList({ search }: Props) {
       <ErrorState
         message={ERROR_MESSAGES.NOTFOUND}
         onReload={() => {
-          void loadData(search, page);
+          void loadData(search, page - 1);
         }}
       />
     );
   }
 
   const isListLoaded = status === 'success';
+  const isLoading = status === 'loading';
 
   return (
     <section className={cx('section')}>
@@ -72,13 +72,11 @@ export function CardList({ search }: Props) {
           />
         ))}
       </div>
-      {isListLoaded && (
+      {isListLoaded && !isLoading && (
         <Pagination
           page={page}
           totalPages={totalPages}
-          loading={false}
-          onPrev={handlePrevious}
-          onNext={handleNext}
+          onPageChange={onPageChange}
         />
       )}
     </section>
