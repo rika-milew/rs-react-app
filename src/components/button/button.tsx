@@ -7,7 +7,7 @@ type Props = {
   text: string;
   onClick: () => void;
   disabled?: boolean;
-  variant?: 'basic' | 'error';
+  variant?: 'basic' | 'error' | 'pagination';
   className?: string;
 };
 

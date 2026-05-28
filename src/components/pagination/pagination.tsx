@@ -1,3 +1,4 @@
+import { Button } from '@/components/button/button';
 import classNames from 'classnames/bind';
 import styles from './pagination.module.css';
 
@@ -26,26 +27,22 @@ export const Pagination = ({ page, totalPages, onPageChange }: Props) => {
 
   return (
     <div className={cx('pagination')}>
-      <button
-        type="button"
-        className={cx('pagination-button')}
-        disabled={validPage === 1}
+      <Button
+        text="← Prev"
         onClick={handlePreviousPage}
-      >
-        ← Prev
-      </button>
+        disabled={validPage === 1}
+        variant="pagination"
+      />
       <span className={cx('page-info')}>
         Page <span className={cx('page-number')}>{validPage}</span> of{' '}
         {totalPages}
       </span>
-      <button
-        type="button"
-        className={cx('pagination-button')}
-        disabled={validPage >= totalPages}
+      <Button
+        text="Next →"
         onClick={handleNextPage}
-      >
-        Next →
-      </button>
+        disabled={validPage >= totalPages}
+        variant="pagination"
+      />
     </div>
   );
 };
