@@ -43,7 +43,7 @@ export function Card({ item, variant = 'detailed', onClick }: Props) {
 
   const options = config.data.filter(
     (option) =>
-      (option.visible === 'always' || isDetailed) && option.condition !== false
+      (option.visible === 'always' || isDetailed) && option.condition !== false,
   );
 
   const handleClick = () => {

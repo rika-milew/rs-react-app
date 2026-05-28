@@ -36,7 +36,7 @@ export function usePagination(totalPages: number): UsePagination {
     globalThis.history.pushState(
       {},
       '',
-      `${globalThis.location.pathname}?${pageParams.toString()}`
+      `${globalThis.location.pathname}?${pageParams.toString()}`,
     );
   }, []);
 
@@ -46,7 +46,7 @@ export function usePagination(totalPages: number): UsePagination {
       setPageUrl(pageIndex);
       setNewPageState(pageIndex);
     },
-    [setPageUrl]
+    [setPageUrl],
   );
 
   const handlePrevious = useCallback(() => {

@@ -65,13 +65,13 @@ describe('fetchData service', () => {
               language: { name: 'en' },
             },
           ],
-        })
+        }),
       );
 
     const result = await getItemFull('bulbasaur');
 
     expect(result.description).toBe(
-      'A strange seed was planted on its back at birth.'
+      'A strange seed was planted on its back at birth.',
     );
   });
 });

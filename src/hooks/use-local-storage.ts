@@ -4,7 +4,7 @@ type UseLocalStorage = readonly [string, (value: string) => void];
 
 export const useLocalStorage = (
   key: string,
-  initialValue = ''
+  initialValue = '',
 ): UseLocalStorage => {
   const [value, setValue] = useState(() => {
     try {

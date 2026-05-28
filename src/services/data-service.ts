@@ -13,7 +13,7 @@ export type Result = ApiResult<
 
 export async function getData(
   page: number,
-  searchQuery?: string
+  searchQuery?: string,
 ): Promise<Result> {
   try {
     let data: PokemonWithDescription[] = [];
@@ -43,7 +43,7 @@ export async function getData(
       const limit = pLimit(API_CONCURRENCY);
 
       data = await Promise.all(
-        searchData.results.map((item) => limit(() => getItemFull(item.name)))
+        searchData.results.map((item) => limit(() => getItemFull(item.name))),
       );
     }
 

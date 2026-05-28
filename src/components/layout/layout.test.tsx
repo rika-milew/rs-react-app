@@ -7,7 +7,7 @@ describe('layout component', () => {
     render(
       <Layout>
         <div>Content</div>
-      </Layout>
+      </Layout>,
     );
 
   it('renders layout structure with header, footer and children', () => {

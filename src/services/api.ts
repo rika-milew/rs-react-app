@@ -20,7 +20,7 @@ async function fetchData<T>(
   url: string,
   validator: TypeGuard<T>,
   errorMessage: string,
-  timeoutMs: number = TIMEOUT_MS
+  timeoutMs: number = TIMEOUT_MS,
 ): Promise<T> {
   const abortController = new AbortController();
   const timeoutId = setTimeout(() => {
@@ -64,7 +64,7 @@ async function fetchData<T>(
 
 export const getItems = (
   offset: number,
-  limit: number
+  limit: number,
 ): Promise<PokemonListResponse> => {
   const params = new URLSearchParams({
     limit: String(limit),
@@ -74,7 +74,7 @@ export const getItems = (
   return fetchData<PokemonListResponse>(
     `${API_BASE_URL}?${params.toString()}`,
     isValidListResponse,
-    'Failed to get items'
+    'Failed to get items',
   );
 };
 
@@ -82,18 +82,18 @@ export const getItemByName = (name: string): Promise<Pokemon> =>
   fetchData<Pokemon>(
     `${API_BASE_URL}/${name.toLowerCase().trim()}`,
     isValidItem,
-    'Pokemon not found'
+    'Pokemon not found',
   );
 
 export const getItemSpecies = (url: string): Promise<PokemonSpecies> =>
   fetchData<PokemonSpecies>(
     url,
     isValidItemSpecies,
-    'Failed to get item species'
+    'Failed to get item species',
   );
 
 export const getItemFull = async (
-  name: string
+  name: string,
 ): Promise<PokemonWithDescription> => {
   const item = await getItemByName(name);
 

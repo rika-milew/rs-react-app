@@ -22,7 +22,7 @@ describe('NotFoundPage', () => {
     expect(screen.getByText('404')).toBeInTheDocument();
     expect(screen.getByText('Page not found')).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: 'Back Home' })
+      screen.getByRole('button', { name: 'Back Home' }),
     ).toBeInTheDocument();
   });
 

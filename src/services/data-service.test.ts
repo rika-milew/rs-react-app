@@ -37,7 +37,7 @@ describe('getData service', () => {
 
   it('returns not found when API responds with 404', async () => {
     mockedItemFull.mockRejectedValue(
-      new ApiError(HTTP_STATUS.NOT_FOUND, 'not found')
+      new ApiError(HTTP_STATUS.NOT_FOUND, 'not found'),
     );
 
     const result = await getData(0, 'unknownItem');
@@ -47,7 +47,7 @@ describe('getData service', () => {
 
   it('returns server error message when API responds with 500', async () => {
     mockedItems.mockRejectedValue(
-      new ApiError(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'server error')
+      new ApiError(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'server error'),
     );
 
     const result = await getData(0, '');

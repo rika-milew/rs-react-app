@@ -14,7 +14,7 @@ describe('ErrorState component', () => {
     render(<ErrorState message="Error" onReload={vi.fn()} />);
 
     expect(
-      screen.getByRole('button', { name: /try again/i })
+      screen.getByRole('button', { name: /try again/i }),
     ).toBeInTheDocument();
   });
 

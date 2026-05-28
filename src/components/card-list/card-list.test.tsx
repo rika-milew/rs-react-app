@@ -55,11 +55,11 @@ describe('CardList component', () => {
     render(<CardList search="venusaur" />);
 
     expect(
-      screen.queryByRole('button', { name: /next/i })
+      screen.queryByRole('button', { name: /next/i }),
     ).not.toBeInTheDocument();
 
     expect(
-      screen.queryByRole('button', { name: /prev/i })
+      screen.queryByRole('button', { name: /prev/i }),
     ).not.toBeInTheDocument();
   });
 
@@ -78,7 +78,7 @@ describe('CardList component', () => {
 
     expect(await screen.findByText(/bulbasaur/i)).toBeInTheDocument();
     expect(
-      screen.getByText(/A strange seed was planted on its back at birth./i)
+      screen.getByText(/A strange seed was planted on its back at birth./i),
     ).toBeInTheDocument();
 
     expect(image).toBeInTheDocument();
@@ -141,7 +141,7 @@ describe('CardList component', () => {
     render(<CardList search="" />);
 
     expect(
-      await screen.findByText(/something went wrong/i)
+      await screen.findByText(/something went wrong/i),
     ).toBeInTheDocument();
   });
 

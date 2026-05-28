@@ -22,7 +22,7 @@ vi.mock('@/components/card/card', () => ({
       <div data-testid="card" data-variant={variant}>
         {item.name}
       </div>
-    )
+    ),
   ),
 }));
 
@@ -39,7 +39,7 @@ vi.mock('@/components/error-state/error-state', () => ({
           Reload
         </button>
       </div>
-    )
+    ),
   ),
 }));
 

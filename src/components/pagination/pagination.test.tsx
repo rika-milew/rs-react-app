@@ -12,7 +12,7 @@ describe('pagination component', () => {
         loading={false}
         onPrev={vi.fn()}
         onNext={vi.fn()}
-      />
+      />,
     );
 
     expect(screen.getByText(/page/i)).toHaveTextContent('Page 1 of 10');
@@ -29,7 +29,7 @@ describe('pagination component', () => {
         loading={false}
         onPrev={vi.fn()}
         onNext={onNext}
-      />
+      />,
     );
 
     await user.click(screen.getByRole('button', { name: /next/i }));
@@ -48,7 +48,7 @@ describe('pagination component', () => {
         loading={false}
         onPrev={onPrevious}
         onNext={vi.fn()}
-      />
+      />,
     );
 
     await user.click(screen.getByRole('button', { name: /prev/i }));
@@ -64,7 +64,7 @@ describe('pagination component', () => {
         loading={false}
         onPrev={vi.fn()}
         onNext={vi.fn()}
-      />
+      />,
     );
 
     expect(screen.getByRole('button', { name: /prev/i })).toBeDisabled();
@@ -78,7 +78,7 @@ describe('pagination component', () => {
         loading={false}
         onPrev={vi.fn()}
         onNext={vi.fn()}
-      />
+      />,
     );
 
     expect(screen.getByRole('button', { name: /next/i })).toBeDisabled();
