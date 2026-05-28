@@ -190,6 +190,7 @@ export default defineConfig([
       '**/coverage/**',
       'eslint.config.js',
       'lint-staged.config.js',
+      'stylelint.config.js',
       '**/routeTree.gen.ts',
     ],
   },
