@@ -16,11 +16,10 @@ export default defineConfig([
   reactHooks.configs.flat.recommended,
   reactRefresh.configs.vite,
   eslintPluginUnicorn.configs.recommended,
-  eslintConfigPrettier,
+  eslintPluginPrettier,
   {
     files: ['**/*.{ts,tsx}'],
-    plugins: {
-    },
+    plugins: {},
     languageOptions: {
       globals: {
         ...globals.browser,

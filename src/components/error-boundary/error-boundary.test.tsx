@@ -10,15 +10,13 @@ const TestError = ({ isError }: { isError: boolean }) => {
   return <div>Expected content</div>;
 };
 
-let consoleSpy: ReturnType<typeof vi.spyOn>;
-
 describe('ErrorBoundary component', () => {
   beforeEach(() => {
-    consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    vi.spyOn(console, 'error').mockReturnValue(undefined);
   });
 
   afterEach(() => {
-    consoleSpy.mockRestore();
+    vi.restoreAllMocks();
   });
 
   it('renders children components when no error occurs', () => {
