@@ -10,7 +10,17 @@ import styles from '@/pages/search/search-page.module.css';
 
 const cx = classNames.bind(styles);
 
+type SearchParams = {
+  page?: number;
+};
+
 export const Route = createFileRoute('/_layout')({
+  validateSearch: (search: Record<string, unknown>): SearchParams => {
+    const page = Number(search.page);
+    return {
+      page: Number.isFinite(page) && page > 0 ? page : 1,
+    };
+  },
   component: LayoutRoute,
 });
 

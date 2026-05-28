@@ -7,7 +7,7 @@ import { useLocalStorage } from '@/hooks/use-local-storage';
 export const SearchPage = () => {
   const [searchQuery, setSearchQuery] = useLocalStorage('search', '');
   const navigate = useNavigate();
-  const { page = 1 } = useSearch({ from: '/_layout/' });
+  const { page = 1 } = useSearch({ from: '/_layout' });
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
