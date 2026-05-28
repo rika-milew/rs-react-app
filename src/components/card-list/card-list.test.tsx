@@ -25,7 +25,7 @@ describe('CardList component', () => {
       totalPages: 1,
     });
 
-    render(<CardList search="" />);
+    render(<CardList search="" page={1} onPageChange={vi.fn()} />);
 
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
   });
@@ -37,7 +37,7 @@ describe('CardList component', () => {
       totalPages: 85,
     });
 
-    render(<CardList search="" />);
+    render(<CardList search="" page={1} onPageChange={vi.fn()} />);
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: /next/i })).toBeInTheDocument();
@@ -52,7 +52,7 @@ describe('CardList component', () => {
       totalPages: 5,
     });
 
-    render(<CardList search="venusaur" />);
+    render(<CardList search="venusaur" page={1} onPageChange={vi.fn()} />);
 
     expect(
       screen.queryByRole('button', { name: /next/i }),
@@ -70,7 +70,7 @@ describe('CardList component', () => {
       totalPages: 1,
     });
 
-    render(<CardList search="" />);
+    render(<CardList search="" page={1} onPageChange={vi.fn()} />);
 
     const image = await screen.findByRole('img', {
       name: /bulbasaur/i,
@@ -91,7 +91,7 @@ describe('CardList component', () => {
       totalPages: 1,
     });
 
-    render(<CardList search="" />);
+    render(<CardList search="" page={1} onPageChange={vi.fn()} />);
 
     expect(await screen.findByText(/bulbasaur/i)).toBeInTheDocument();
     expect(screen.getByText(/ivysaur/i)).toBeInTheDocument();
@@ -105,7 +105,7 @@ describe('CardList component', () => {
       status: 'not-found',
     });
 
-    render(<CardList search="unknown" />);
+    render(<CardList search="unknown" page={1} onPageChange={vi.fn()} />);
 
     expect(await screen.findByText(/pokemon not found/i)).toBeInTheDocument();
   });
@@ -117,7 +117,7 @@ describe('CardList component', () => {
       totalPages: 1,
     });
 
-    render(<CardList search="" />);
+    render(<CardList search="" page={1} onPageChange={vi.fn()} />);
 
     const cards = screen.queryAllByRole('img');
 
@@ -130,7 +130,7 @@ describe('CardList component', () => {
       message: 'Server error',
     });
 
-    render(<CardList search="" />);
+    render(<CardList search="" page={1} onPageChange={vi.fn()} />);
 
     expect(await screen.findByText(/server error/i)).toBeInTheDocument();
   });
@@ -138,7 +138,7 @@ describe('CardList component', () => {
   it('shows error state when API request fails', async () => {
     mockedData.mockRejectedValue(new Error('Network failed'));
 
-    render(<CardList search="" />);
+    render(<CardList search="" page={1} onPageChange={vi.fn()} />);
 
     expect(
       await screen.findByText(/something went wrong/i),
@@ -152,7 +152,9 @@ describe('CardList component', () => {
       totalPages: 1,
     });
 
-    render(<CardList search="   BulBAsaur   " />);
+    render(
+      <CardList search="   BulBAsaur   " page={1} onPageChange={vi.fn()} />,
+    );
 
     await waitFor(() => {
       expect(mockedData).toHaveBeenCalledWith(0, 'bulbasaur');
@@ -166,9 +168,11 @@ describe('CardList component', () => {
       totalPages: 10,
     });
 
-    const { rerender } = render(<CardList search="bulbasaur" />);
+    const { rerender } = render(
+      <CardList search="bulbasaur" page={1} onPageChange={vi.fn()} />,
+    );
 
-    rerender(<CardList search="charmander" />);
+    rerender(<CardList search="charmander" page={1} onPageChange={vi.fn()} />);
 
     await waitFor(() => {
       expect(mockedData).toHaveBeenLastCalledWith(0, 'charmander');
@@ -182,18 +186,16 @@ describe('CardList component', () => {
       totalPages: 10,
     });
 
-    render(<CardList search="" />);
+    const onPageChange = vi.fn();
 
-    await waitFor(() => {
-      expect(mockedData).toHaveBeenCalledWith(0, '');
-    });
+    render(<CardList search="" page={1} onPageChange={onPageChange} />);
 
     const nextButton = await screen.findByRole('button', { name: /next/i });
 
     await userEvent.click(nextButton);
 
     await waitFor(() => {
-      expect(mockedData).toHaveBeenLastCalledWith(1, '');
+      expect(onPageChange).toHaveBeenCalledWith(2);
     });
   });
 
@@ -204,7 +206,7 @@ describe('CardList component', () => {
       totalPages: 10,
     });
 
-    render(<CardList search="" />);
+    render(<CardList search="" page={1} onPageChange={vi.fn()} />);
 
     const nextButton = await screen.findByRole('button', { name: /next/i });
     await userEvent.click(nextButton);
@@ -224,7 +226,7 @@ describe('CardList component', () => {
       totalPages: 3,
     });
 
-    render(<CardList search="" />);
+    render(<CardList search="" page={1} onPageChange={vi.fn()} />);
 
     const nextButton = await screen.findByRole('button', { name: /next/i });
     await userEvent.click(nextButton);

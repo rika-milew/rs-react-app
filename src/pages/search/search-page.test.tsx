@@ -3,6 +3,11 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { SearchPage } from './search-page';
 import userEvent from '@testing-library/user-event';
 
+vi.mock('@tanstack/react-router', () => ({
+  useNavigate: () => vi.fn(),
+  useSearch: () => ({ page: 1 }),
+}));
+
 describe('SearchPage', () => {
   beforeEach(() => {
     localStorage.clear();
