@@ -1,4 +1,5 @@
 import classNames from 'classnames/bind';
+import { useSearch } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { useDataList } from '@/hooks/use-data-list';
 import { Card } from '@/components/card/card';
@@ -13,13 +14,13 @@ const cx = classNames.bind(styles);
 
 type CardListProps = {
   search: string;
-  page: number;
   onPageChange: (page: number) => void;
 };
 
-export function CardList({ search, page, onPageChange }: CardListProps) {
+export function CardList({ search, onPageChange }: CardListProps) {
   const { data, totalPages, status, error, loadData } = useDataList();
   const { openDetailView } = useDetailNavigation();
+  const { page = 1 } = useSearch({ from: '/_layout' });
 
   useEffect(() => {
     if (status === 'success' && totalPages > 0 && page > totalPages) {
@@ -72,13 +73,7 @@ export function CardList({ search, page, onPageChange }: CardListProps) {
           />
         ))}
       </div>
-      {isListLoaded && !isLoading && (
-        <Pagination
-          page={page}
-          totalPages={totalPages}
-          onPageChange={onPageChange}
-        />
-      )}
+      {isListLoaded && !isLoading && <Pagination totalPages={totalPages} />}
     </section>
   );
 }

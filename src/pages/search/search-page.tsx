@@ -1,4 +1,4 @@
-import { useNavigate, useSearch } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { CardList } from '@/components/card-list/card-list';
 import { SearchBar } from '@/components/search-bar/search-bar';
 import { ErrorButton } from '@/components/error-button/error-button';
@@ -7,7 +7,6 @@ import { useLocalStorage } from '@/hooks/use-local-storage';
 export const SearchPage = () => {
   const [searchQuery, setSearchQuery] = useLocalStorage('search', '');
   const navigate = useNavigate();
-  const { page = 1 } = useSearch({ from: '/_layout' });
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -34,11 +33,7 @@ export const SearchPage = () => {
         value={searchQuery}
         onSearch={handleSearch}
       />
-      <CardList
-        search={searchQuery}
-        page={page}
-        onPageChange={handlePageChange}
-      />
+      <CardList search={searchQuery} onPageChange={handlePageChange} />
       <ErrorButton />
     </>
   );
