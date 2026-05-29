@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import { Button } from '@/components/button/button';
-import styles from './state-view.module.css';
+import styles from './error-state.module.css';
 
 const cx = classNames.bind(styles);
 
@@ -9,7 +9,7 @@ type Props = {
   onReload: () => void;
 };
 
-export const StateView = ({ message, onReload }: Props) => {
+export const ErrorState = ({ message, onReload }: Props) => {
   return (
     <div className={cx('state')}>
       <p>{message}</p>

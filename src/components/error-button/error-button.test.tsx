@@ -5,26 +5,28 @@ import userEvent from '@testing-library/user-event';
 import { ErrorBoundary } from '@/components/error-boundary/error-boundary';
 import { waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, type Store } from '@reduxjs/toolkit';
+import selectedItemsReducer from '@/store/slice';
 
 vi.mock('@/components/theme-toggle/theme-toggle', () => ({
   ThemeToggle: () => <button>Toggle theme</button>,
 }));
 
-const createMockStore = (preloadedState?: Record<string, unknown>) => {
-  const defaultState = { selectedItems: { selectedItems: [] } };
+type RootState = {
+  selectedItems: ReturnType<typeof selectedItemsReducer>;
+};
 
-  return configureStore({
+const createMockStore = (): Store<RootState> => {
+  return configureStore<RootState>({
     reducer: {
-      selectedItems: (state, _action) => state ?? { selectedItems: [] },
+      selectedItems: selectedItemsReducer,
     },
-    preloadedState: preloadedState ?? defaultState,
   });
 };
 
 describe('ErrorButton component', () => {
-  const renderWithProvider = (ui: React.ReactElement, initialState = {}) => {
-    const store = createMockStore(initialState);
+  const renderWithProvider = (ui: React.ReactElement) => {
+    const store = createMockStore();
     return {
       ...render(<Provider store={store}>{ui}</Provider>),
       store,
@@ -38,7 +40,7 @@ describe('ErrorButton component', () => {
   it('renders error button', () => {
     renderWithProvider(<ErrorButton />);
     expect(
-      screen.getByRole('button', { name: 'Trigger error' })
+      screen.getByRole('button', { name: 'Trigger error' }),
     ).toBeInTheDocument();
   });
 
@@ -48,7 +50,7 @@ describe('ErrorButton component', () => {
     renderWithProvider(
       <ErrorBoundary>
         <ErrorButton />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     await user.click(screen.getByRole('button'));

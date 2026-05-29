@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { Card, ID_LENGTH } from './card';
 import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, type Store } from '@reduxjs/toolkit';
 
 import {
   mockItemFull,
@@ -10,20 +10,23 @@ import {
   artworkMockImage,
 } from '@/test-utils/api-mock';
 
-const createMockStore = (preloadedState?: Record<string, unknown>) => {
-  const defaultState = { selectedItems: { selectedItems: [] } };
+import selectedItemsReducer from '@/store/slice';
 
-  return configureStore({
+type RootState = {
+  selectedItems: ReturnType<typeof selectedItemsReducer>;
+};
+
+const createMockStore = (): Store<RootState> => {
+  return configureStore<RootState>({
     reducer: {
-      selectedItems: (state, _action) => state ?? { selectedItems: [] },
+      selectedItems: selectedItemsReducer,
     },
-    preloadedState: preloadedState ?? defaultState,
   });
 };
 
 describe('card component', () => {
-  const renderWithProvider = (ui: React.ReactElement, initialState = {}) => {
-    const store = createMockStore(initialState);
+  const renderWithProvider = (ui: React.ReactElement) => {
+    const store = createMockStore();
     return {
       ...render(<Provider store={store}>{ui}</Provider>),
       store,
@@ -37,7 +40,7 @@ describe('card component', () => {
       const expectedName =
         mockItemFull.name.charAt(0).toUpperCase() + mockItemFull.name.slice(1);
       expect(
-        screen.getByRole('heading', { name: expectedName })
+        screen.getByRole('heading', { name: expectedName }),
       ).toBeInTheDocument();
 
       const expectedId = `#${mockItemFull.id.toString().padStart(ID_LENGTH, '0')}`;
@@ -99,7 +102,7 @@ describe('card component', () => {
         .join(', ');
 
       expect(screen.getByText('Types:').nextElementSibling).toHaveTextContent(
-        expectedType
+        expectedType,
       );
 
       expect(expectedType).not.toContain(',');
@@ -114,7 +117,7 @@ describe('card component', () => {
 
       expect(image).toHaveAttribute(
         'src',
-        mockItemPartial.sprites.front_default
+        mockItemPartial.sprites.front_default,
       );
     });
 

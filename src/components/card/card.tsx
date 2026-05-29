@@ -46,7 +46,7 @@ export function Card({ item, variant = 'detailed', onClick }: Props) {
 
   const options = config.data.filter(
     (option) =>
-      (option.visible === 'always' || isDetailed) && option.condition !== false
+      (option.visible === 'always' || isDetailed) && option.condition !== false,
   );
 
   const handleClick = (event: React.MouseEvent | React.KeyboardEvent) => {
@@ -138,7 +138,7 @@ type CheckboxProps = {
 export function Checkbox({ id, name }: CheckboxProps) {
   const dispatch = useDispatch();
   const selectedItems = useSelector(
-    (state: RootState) => state.selectedItems.selectedItems
+    (state: RootState) => state.selectedItems.selectedItems,
   );
   const isSelectedItem = selectedItems.includes(id.toString());
 

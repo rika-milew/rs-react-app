@@ -1,10 +1,10 @@
 import js from '@eslint/js';
-import { defineConfig, globalIgnores } from 'eslint/config';
+import { defineConfig } from 'eslint/config';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import eslintPluginUnicorn from 'eslint-plugin-unicorn';
-import eslintConfigPrettier from 'eslint-config-prettier/flat';
+import eslintPluginPrettier from 'eslint-plugin-prettier/recommended';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
@@ -16,20 +16,10 @@ export default defineConfig([
   reactHooks.configs.flat.recommended,
   reactRefresh.configs.vite,
   eslintPluginUnicorn.configs.recommended,
-  eslintConfigPrettier,
+  eslintPluginPrettier,
   {
     files: ['**/*.{ts,tsx}'],
-    plugins: {
-      // 'react': react,
-      // 'react-hooks': reactHooks,
-      // 'react-refresh': reactRefresh,
-      // 'import': importPlugin,
-      // 'vitest': vitest,
-      // 'sort-exports': sortExports,
-      // 'import-newlines': importNewlines,
-      // '@stylistic': stylistic,
-      // 'unicorn': eslintPluginUnicorn,
-    },
+    plugins: {},
     languageOptions: {
       globals: {
         ...globals.browser,
@@ -62,8 +52,6 @@ export default defineConfig([
     },
     rules: {
       // 🔴 Mandatory
-      ...reactPlugin.configs.recommended.rules, //?
-      ...reactHooks.configs.recommended.rules, //?
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
@@ -82,6 +70,10 @@ export default defineConfig([
       '@typescript-eslint/no-unsafe-member-access': 'error',
       '@typescript-eslint/no-unsafe-return': 'error',
       '@typescript-eslint/no-unsafe-call': 'error',
+      '@typescript-eslint/no-confusing-void-expression': [
+        'error',
+        { ignoreArrowShorthand: true },
+      ],
 
       'react-hooks/exhaustive-deps': 'warn',
 
@@ -138,7 +130,7 @@ export default defineConfig([
       semi: ['error', 'always'],
       curly: ['error', 'all'],
       indent: ['error', 2, { SwitchCase: 1 }],
-      'comma-dangle': ['off'],
+      'comma-dangle': ['error', 'always-multiline'],
       'object-curly-spacing': ['error', 'always'],
       'brace-style': [
         'error',
@@ -163,6 +155,7 @@ export default defineConfig([
       'unicorn/filename-case': 'off',
       'unicorn/number-literal-case': 'off',
       'unicorn/prefer-query-selector': 'off',
+      'unicorn/explicit-length-check': 'off',
     },
   },
   {
@@ -178,15 +171,14 @@ export default defineConfig([
   {
     files: ['**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', '**/*.spec.tsx'],
     rules: {
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/await-thenable': 'off',
-      'max-lines-per-function': [
-        'off',
-        { max: 80, skipBlankLines: true, skipComments: true },
-      ],
+      'max-lines-per-function': 'off',
+      '@typescript-eslint/consistent-type-assertions': 'off',
+    },
+  },
+  {
+    files: ['**/store/**/*.ts', '**/store/**/*.tsx'],
+    rules: {
+      'unicorn/prefer-spread': 'off',
     },
   },
   {
@@ -198,6 +190,7 @@ export default defineConfig([
       '**/coverage/**',
       'eslint.config.js',
       'lint-staged.config.js',
+      'stylelint.config.js',
       '**/routeTree.gen.ts',
     ],
   },

@@ -1,3 +1,4 @@
+import { Button } from '@/components/button/button';
 import classNames from 'classnames/bind';
 import styles from './pagination.module.css';
 
@@ -6,40 +7,42 @@ const cx = classNames.bind(styles);
 type Props = {
   page: number;
   totalPages: number;
-  loading: boolean;
-  onPrev: () => void;
-  onNext: () => void;
+  onPageChange: (page: number) => void;
 };
 
-export const Pagination = ({
-  page,
-  totalPages,
-  loading,
-  onPrev,
-  onNext,
-}: Props) => {
+export const Pagination = ({ page, totalPages, onPageChange }: Props) => {
+  const validPage = Math.min(Math.max(1, page), totalPages || 1);
+
+  const handlePreviousPage = () => {
+    if (validPage > 1) {
+      onPageChange(validPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (validPage < totalPages) {
+      onPageChange(validPage + 1);
+    }
+  };
+
   return (
     <div className={cx('pagination')}>
-      <button
-        type="button"
-        className={cx('pagination-button')}
-        disabled={page === 0 || loading}
-        onClick={onPrev}
-      >
-        ← Prev
-      </button>
+      <Button
+        text="← Prev"
+        onClick={handlePreviousPage}
+        disabled={validPage === 1}
+        variant="pagination"
+      />
       <span className={cx('page-info')}>
-        Page <span className={cx('page-number')}>{page + 1}</span> of{' '}
+        Page <span className={cx('page-number')}>{validPage}</span> of{' '}
         {totalPages}
       </span>
-      <button
-        type="button"
-        className={cx('pagination-button')}
-        disabled={page + 1 >= totalPages || loading}
-        onClick={onNext}
-      >
-        Next →
-      </button>
+      <Button
+        text="Next →"
+        onClick={handleNextPage}
+        disabled={validPage >= totalPages}
+        variant="pagination"
+      />
     </div>
   );
 };

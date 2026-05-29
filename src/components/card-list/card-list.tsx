@@ -1,12 +1,11 @@
 import classNames from 'classnames/bind';
-import { useEffect, useCallback } from 'react';
+import { useEffect } from 'react';
 import { useDataList } from '@/hooks/use-data-list';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
 import { Pagination } from '@/components/pagination/pagination';
-import { StateView } from '@/components/state-view/state-view';
-import { usePagination } from '@/hooks/use-pagination';
 import { ERROR_MESSAGES, ROUTES } from '@/constants/constants';
+import { ErrorState } from '@/components/error-state/error-state';
 import styles from './card-list.module.css';
 import { useNavigate } from '@tanstack/react-router';
 
@@ -14,44 +13,38 @@ const cx = classNames.bind(styles);
 
 type Props = {
   search: string;
+  page: number;
+  onPageChange: (page: number) => void;
 };
 
-export function CardList({ search }: Props) {
+export function CardList({ search, page, onPageChange }: Props) {
   const { data, totalPages, status, error, loadData } = useDataList();
-
-  const { page, handlePrevious, handleNext, setPage } =
-    usePagination(totalPages);
 
   const navigate = useNavigate();
 
-  const openDetailView = useCallback(
-    (id: number): void => {
-      const parameters = new URLSearchParams(globalThis.location.search);
-      const currentPage = Number(parameters.get('page')) || 1;
-
-      void navigate({
-        to: ROUTES.DETAIL,
-        params: { detailId: String(id) },
-        search: { page: currentPage },
-      });
-    },
-    [navigate]
-  );
+  const openDetailView = (id: number) => {
+    void navigate({
+      to: ROUTES.DETAIL,
+      params: { detailId: String(id) },
+    });
+  };
 
   useEffect(() => {
-    setPage(0);
-  }, [search, setPage]);
+    if (status === 'success' && totalPages > 0 && page > totalPages) {
+      onPageChange(totalPages);
+    }
+  }, [status, totalPages, page, onPageChange]);
 
   useEffect(() => {
-    void loadData(search, page);
+    void loadData(search, page - 1);
   }, [search, page, loadData]);
 
   if (status === 'error') {
     return (
-      <StateView
+      <ErrorState
         message={error ?? ERROR_MESSAGES.DEFAULT}
         onReload={() => {
-          void loadData(search, page);
+          void loadData(search, page - 1);
         }}
       />
     );
@@ -59,16 +52,17 @@ export function CardList({ search }: Props) {
 
   if (status === 'not-found') {
     return (
-      <StateView
+      <ErrorState
         message={ERROR_MESSAGES.NOTFOUND}
         onReload={() => {
-          void loadData(search, page);
+          void loadData(search, page - 1);
         }}
       />
     );
   }
 
   const isListLoaded = status === 'success';
+  const isLoading = status === 'loading';
 
   return (
     <section className={cx('section')}>
@@ -86,13 +80,11 @@ export function CardList({ search }: Props) {
           />
         ))}
       </div>
-      {isListLoaded && (
+      {isListLoaded && !isLoading && (
         <Pagination
           page={page}
           totalPages={totalPages}
-          loading={false}
-          onPrev={handlePrevious}
-          onNext={handleNext}
+          onPageChange={onPageChange}
         />
       )}
     </section>

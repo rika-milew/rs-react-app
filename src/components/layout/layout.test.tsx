@@ -2,26 +2,28 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { Layout } from './layout';
 import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, type Store } from '@reduxjs/toolkit';
+import selectedItemsReducer from '@/store/slice';
 
 vi.mock('@/components/theme-toggle/theme-toggle', () => ({
   ThemeToggle: () => <button>Toggle theme</button>,
 }));
 
-const createMockStore = (preloadedState?: Record<string, unknown>) => {
-  const defaultState = { selectedItems: { selectedItems: [] } };
+type RootState = {
+  selectedItems: ReturnType<typeof selectedItemsReducer>;
+};
 
-  return configureStore({
+const createMockStore = (): Store<RootState> => {
+  return configureStore<RootState>({
     reducer: {
-      selectedItems: (state, _action) => state ?? { selectedItems: [] },
+      selectedItems: selectedItemsReducer,
     },
-    preloadedState: preloadedState ?? defaultState,
   });
 };
 
 describe('layout component', () => {
-  const renderWithProvider = (ui: React.ReactElement, initialState = {}) => {
-    const store = createMockStore(initialState);
+  const renderWithProvider = (ui: React.ReactElement) => {
+    const store = createMockStore();
     return {
       ...render(<Provider store={store}>{ui}</Provider>),
       store,
@@ -32,7 +34,7 @@ describe('layout component', () => {
     renderWithProvider(
       <Layout>
         <div>Content</div>
-      </Layout>
+      </Layout>,
     );
 
   it('renders layout structure with header, footer and children', () => {

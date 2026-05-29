@@ -55,7 +55,7 @@ describe('ThemeToggle component', () => {
     render(<ThemeToggle />);
 
     expect(
-      screen.getByRole('button', { name: /switch to the light mode/i })
+      screen.getByRole('button', { name: /switch to the light mode/i }),
     ).toBeInTheDocument();
   });
 });

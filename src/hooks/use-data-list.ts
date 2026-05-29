@@ -45,7 +45,7 @@ export function useDataList(): DataList {
         return;
       }
 
-      switch (result.type) {
+      switch (result.status) {
         case API_STATUS.SUCCESS: {
           setData(result.data);
           setTotalPages(result.totalPages);

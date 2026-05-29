@@ -2,8 +2,8 @@ import classNames from 'classnames/bind';
 import { useEffect, useState, useCallback } from 'react';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
-import { StateView } from '@/components/state-view/state-view';
-import { API_STATUS, ERROR_MESSAGES, ROUTES } from '@/constants/constants';
+import { API_STATUS, ERROR_MESSAGES } from '@/constants/constants';
+import { ErrorState } from '@/components/error-state/error-state';
 import styles from './detail-view.module.css';
 import type { DetailResult } from '@/services/detail-service';
 import { getDetailData } from '@/services/detail-service';
@@ -18,20 +18,16 @@ type DetailViewProps = {
 type ViewState = { type: typeof API_STATUS.LOADING } | DetailResult;
 
 function renderErrorState(message: string, onReload: () => void) {
-  return <StateView message={message} onReload={onReload} />;
+  return <ErrorState message={message} onReload={onReload} />;
 }
 
 export function DetailView({ detailId }: DetailViewProps) {
   const [result, setResult] = useState<ViewState>({ type: API_STATUS.LOADING });
   const navigate = useNavigate();
 
-  const closeDetailView = useCallback((): void => {
-    const parameters = new URLSearchParams(globalThis.location.search);
-    const page = Number(parameters.get('page')) || 1;
-
+  const closeDetailView = useCallback(() => {
     void navigate({
-      to: ROUTES.HOME,
-      search: { page },
+      to: '/',
     });
   }, [navigate]);
 

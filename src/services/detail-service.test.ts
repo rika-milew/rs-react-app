@@ -28,7 +28,7 @@ describe('getDetailData', () => {
 
   it('returns not found status when API returns 404', async () => {
     vi.mocked(getItemFull).mockRejectedValue(
-      new ApiError(HTTP_STATUS.NOT_FOUND, 'Not Found')
+      new ApiError(HTTP_STATUS.NOT_FOUND, 'Not Found'),
     );
 
     const result = await getDetailData('1000');
@@ -38,7 +38,7 @@ describe('getDetailData', () => {
 
   it('returns error status with server message when API returns 500', async () => {
     vi.mocked(getItemFull).mockRejectedValue(
-      new ApiError(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Server Error')
+      new ApiError(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Server Error'),
     );
 
     const result = await getDetailData('1');
@@ -51,7 +51,7 @@ describe('getDetailData', () => {
 
   it('returns error status with network message for network error', async () => {
     vi.mocked(getItemFull).mockRejectedValue(
-      new ApiError(HTTP_STATUS.NETWORK_ERROR, 'Network Error')
+      new ApiError(HTTP_STATUS.NETWORK_ERROR, 'Network Error'),
     );
 
     const result = await getDetailData('1');

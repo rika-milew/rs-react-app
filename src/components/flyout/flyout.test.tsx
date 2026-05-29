@@ -43,7 +43,7 @@ const renderWithProvider = (selectedItems: number[] = []) => {
     ...render(
       <Provider store={store}>
         <Flyout />
-      </Provider>
+      </Provider>,
     ),
     store,
   };
@@ -113,8 +113,8 @@ describe('flyout component', () => {
         new Promise((resolve) =>
           setTimeout(() => {
             resolve([mockItemFull]);
-          }, 1000)
-        )
+          }, 1000),
+        ),
     );
 
     renderWithProvider([1]);
@@ -142,7 +142,7 @@ describe('flyout component', () => {
     await waitFor(() => {
       expect(consoleSpy).toHaveBeenCalledWith(
         'Failed to download CSV:',
-        expect.any(Error)
+        expect.any(Error),
       );
     });
 

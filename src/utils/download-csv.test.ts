@@ -10,7 +10,7 @@ describe('downloadCSV', () => {
     vi.spyOn(globalThis, 'Blob').mockImplementation(
       function (content, options) {
         return { content, options };
-      }
+      },
     );
 
     globalThis.URL.createObjectURL = vi.fn(() => 'blob:url');

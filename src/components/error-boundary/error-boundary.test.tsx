@@ -3,16 +3,18 @@ import { describe, it, expect, vi } from 'vitest';
 import { ErrorBoundary } from './error-boundary';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, type Store } from '@reduxjs/toolkit';
+import selectedItemsReducer from '@/store/slice';
 
-const createMockStore = (preloadedState?: Record<string, unknown>) => {
-  const defaultState = { selectedItems: { selectedItems: [] } };
+type RootState = {
+  selectedItems: ReturnType<typeof selectedItemsReducer>;
+};
 
-  return configureStore({
+const createMockStore = (): Store<RootState> => {
+  return configureStore<RootState>({
     reducer: {
-      selectedItems: (state, _action) => state ?? { selectedItems: [] },
+      selectedItems: selectedItemsReducer,
     },
-    preloadedState: preloadedState ?? defaultState,
   });
 };
 
@@ -28,8 +30,8 @@ vi.mock('@/components/theme-toggle/theme-toggle', () => ({
 }));
 
 describe('ErrorBoundary component', () => {
-  const renderWithProvider = (ui: React.ReactElement, initialState = {}) => {
-    const store = createMockStore(initialState);
+  const renderWithProvider = (ui: React.ReactElement) => {
+    const store = createMockStore();
     return {
       ...render(<Provider store={store}>{ui}</Provider>),
       store,
@@ -48,7 +50,7 @@ describe('ErrorBoundary component', () => {
     renderWithProvider(
       <ErrorBoundary>
         <div>App Content</div>
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(screen.getByText('App Content')).toBeInTheDocument();
@@ -58,12 +60,12 @@ describe('ErrorBoundary component', () => {
     renderWithProvider(
       <ErrorBoundary>
         <TestError isError={true} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(screen.getByText('Something went wrong')).toBeInTheDocument();
     expect(
-      screen.getByText('Please try again or reset the app.')
+      screen.getByText('Please try again or reset the app.'),
     ).toBeInTheDocument();
   });
 
@@ -71,7 +73,7 @@ describe('ErrorBoundary component', () => {
     renderWithProvider(
       <ErrorBoundary>
         <TestError isError={true} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(screen.getByRole('button')).toBeInTheDocument();
@@ -82,7 +84,7 @@ describe('ErrorBoundary component', () => {
     renderWithProvider(
       <ErrorBoundary>
         <div>App Content</div>
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(screen.getByText('App Content')).toBeInTheDocument();
@@ -95,7 +97,7 @@ describe('ErrorBoundary component', () => {
     renderWithProvider(
       <ErrorBoundary>
         <TestError isError={true} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
@@ -107,7 +109,7 @@ describe('ErrorBoundary component', () => {
     await user.click(button);
 
     expect(
-      await screen.findByRole('button', { name: /try again/i })
+      await screen.findByRole('button', { name: /try again/i }),
     ).toBeInTheDocument();
   });
 });

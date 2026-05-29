@@ -27,9 +27,9 @@ describe('getData service', () => {
 
     const result = await getData(0, 'bulbasaur');
 
-    expect(result.type).toBe('success');
+    expect(result.status).toBe('success');
 
-    if (result.type === 'success') {
+    if (result.status === 'success') {
       expect(result.data).toHaveLength(1);
       expect(result.data[0].name).toBe('bulbasaur');
     }
@@ -37,24 +37,24 @@ describe('getData service', () => {
 
   it('returns not found when API responds with 404', async () => {
     mockedItemFull.mockRejectedValue(
-      new ApiError(HTTP_STATUS.NOT_FOUND, 'not found')
+      new ApiError(HTTP_STATUS.NOT_FOUND, 'not found'),
     );
 
     const result = await getData(0, 'unknownItem');
 
-    expect(result.type).toBe('not-found');
+    expect(result.status).toBe('not-found');
   });
 
   it('returns server error message when API responds with 500', async () => {
     mockedItems.mockRejectedValue(
-      new ApiError(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'server error')
+      new ApiError(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'server error'),
     );
 
     const result = await getData(0, '');
 
-    expect(result.type).toBe('error');
+    expect(result.status).toBe('error');
 
-    if (result.type === 'error') {
+    if (result.status === 'error') {
       expect(result.message).toMatch(/server error/i);
     }
   });
@@ -64,9 +64,9 @@ describe('getData service', () => {
 
     const result = await getData(0, '');
 
-    expect(result.type).toBe('error');
+    expect(result.status).toBe('error');
 
-    if (result.type === 'error') {
+    if (result.status === 'error') {
       expect(result.message).toMatch(/network error/i);
     }
   });
@@ -76,7 +76,7 @@ describe('getData service', () => {
 
     const result = await getData(0, '');
 
-    expect(result.type).toBe('error');
+    expect(result.status).toBe('error');
   });
 
   it('returns paginated list when no search query', async () => {
@@ -96,9 +96,9 @@ describe('getData service', () => {
 
     const result = await getData(0, '');
 
-    expect(result.type).toBe('success');
+    expect(result.status).toBe('success');
 
-    if (result.type === 'success') {
+    if (result.status === 'success') {
       expect(result.data).toHaveLength(2);
     }
   });

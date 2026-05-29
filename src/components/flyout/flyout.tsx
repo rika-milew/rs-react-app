@@ -13,7 +13,7 @@ const cx = classNames.bind(styles);
 export function Flyout() {
   const dispatch = useDispatch();
   const selectedItems = useSelector(
-    (state: RootState) => state.selectedItems.selectedItems
+    (state: RootState) => state.selectedItems.selectedItems,
   );
   const count = selectedItems.length;
   const [isDownloading, setIsDownloading] = useState(false);

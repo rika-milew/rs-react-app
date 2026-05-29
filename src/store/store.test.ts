@@ -1,10 +1,13 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { configureStore } from '@reduxjs/toolkit';
-import type { EnhancedStore } from '@reduxjs/toolkit';
+import { configureStore, type Store } from '@reduxjs/toolkit';
 import selectedItemsReducer, { toggleItem, clearAllItems } from './slice';
 
-const createTestStore = (): EnhancedStore => {
-  return configureStore({
+type RootState = {
+  selectedItems: ReturnType<typeof selectedItemsReducer>;
+};
+
+const createTestStore = (): Store<RootState> => {
+  return configureStore<RootState>({
     reducer: {
       selectedItems: selectedItemsReducer,
     },
