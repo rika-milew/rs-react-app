@@ -7,7 +7,7 @@ import { ErrorState } from '@/components/error-state/error-state';
 import styles from './detail-view.module.css';
 import type { DetailResult } from '@/services/detail-service';
 import { getDetailData } from '@/services/detail-service';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 
 const cx = classNames.bind(styles);
 
@@ -26,12 +26,14 @@ export function DetailView({ detailId }: DetailViewProps) {
     status: API_STATUS.LOADING,
   });
   const navigate = useNavigate();
+  const search = useSearch({ from: '/_layout' });
 
   const closeDetailView = useCallback(() => {
     void navigate({
       to: '/',
+      search,
     });
-  }, [navigate]);
+  }, [navigate, search]);
 
   useEffect(() => {
     let cancelled = false;

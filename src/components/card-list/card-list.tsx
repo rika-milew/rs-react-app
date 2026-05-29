@@ -18,13 +18,15 @@ type CardListProps = {
 
 export function CardList({ search }: CardListProps) {
   const { data, totalPages, status, error, loadData } = useDataList();
-  const { page = 1 } = useSearch({ from: '/_layout' });
+  const searchParams = useSearch({ from: '/_layout' });
+  const { page = 1 } = searchParams;
   const navigate = useNavigate();
 
   const openDetailView = (id: number) => {
     void navigate({
       to: ROUTES.DETAIL,
       params: { detailId: String(id) },
+      search: searchParams,
     });
   };
 
