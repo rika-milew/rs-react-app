@@ -1,4 +1,5 @@
 import classNames from 'classnames/bind';
+import { useSearch } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { useDataList } from '@/hooks/use-data-list';
 import { Card } from '@/components/card/card';
@@ -11,15 +12,13 @@ import { useNavigate } from '@tanstack/react-router';
 
 const cx = classNames.bind(styles);
 
-type Props = {
+type CardListProps = {
   search: string;
-  page: number;
-  onPageChange: (page: number) => void;
 };
 
-export function CardList({ search, page, onPageChange }: Props) {
+export function CardList({ search }: CardListProps) {
   const { data, totalPages, status, error, loadData } = useDataList();
-
+  const { page = 1 } = useSearch({ from: '/_layout' });
   const navigate = useNavigate();
 
   const openDetailView = (id: number) => {
@@ -28,12 +27,6 @@ export function CardList({ search, page, onPageChange }: Props) {
       params: { detailId: String(id) },
     });
   };
-
-  useEffect(() => {
-    if (status === 'success' && totalPages > 0 && page > totalPages) {
-      onPageChange(totalPages);
-    }
-  }, [status, totalPages, page, onPageChange]);
 
   useEffect(() => {
     void loadData(search, page - 1);
@@ -80,13 +73,7 @@ export function CardList({ search, page, onPageChange }: Props) {
           />
         ))}
       </div>
-      {isListLoaded && !isLoading && (
-        <Pagination
-          page={page}
-          totalPages={totalPages}
-          onPageChange={onPageChange}
-        />
-      )}
+      {isListLoaded && !isLoading && <Pagination totalPages={totalPages} />}
     </section>
   );
 }

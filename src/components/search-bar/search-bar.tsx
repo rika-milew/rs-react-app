@@ -5,12 +5,12 @@ import styles from './search-bar.module.css';
 
 const cx = classNames.bind(styles);
 
-type Props = {
+type SearchBarProps = {
   value?: string;
   onSearch: (value: string) => void;
 };
 
-export const SearchBar = ({ value = '', onSearch }: Props) => {
+export const SearchBar = ({ value = '', onSearch }: SearchBarProps) => {
   const [query, setQuery] = useState(value);
 
   const handleChange = (event_: React.ChangeEvent<HTMLInputElement>) => {

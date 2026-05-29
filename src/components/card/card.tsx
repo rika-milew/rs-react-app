@@ -13,13 +13,13 @@ import mockImage from '@/assets/mock-image.png';
 
 export const ID_LENGTH = 3;
 
-type Props = {
+type CardProps = {
   item: PokemonWithDescription;
   variant?: 'detailed' | 'short';
   onClick?: () => void;
 };
 
-export function Card({ item, variant = 'detailed', onClick }: Props) {
+export function Card({ item, variant = 'detailed', onClick }: CardProps) {
   const { id, name, sprites } = item;
 
   const image =

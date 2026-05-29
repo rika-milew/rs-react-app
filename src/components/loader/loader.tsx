@@ -3,11 +3,11 @@ import styles from './loader.module.css';
 
 const cx = classNames.bind(styles);
 
-type Props = {
+type LoaderProps = {
   loading?: boolean;
 };
 
-export function Loader({ loading = true }: Props) {
+export function Loader({ loading = true }: LoaderProps) {
   if (!loading) {
     return null;
   }

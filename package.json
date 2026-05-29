@@ -23,6 +23,7 @@
       "prettier --write"
     ],
     "src/**/*.{css,scss}": [
+      "stylelint --fix",
       "prettier --write"
     ]
   },
