@@ -51,7 +51,7 @@
   }
 }
 
-.gray {
+.primary {
   color: var(--text-basic);
   background-color: var(--card-background);
 

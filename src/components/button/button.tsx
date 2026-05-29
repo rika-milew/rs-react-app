@@ -7,7 +7,7 @@ type ButtonProps = {
   text: string;
   onClick: () => void;
   disabled?: boolean;
-  variant?: 'basic' | 'gray' | 'error' | 'secondary';
+  variant?: 'basic' | 'primary' | 'error' | 'secondary';
   className?: string;
 };
 

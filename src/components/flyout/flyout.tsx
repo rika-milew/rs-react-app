@@ -55,7 +55,11 @@ export function Flyout() {
         </span>
       </span>
       <div className={cx('buttons')}>
-        <Button variant="gray" onClick={handleClearAll} text="Unselect all" />
+        <Button
+          variant="primary"
+          onClick={handleClearAll}
+          text="Unselect all"
+        />
         <Button
           variant="basic"
           onClick={() => {
