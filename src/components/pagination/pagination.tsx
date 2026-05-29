@@ -31,7 +31,7 @@ export const Pagination = ({ page, totalPages, onPageChange }: Props) => {
         text="← Prev"
         onClick={handlePreviousPage}
         disabled={validPage === 1}
-        variant="pagination"
+        variant="secondary"
       />
       <span className={cx('page-info')}>
         Page <span className={cx('page-number')}>{validPage}</span> of{' '}
@@ -41,7 +41,7 @@ export const Pagination = ({ page, totalPages, onPageChange }: Props) => {
         text="Next →"
         onClick={handleNextPage}
         disabled={validPage >= totalPages}
-        variant="pagination"
+        variant="secondary"
       />
     </div>
   );
