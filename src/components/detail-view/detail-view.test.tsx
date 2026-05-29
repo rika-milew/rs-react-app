@@ -12,9 +12,11 @@ vi.mock('@/services/detail-service', () => ({
 }));
 
 const mockNavigate = vi.fn();
+const mockSearch = { search: 'pikachu', page: 1 };
 
 vi.mock('@tanstack/react-router', () => ({
   useNavigate: () => mockNavigate,
+  useSearch: () => mockSearch,
 }));
 
 vi.mock('@/components/card/card', () => ({
@@ -115,7 +117,7 @@ describe('DetailView', () => {
     await user.click(closeButton);
 
     expect(mockNavigate).toHaveBeenCalledTimes(1);
-    expect(mockNavigate).toHaveBeenCalledWith({ to: '/' });
+    expect(mockNavigate).toHaveBeenCalledWith({ to: '/', search: mockSearch });
   });
 
   it('does not close the card when clicking on the detail card', async () => {
