@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Button } from '@/components/button/button';
 import { useSearch, useNavigate } from '@tanstack/react-router';
 import classNames from 'classnames/bind';
@@ -14,6 +15,17 @@ export const Pagination = ({ totalPages }: PaginationProps) => {
   const { page = 1 } = useSearch({ from: '/_layout' });
 
   const validPage = Math.max(1, Math.min(page, totalPages || 1));
+
+  useEffect(() => {
+    if (totalPages > 0 && (page < 1 || page > totalPages)) {
+      const validPage = Math.max(1, Math.min(page, totalPages));
+      void navigate({
+        to: '.',
+        search: { page: validPage },
+        replace: true,
+      });
+    }
+  }, [page, totalPages, navigate]);
 
   const handlePageChange = (newPage: number) => {
     const validNewPage = Math.max(1, Math.min(newPage, totalPages));

@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import { useSearch, useNavigate } from '@tanstack/react-router';
+import { useSearch } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { useDataList } from '@/hooks/use-data-list';
 import { Card } from '@/components/card/card';
@@ -20,17 +20,6 @@ export function CardList({ search }: CardListProps) {
   const { data, totalPages, status, error, loadData } = useDataList();
   const { openDetailView } = useDetailNavigation();
   const { page = 1 } = useSearch({ from: '/_layout' });
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (status === 'success' && totalPages > 0 && page > totalPages) {
-      void navigate({
-        to: '.',
-        search: { page: totalPages },
-        replace: true,
-      });
-    }
-  }, [status, totalPages, page, navigate]);
 
   useEffect(() => {
     void loadData(search, page - 1);
