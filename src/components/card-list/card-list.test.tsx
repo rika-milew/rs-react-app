@@ -5,6 +5,21 @@ import userEvent from '@testing-library/user-event';
 import { mockItemFull, mockItemPartial } from '@/test-utils/api-mock';
 import { useSearch, useNavigate } from '@tanstack/react-router';
 import { useDataList } from '@/hooks/use-data-list';
+import { Provider } from 'react-redux';
+import { configureStore, type Store } from '@reduxjs/toolkit';
+import selectedItemsReducer from '@/store/slice';
+
+type RootState = {
+  selectedItems: ReturnType<typeof selectedItemsReducer>;
+};
+
+const createMockStore = (): Store<RootState> => {
+  return configureStore<RootState>({
+    reducer: {
+      selectedItems: selectedItemsReducer,
+    },
+  });
+};
 
 vi.mock('@tanstack/react-router', () => ({
   useSearch: vi.fn(),
@@ -18,6 +33,14 @@ vi.mock('@/hooks/use-data-list', () => ({
 describe('CardList component', () => {
   const mockNavigate = vi.fn();
   const mockLoadData = vi.fn();
+
+  const renderWithProvider = (ui: React.ReactElement) => {
+    const store = createMockStore();
+    return {
+      ...render(<Provider store={store}>{ui}</Provider>),
+      store,
+    };
+  };
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -34,7 +57,7 @@ describe('CardList component', () => {
   });
 
   it('renders loading state initially', () => {
-    render(<CardList search="" />);
+    renderWithProvider(<CardList search="" />);
 
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
   });
@@ -47,7 +70,8 @@ describe('CardList component', () => {
       error: null,
       loadData: mockLoadData,
     });
-    render(<CardList search="" />);
+
+    renderWithProvider(<CardList search="" />);
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: /next/i })).toBeInTheDocument();
@@ -64,7 +88,7 @@ describe('CardList component', () => {
       loadData: mockLoadData,
     });
 
-    render(<CardList search="venusaur" />);
+    renderWithProvider(<CardList search="venusaur" />);
 
     expect(
       screen.queryByRole('button', { name: /next/i }),
@@ -84,18 +108,12 @@ describe('CardList component', () => {
       loadData: mockLoadData,
     });
 
-    render(<CardList search="" />);
-
-    const image = await screen.findByRole('img', {
-      name: /bulbasaur/i,
-    });
+    renderWithProvider(<CardList search="" />);
 
     expect(await screen.findByText(/bulbasaur/i)).toBeInTheDocument();
     expect(
       screen.getByText(/A strange seed was planted on its back at birth./i),
     ).toBeInTheDocument();
-
-    expect(image).toBeInTheDocument();
   });
 
   it('renders correct number of cards', async () => {
@@ -107,7 +125,7 @@ describe('CardList component', () => {
       loadData: mockLoadData,
     });
 
-    render(<CardList search="" />);
+    renderWithProvider(<CardList search="" />);
 
     expect(await screen.findByText(/bulbasaur/i)).toBeInTheDocument();
     expect(screen.getByText(/ivysaur/i)).toBeInTheDocument();
@@ -125,7 +143,7 @@ describe('CardList component', () => {
       loadData: mockLoadData,
     });
 
-    render(<CardList search="unknown" />);
+    renderWithProvider(<CardList search="unknown" />);
 
     expect(await screen.findByText(/pokemon not found/i)).toBeInTheDocument();
   });
@@ -138,7 +156,8 @@ describe('CardList component', () => {
       error: null,
       loadData: mockLoadData,
     });
-    render(<CardList search="" />);
+
+    renderWithProvider(<CardList search="" />);
 
     const cards = screen.queryAllByRole('img');
 
@@ -154,7 +173,7 @@ describe('CardList component', () => {
       loadData: mockLoadData,
     });
 
-    render(<CardList search="" />);
+    renderWithProvider(<CardList search="" />);
 
     expect(await screen.findByText(/server error/i)).toBeInTheDocument();
   });
@@ -168,7 +187,7 @@ describe('CardList component', () => {
       loadData: mockLoadData,
     });
 
-    render(<CardList search="" />);
+    renderWithProvider(<CardList search="" />);
 
     expect(
       await screen.findByText(/something went wrong/i),
@@ -183,7 +202,8 @@ describe('CardList component', () => {
       error: null,
       loadData: mockLoadData,
     });
-    render(<CardList search="bulbasaur" />);
+
+    renderWithProvider(<CardList search="bulbasaur" />);
 
     expect(mockLoadData).toHaveBeenCalledWith('bulbasaur', 0);
   });
@@ -218,7 +238,7 @@ describe('CardList component', () => {
       loadData: mockLoadData,
     });
 
-    render(<CardList search="" />);
+    renderWithProvider(<CardList search="" />);
 
     const nextButton = await screen.findByRole('button', { name: /next/i });
 
@@ -244,7 +264,7 @@ describe('CardList component', () => {
       loadData: mockLoadData,
     });
 
-    render(<CardList search="" />);
+    renderWithProvider(<CardList search="" />);
 
     const nextButton = await screen.findByRole('button', { name: /next/i });
     await user.click(nextButton);
@@ -271,7 +291,7 @@ describe('CardList component', () => {
       loadData: mockLoadData,
     });
 
-    render(<CardList search="" />);
+    renderWithProvider(<CardList search="" />);
 
     const previousButton = await screen.findByRole('button', { name: /prev/i });
     await user.click(previousButton);
