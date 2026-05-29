@@ -73,7 +73,7 @@ describe('DetailView', () => {
     expect(screen.queryByTestId('error-state')).not.toBeInTheDocument();
   });
 
-  it('renders error message when status is error', () => {
+  it('renders error message when status is error', async () => {
     const errorMessage = 'Failed to get data';
     vi.mocked(getDetailData).mockResolvedValue({
       status: API_STATUS.ERROR,
@@ -82,20 +82,20 @@ describe('DetailView', () => {
 
     render(<DetailView detailId="1" />);
 
-    expect(screen.getByTestId('error-state')).toBeInTheDocument();
+    expect(await screen.findByTestId('error-state')).toBeInTheDocument();
     expect(screen.getByText(errorMessage)).toBeInTheDocument();
     expect(screen.queryByTestId('card')).not.toBeInTheDocument();
     expect(screen.queryByTestId('loader')).not.toBeInTheDocument();
   });
 
-  it('renders not found message when status is not found error', () => {
+  it('renders not found message when status is not found error', async () => {
     vi.mocked(getDetailData).mockResolvedValue({
       status: API_STATUS.NOT_FOUND,
     });
 
     render(<DetailView detailId="1" />);
 
-    expect(screen.getByTestId('error-state')).toBeInTheDocument();
+    expect(await screen.findByTestId('error-state')).toBeInTheDocument();
     expect(screen.getByText(ERROR_MESSAGES.NOTFOUND)).toBeInTheDocument();
     expect(screen.queryByTestId('card')).not.toBeInTheDocument();
     expect(screen.queryByTestId('loader')).not.toBeInTheDocument();
@@ -115,10 +115,7 @@ describe('DetailView', () => {
     await user.click(closeButton);
 
     expect(mockNavigate).toHaveBeenCalledTimes(1);
-    expect(mockNavigate).toHaveBeenCalledWith({
-      to: '/',
-      search: { page: 1 },
-    });
+    expect(mockNavigate).toHaveBeenCalledWith({ to: '/' });
   });
 
   it('does not close the card when clicking on the detail card', async () => {

@@ -20,7 +20,7 @@ describe('getDetailData', () => {
     const result = await getDetailData('1');
 
     expect(result).toEqual({
-      type: API_STATUS.SUCCESS,
+      status: API_STATUS.SUCCESS,
       data: mockItemFull,
     });
     expect(getItemFull).toHaveBeenCalledWith('1');
@@ -33,7 +33,7 @@ describe('getDetailData', () => {
 
     const result = await getDetailData('1000');
 
-    expect(result).toEqual({ type: API_STATUS.NOT_FOUND });
+    expect(result).toEqual({ status: API_STATUS.NOT_FOUND });
   });
 
   it('returns error status with server message when API returns 500', async () => {
@@ -44,7 +44,7 @@ describe('getDetailData', () => {
     const result = await getDetailData('1');
 
     expect(result).toEqual({
-      type: API_STATUS.ERROR,
+      status: API_STATUS.ERROR,
       message: ERROR_MESSAGES.SERVER,
     });
   });
@@ -57,7 +57,7 @@ describe('getDetailData', () => {
     const result = await getDetailData('1');
 
     expect(result).toEqual({
-      type: API_STATUS.ERROR,
+      status: API_STATUS.ERROR,
       message: ERROR_MESSAGES.NETWORK,
     });
   });
@@ -68,7 +68,7 @@ describe('getDetailData', () => {
     const result = await getDetailData('1');
 
     expect(result).toEqual({
-      type: API_STATUS.ERROR,
+      status: API_STATUS.ERROR,
       message: ERROR_MESSAGES.DEFAULT,
     });
   });
