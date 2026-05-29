@@ -51,7 +51,7 @@ describe('DetailView', () => {
 
   it('renders card with data when correctly', async () => {
     vi.mocked(getDetailData).mockResolvedValue({
-      type: API_STATUS.SUCCESS,
+      status: API_STATUS.SUCCESS,
       data: mockItemFull,
     });
 
@@ -76,7 +76,7 @@ describe('DetailView', () => {
   it('renders error message when status is error', () => {
     const errorMessage = 'Failed to get data';
     vi.mocked(getDetailData).mockResolvedValue({
-      type: API_STATUS.ERROR,
+      status: API_STATUS.ERROR,
       message: errorMessage,
     });
 
@@ -90,7 +90,7 @@ describe('DetailView', () => {
 
   it('renders not found message when status is not found error', () => {
     vi.mocked(getDetailData).mockResolvedValue({
-      type: API_STATUS.NOT_FOUND,
+      status: API_STATUS.NOT_FOUND,
     });
 
     render(<DetailView detailId="1" />);
@@ -105,7 +105,7 @@ describe('DetailView', () => {
     const user = userEvent.setup();
 
     vi.mocked(getDetailData).mockResolvedValue({
-      type: API_STATUS.SUCCESS,
+      status: API_STATUS.SUCCESS,
       data: mockItemFull,
     });
 
@@ -125,7 +125,7 @@ describe('DetailView', () => {
     const user = userEvent.setup();
 
     vi.mocked(getDetailData).mockResolvedValue({
-      type: API_STATUS.SUCCESS,
+      status: API_STATUS.SUCCESS,
       data: mockItemFull,
     });
 
@@ -142,7 +142,7 @@ describe('DetailView', () => {
     const user = userEvent.setup();
 
     vi.mocked(getDetailData).mockResolvedValue({
-      type: API_STATUS.SUCCESS,
+      status: API_STATUS.SUCCESS,
       data: mockItemFull,
     });
 

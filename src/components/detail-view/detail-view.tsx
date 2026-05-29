@@ -15,14 +15,16 @@ type DetailViewProps = {
   detailId: string;
 };
 
-type ViewState = { type: typeof API_STATUS.LOADING } | DetailResult;
+type ViewState = { status: typeof API_STATUS.LOADING } | DetailResult;
 
 function renderErrorState(message: string, onReload: () => void) {
   return <ErrorState message={message} onReload={onReload} />;
 }
 
 export function DetailView({ detailId }: DetailViewProps) {
-  const [result, setResult] = useState<ViewState>({ type: API_STATUS.LOADING });
+  const [result, setResult] = useState<ViewState>({
+    status: API_STATUS.LOADING,
+  });
   const navigate = useNavigate();
 
   const closeDetailView = useCallback(() => {
@@ -72,13 +74,13 @@ export function DetailView({ detailId }: DetailViewProps) {
     };
   }, [closeDetailView]);
 
-  if (result.type === API_STATUS.NOT_FOUND) {
+  if (result.status === API_STATUS.NOT_FOUND) {
     return renderErrorState(ERROR_MESSAGES.NOTFOUND, () => {
       globalThis.location.reload();
     });
   }
 
-  if (result.type === API_STATUS.ERROR) {
+  if (result.status === API_STATUS.ERROR) {
     return renderErrorState(result.message, () => {
       globalThis.location.reload();
     });
@@ -96,7 +98,7 @@ export function DetailView({ detailId }: DetailViewProps) {
           ✕
         </button>
       </div>
-      {result.type === API_STATUS.LOADING ? (
+      {result.status === API_STATUS.LOADING ? (
         <div className={cx('loader-overlay')}>
           <Loader />
         </div>
