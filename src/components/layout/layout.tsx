@@ -5,11 +5,11 @@ import styles from './layout.module.css';
 
 const cx = classNames.bind(styles);
 
-type Props = {
+type LayoutProps = {
   children: React.ReactNode;
 };
 
-export function Layout({ children }: Props) {
+export function Layout({ children }: LayoutProps) {
   return (
     <div className={cx('wrapper')}>
       <Header />

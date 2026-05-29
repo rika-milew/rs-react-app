@@ -10,40 +10,40 @@ export default {
     'selector-pseudo-class-no-unknown': [
       true,
       {
-        'ignorePseudoClasses': ['global']
-      }
+        ignorePseudoClasses: ['global'],
+      },
     ],
 
     'order/order': [
       'custom-properties',
       'dollar-variables',
       {
-        'type': 'at-rule',
-        'name': 'extend'
+        type: 'at-rule',
+        name: 'extend',
       },
       {
-        'type': 'at-rule',
-        'name': 'extend',
-        'hasBlock': true
+        type: 'at-rule',
+        name: 'extend',
+        hasBlock: true,
       },
       'declarations',
       'rules',
       {
-        'type': 'at-rule',
-        'name': 'include'
+        type: 'at-rule',
+        name: 'include',
       },
       {
-        'type': 'at-rule',
-        'name': 'include',
-        'hasBlock': true
+        type: 'at-rule',
+        name: 'include',
+        hasBlock: true,
       },
       {
-        'type': 'at-rule'
+        type: 'at-rule',
       },
       {
-        'type': 'at-rule',
-        'hasBlock': true
-      }
+        type: 'at-rule',
+        hasBlock: true,
+      },
     ],
   },
 };

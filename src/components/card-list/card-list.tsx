@@ -11,13 +11,13 @@ import styles from './card-list.module.css';
 
 const cx = classNames.bind(styles);
 
-type Props = {
+type CardListProps = {
   search: string;
   page: number;
   onPageChange: (page: number) => void;
 };
 
-export function CardList({ search, page, onPageChange }: Props) {
+export function CardList({ search, page, onPageChange }: CardListProps) {
   const { data, totalPages, status, error, loadData } = useDataList();
   const { openDetailView } = useDetailNavigation();
 

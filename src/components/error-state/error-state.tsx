@@ -4,12 +4,12 @@ import styles from './error-state.module.css';
 
 const cx = classNames.bind(styles);
 
-type Props = {
+type ErrorStateProps = {
   message: string;
   onReload: () => void;
 };
 
-export const ErrorState = ({ message, onReload }: Props) => {
+export const ErrorState = ({ message, onReload }: ErrorStateProps) => {
   return (
     <div className={cx('state')}>
       <p>{message}</p>

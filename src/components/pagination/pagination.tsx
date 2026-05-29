@@ -4,13 +4,17 @@ import styles from './pagination.module.css';
 
 const cx = classNames.bind(styles);
 
-type Props = {
+type PaginationProps = {
   page: number;
   totalPages: number;
   onPageChange: (page: number) => void;
 };
 
-export const Pagination = ({ page, totalPages, onPageChange }: Props) => {
+export const Pagination = ({
+  page,
+  totalPages,
+  onPageChange,
+}: PaginationProps) => {
   const validPage = Math.min(Math.max(1, page), totalPages || 1);
 
   const handlePreviousPage = () => {
