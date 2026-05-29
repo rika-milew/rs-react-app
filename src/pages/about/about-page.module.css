@@ -1,22 +1,23 @@
 .about {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
   gap: 1rem;
+  align-items: center;
+  justify-content: center;
+
   max-width: 58rem;
 }
 
 .text {
-  color: var(--color-gray-400);
-  text-align: center;
   font-size: 1.125rem;
   line-height: 1.5rem;
+  color: var(--color-gray-400);
+  text-align: center;
 }
 
 .link {
-  text-decoration: none;
   color: var(--color-white);
+  text-decoration: none;
   transition: all var(--transition-default) ease;
 
   @media (hover: hover) and (pointer: fine) {
@@ -34,11 +35,16 @@
 
 .visually-hidden {
   position: absolute;
+
+  overflow: hidden;
+
   width: 1px;
   height: 1px;
-  padding: 0;
   margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
+  padding: 0;
   border: 0;
+
+  white-space: nowrap;
+
+  clip-path: inset(50%);
 }

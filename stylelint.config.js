@@ -46,4 +46,5 @@ export default {
       },
     ],
   },
+  ignoreFiles: ['dist/**', 'coverage/**'],
 };

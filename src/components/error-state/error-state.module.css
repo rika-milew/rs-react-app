@@ -1,7 +1,7 @@
 .state {
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
   gap: 1rem;
+  align-items: center;
+  justify-content: center;
 }
