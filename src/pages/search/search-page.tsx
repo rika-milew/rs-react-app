@@ -17,15 +17,6 @@ export const SearchPage = () => {
     });
   };
 
-  const handlePageChange = (newPage: number) => {
-    const validPage = Math.max(1, newPage);
-    void navigate({
-      to: '.',
-      search: { page: validPage },
-      replace: true,
-    });
-  };
-
   return (
     <>
       <SearchBar
@@ -33,7 +24,7 @@ export const SearchPage = () => {
         value={searchQuery}
         onSearch={handleSearch}
       />
-      <CardList search={searchQuery} onPageChange={handlePageChange} />
+      <CardList search={searchQuery} />
       <ErrorButton />
     </>
   );
