@@ -1,39 +1,50 @@
 import js from '@eslint/js';
-import globals from 'globals';
+import { defineConfig } from 'eslint/config';
+import reactPlugin from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
-import reactPlugin from 'eslint-plugin-react';
-import eslintConfigPrettier from 'eslint-config-prettier/flat';
 import eslintPluginUnicorn from 'eslint-plugin-unicorn';
+import eslintPluginPrettier from 'eslint-plugin-prettier/recommended';
+import globals from 'globals';
 import tseslint from 'typescript-eslint';
-import { defineConfig, globalIgnores } from 'eslint/config';
 
 export default defineConfig([
   js.configs.recommended,
-  ...tseslint.configs.strictTypeChecked,
-  ...tseslint.configs.stylisticTypeChecked,
+  tseslint.configs.strictTypeChecked,
+  tseslint.configs.stylisticTypeChecked,
+  reactPlugin.configs.flat.recommended,
   reactHooks.configs.flat.recommended,
   reactRefresh.configs.vite,
-  reactPlugin.configs.flat.recommended,
-  reactPlugin.configs.flat['jsx-runtime'],
   eslintPluginUnicorn.configs.recommended,
-  eslintConfigPrettier,
+  eslintPluginPrettier,
   {
     files: ['**/*.{ts,tsx}'],
+    plugins: {},
     languageOptions: {
       globals: {
         ...globals.browser,
         ...globals.es2021,
         ...globals.node,
       },
+      ecmaVersion: 'latest',
+      sourceType: 'module',
       parserOptions: {
         projectService: true,
         tsconfigRootDir: import.meta.dirname,
+        ecmaFeatures: {
+          globalReturn: false,
+          jsx: true,
+        },
       },
     },
     settings: {
       react: {
         version: 'detect',
+      },
+      'import/resolver': {
+        typescript: {
+          project: './tsconfig.json',
+        },
       },
     },
     linterOptions: {
@@ -41,8 +52,6 @@ export default defineConfig([
     },
     rules: {
       // 🔴 Mandatory
-      ...reactPlugin.configs.recommended.rules,
-      ...reactHooks.configs.recommended.rules,
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
@@ -60,8 +69,11 @@ export default defineConfig([
       '@typescript-eslint/no-unsafe-argument': 'error',
       '@typescript-eslint/no-unsafe-member-access': 'error',
       '@typescript-eslint/no-unsafe-return': 'error',
-      '@typescript-eslint/no-unsafe-assignment': 'off', //* switched off for now
-      '@typescript-eslint/no-unsafe-call': 'off', //* switched off for now
+      '@typescript-eslint/no-unsafe-call': 'error',
+      '@typescript-eslint/no-confusing-void-expression': [
+        'error',
+        { ignoreArrowShorthand: true },
+      ],
 
       'react-hooks/exhaustive-deps': 'warn',
 
@@ -118,7 +130,7 @@ export default defineConfig([
       semi: ['error', 'always'],
       curly: ['error', 'all'],
       indent: ['error', 2, { SwitchCase: 1 }],
-      'comma-dangle': ['off'],
+      'comma-dangle': ['error', 'always-multiline'],
       'object-curly-spacing': ['error', 'always'],
       'brace-style': [
         'error',
@@ -131,15 +143,10 @@ export default defineConfig([
       'max-len': ['warn', { code: 120, ignoreComments: true }],
 
       // 🔧 Switched off
-      'boundaries/element-types': 'off',
       'no-undef': 'off',
       'no-restricted-exports': 'off',
       'react/prop-types': 'off',
       'react/react-in-jsx-scope': 'off',
-      'react-refresh/only-export-components': [
-        'off',
-        { allowConstantExport: true },
-      ],
 
       'unicorn/no-array-reduce': 'off',
       'unicorn/no-array-for-each': 'off',
@@ -148,6 +155,7 @@ export default defineConfig([
       'unicorn/filename-case': 'off',
       'unicorn/number-literal-case': 'off',
       'unicorn/prefer-query-selector': 'off',
+      'unicorn/explicit-length-check': 'off',
     },
   },
   {
@@ -163,15 +171,14 @@ export default defineConfig([
   {
     files: ['**/*.test.ts', '**/*.test.tsx', '**/*.spec.ts', '**/*.spec.tsx'],
     rules: {
-      '@typescript-eslint/no-unsafe-member-access': 'off',
-      '@typescript-eslint/no-unsafe-assignment': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-      '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/await-thenable': 'off',
-      'max-lines-per-function': [
-        'off',
-        { max: 80, skipBlankLines: true, skipComments: true },
-      ],
+      'max-lines-per-function': 'off',
+      '@typescript-eslint/consistent-type-assertions': 'off',
+    },
+  },
+  {
+    files: ['**/store/**/*.ts', '**/store/**/*.tsx'],
+    rules: {
+      'unicorn/prefer-spread': 'off',
     },
   },
   {
@@ -183,6 +190,8 @@ export default defineConfig([
       '**/coverage/**',
       'eslint.config.js',
       'lint-staged.config.js',
+      'stylelint.config.js',
+      '**/routeTree.gen.ts',
     ],
   },
 ]);

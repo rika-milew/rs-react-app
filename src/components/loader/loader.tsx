@@ -1,22 +1,23 @@
-import React from 'react';
-const cx = classNames.bind(styles);
-import styles from './loader.module.css';
 import classNames from 'classnames/bind';
+import styles from './loader.module.css';
 
-type Props = {
+const cx = classNames.bind(styles);
+
+type LoaderProps = {
   loading?: boolean;
 };
 
-export class Loader extends React.Component<Props> {
-  public render() {
-    if (this.props.loading === false) {
-      return null;
-    }
-    return (
+export function Loader({ loading = true }: LoaderProps) {
+  if (!loading) {
+    return null;
+  }
+
+  return (
+    <div className={cx('loader-container')}>
       <div className={cx('loader')}>
         <div className={cx('spinner')} />
         <span className={cx('text')}>Loading…</span>
       </div>
-    );
-  }
+    </div>
+  );
 }

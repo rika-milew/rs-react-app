@@ -4,7 +4,7 @@ import { HTTP_STATUS } from '@/constants/constants';
 export const artworkMockImage = '/assets/artwork-mock-image.png';
 const mockImage = '/assets/mock-image.png';
 
-export const mockPokemonFull: PokemonWithDescription = {
+export const mockItemFull: PokemonWithDescription = {
   id: 1,
   name: 'bulbasaur',
   height: 7,
@@ -17,7 +17,10 @@ export const mockPokemonFull: PokemonWithDescription = {
       },
     },
   },
-  types: [{ type: { name: 'grass' } }, { type: { name: 'poison' } }],
+  types: [
+    { slot: 1, type: { name: 'grass' } },
+    { slot: 2, type: { name: 'poison' } },
+  ],
   abilities: [
     { ability: { name: 'overgrow' }, is_hidden: false },
     { ability: { name: 'chlorophyll' }, is_hidden: true },
@@ -30,7 +33,7 @@ export const mockPokemonFull: PokemonWithDescription = {
     'A strange seed was planted on its back at birth. The plant sprouts and grows with this POKéMON.',
 };
 
-export const mockPokemonPartial: PokemonWithDescription = {
+export const mockItemPartial: PokemonWithDescription = {
   id: 2,
   name: 'ivysaur',
   height: 10,
@@ -39,7 +42,7 @@ export const mockPokemonPartial: PokemonWithDescription = {
     front_default: mockImage,
     other: {},
   },
-  types: [{ type: { name: 'grass' } }],
+  types: [{ slot: 1, type: { name: 'grass' } }],
   abilities: [{ ability: { name: 'overgrow' }, is_hidden: false }],
   species: {
     name: 'ivysaur',
@@ -50,18 +53,18 @@ export const mockPokemonPartial: PokemonWithDescription = {
 
 export function mockFetchData(data: unknown, status = HTTP_STATUS.OK): void {
   vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-    Response.json(data, { status })
+    Response.json(data, { status }),
   );
 }
 
 export function mockFetchDataError(
-  status = HTTP_STATUS.INTERNAL_SERVER_ERROR
+  status = HTTP_STATUS.INTERNAL_SERVER_ERROR,
 ): void {
   vi.spyOn(globalThis, 'fetch').mockResolvedValue(
     new Response(null, {
       status,
       statusText: 'Error',
       headers: { 'Content-Type': 'application/json' },
-    })
+    }),
   );
 }

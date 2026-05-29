@@ -1,15 +1,11 @@
 import { describe, it, expect } from 'vitest';
+import { getItems, getItemByName, getItemSpecies, getItemFull } from './api';
 import {
-  getPokemons,
-  getPokemonByName,
-  getPokemonSpecies,
-  getPokemonFull,
-} from './api';
-
-import { mockFetchData, mockFetchDataError } from '@/test-utils/api-mock';
-
+  mockFetchData,
+  mockFetchDataError,
+  mockItemFull,
+} from '@/test-utils/api-mock';
 import { HTTP_STATUS, CARD_LIMIT } from '@/constants/constants';
-
 import { ApiError } from '@/services/api-error';
 
 describe('fetchData service', () => {
@@ -17,28 +13,25 @@ describe('fetchData service', () => {
     mockFetchData({
       count: 1,
       results: [{ name: 'bulbasaur', url: 'url' }],
+      previous: null,
+      next: null,
     });
 
-    const result = await getPokemons(0, CARD_LIMIT);
+    const result = await getItems(0, CARD_LIMIT);
 
     expect(result.count).toBe(1);
     expect(result.results).toHaveLength(1);
   });
 
-  it('gets data by pokemon name correctly', async () => {
-    mockFetchData({
-      id: 1,
-      name: 'bulbasaur',
-      sprites: {},
-      species: { url: 'url' },
-    });
+  it('gets data by item name correctly', async () => {
+    mockFetchData(mockItemFull);
 
-    const result = await getPokemonByName('Bulbasaur');
+    const result = await getItemByName('Bulbasaur');
 
     expect(result.name).toBe('bulbasaur');
   });
 
-  it('returns pokemon species data correctly', async () => {
+  it('returns item species data correctly', async () => {
     mockFetchData({
       flavor_text_entries: [
         {
@@ -48,7 +41,7 @@ describe('fetchData service', () => {
       ],
     });
 
-    const result = await getPokemonSpecies('url');
+    const result = await getItemSpecies('url');
 
     expect(result.flavor_text_entries).toHaveLength(1);
   });
@@ -56,25 +49,14 @@ describe('fetchData service', () => {
   it('throws ApiError when data fetch fails', async () => {
     mockFetchDataError(HTTP_STATUS.INTERNAL_SERVER_ERROR);
 
-    await expect(getPokemons(0, CARD_LIMIT)).rejects.toBeInstanceOf(ApiError);
+    await expect(getItems(0, CARD_LIMIT)).rejects.toBeInstanceOf(ApiError);
   });
 
-  it('returns full pokemon data correctly', async () => {
+  it('returns full item data correctly', async () => {
     const mockFetchData = vi.spyOn(globalThis, 'fetch');
 
     mockFetchData
-      .mockResolvedValueOnce(
-        Response.json({
-          id: 1,
-          name: 'bulbasaur',
-          sprites: {
-            front_default: 'image',
-          },
-          species: {
-            url: 'url',
-          },
-        })
-      )
+      .mockResolvedValueOnce(Response.json(mockItemFull))
       .mockResolvedValueOnce(
         Response.json({
           flavor_text_entries: [
@@ -83,13 +65,13 @@ describe('fetchData service', () => {
               language: { name: 'en' },
             },
           ],
-        })
+        }),
       );
 
-    const result = await getPokemonFull('bulbasaur');
+    const result = await getItemFull('bulbasaur');
 
     expect(result.description).toBe(
-      'A strange seed was planted on its back at birth.'
+      'A strange seed was planted on its back at birth.',
     );
   });
 });

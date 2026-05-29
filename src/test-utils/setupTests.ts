@@ -1,5 +1,17 @@
 import '@testing-library/jest-dom';
 import { afterEach, beforeEach, vi } from 'vitest';
+import type { ReactElement } from 'react';
+import { createElement } from 'react';
+
+vi.mock('@tanstack/react-router', async () => {
+  const actual = await vi.importActual('@tanstack/react-router');
+
+  return {
+    ...actual,
+    Link: ({ children }: { children: React.ReactNode }): ReactElement =>
+      createElement('a', null, children),
+  };
+});
 
 beforeEach(() => {
   localStorage.clear();

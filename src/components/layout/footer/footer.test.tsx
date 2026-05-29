@@ -14,12 +14,12 @@ describe('footer component', () => {
     render(<Footer />);
 
     const link = screen.getByRole('link', {
-      name: 'Eryka Mileuskaya',
+      name: /Eryka Mileuskaya/i,
     });
 
     expect(link).toHaveAttribute('href', 'https://github.com/rika-milew');
     expect(link).toHaveAttribute('target', '_blank');
-    expect(link).toHaveAttribute('rel', 'noreferrer');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
   it('shows current year', () => {

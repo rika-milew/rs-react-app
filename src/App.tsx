@@ -1,14 +1,10 @@
+import { RouterProvider } from '@tanstack/react-router';
+import { router } from './router';
+
 import './styles/index.css';
 
-import { Layout } from '@/components/layout/layout';
-import { SearchPage } from '@/pages/search-page';
-
 function App() {
-  return (
-    <Layout>
-      <SearchPage />
-    </Layout>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

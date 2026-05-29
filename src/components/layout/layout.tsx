@@ -1,26 +1,22 @@
-import React from 'react';
-import styles from './layout.module.css';
+import classNames from 'classnames/bind';
 import { Header } from '@/components/layout/header/header';
 import { Footer } from '@/components/layout/footer/footer';
-
-import classNames from 'classnames/bind';
+import styles from './layout.module.css';
 
 const cx = classNames.bind(styles);
 
-type Props = {
+type LayoutProps = {
   children: React.ReactNode;
 };
 
-export class Layout extends React.Component<Props> {
-  public render() {
-    return (
-      <div className={cx('wrapper')}>
-        <Header />
-        <main className={cx('main')}>
-          <div className={cx('container')}>{this.props.children}</div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
+export function Layout({ children }: LayoutProps) {
+  return (
+    <div className={cx('wrapper')}>
+      <Header />
+      <main id="main-content" className={cx('main')}>
+        <div className={cx('container')}>{children}</div>
+      </main>
+      <Footer />
+    </div>
+  );
 }

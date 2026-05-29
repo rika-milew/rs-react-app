@@ -10,22 +10,20 @@ const TestError = ({ isError }: { isError: boolean }) => {
   return <div>Expected content</div>;
 };
 
-let consoleSpy: ReturnType<typeof vi.spyOn>;
-
 describe('ErrorBoundary component', () => {
   beforeEach(() => {
-    consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    vi.spyOn(console, 'error').mockReturnValue(undefined);
   });
 
   afterEach(() => {
-    consoleSpy.mockRestore();
+    vi.restoreAllMocks();
   });
 
   it('renders children components when no error occurs', () => {
     render(
       <ErrorBoundary>
         <div>App Content</div>
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(screen.getByText('App Content')).toBeInTheDocument();
@@ -35,12 +33,12 @@ describe('ErrorBoundary component', () => {
     render(
       <ErrorBoundary>
         <TestError isError={true} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(screen.getByText('Something went wrong')).toBeInTheDocument();
     expect(
-      screen.getByText('Please try again or reset the app.')
+      screen.getByText('Please try again or reset the app.'),
     ).toBeInTheDocument();
   });
 
@@ -48,7 +46,7 @@ describe('ErrorBoundary component', () => {
     render(
       <ErrorBoundary>
         <TestError isError={true} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(screen.getByRole('button')).toBeInTheDocument();
@@ -59,7 +57,7 @@ describe('ErrorBoundary component', () => {
     render(
       <ErrorBoundary>
         <div>App Content</div>
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(screen.getByText('App Content')).toBeInTheDocument();
@@ -72,7 +70,7 @@ describe('ErrorBoundary component', () => {
     render(
       <ErrorBoundary>
         <TestError isError={true} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
@@ -84,7 +82,7 @@ describe('ErrorBoundary component', () => {
     await user.click(button);
 
     expect(
-      await screen.findByRole('button', { name: /try again/i })
+      await screen.findByRole('button', { name: /try again/i }),
     ).toBeInTheDocument();
   });
 });

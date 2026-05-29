@@ -1,67 +1,110 @@
-import React from 'react';
-import styles from './card.module.css';
-import type { PokemonWithDescription } from '@/types/api';
 import classNames from 'classnames/bind';
+import { useState } from 'react';
+import type { PokemonWithDescription } from '@/types/api';
+import { cardConfig } from './card.config';
+import styles from './card.module.css';
 
 const cx = classNames.bind(styles);
 
+import mockImage from '@/assets/mock-image.png';
+
 export const ID_LENGTH = 3;
 
-type Props = {
-  pokemon: PokemonWithDescription;
+type CardProps = {
+  item: PokemonWithDescription;
+  variant?: 'detailed' | 'short';
+  onClick?: () => void;
 };
 
-export class Card extends React.Component<Props> {
-  public render() {
-    const { id, name, height, weight, sprites, types, abilities, description } =
-      this.props.pokemon;
+export function Card({ item, variant = 'detailed', onClick }: CardProps) {
+  const { id, name, sprites } = item;
 
-    const image =
-      sprites.other?.['official-artwork']?.front_default ??
-      sprites.front_default;
+  const image =
+    sprites.other?.['official-artwork']?.front_default ??
+    sprites.front_default ??
+    mockImage;
 
-    const typeContent = types.map((t) => t.type.name).join(', ');
-    const abilityContent = abilities.map((a) => a.ability.name).join(', ');
+  const [imgSource, setImgSource] = useState(image);
 
-    const capitalizedName =
-      name.length > 0 ? name[0].toUpperCase() + name.slice(1) : name;
+  const handleImageError = () => {
+    if (imgSource !== sprites.front_default && sprites.front_default) {
+      setImgSource(sprites.front_default);
+    } else {
+      setImgSource(mockImage);
+    }
+  };
 
-    return (
-      <div className={cx('card')}>
-        <div className={cx('image-container')}>
-          <span className={cx('id')}>
-            #{id.toString().padStart(ID_LENGTH, '0')}
-          </span>
-          <img className={cx('image')} src={image} alt={name} />
-        </div>
-        <h3 className={cx('name')}>{capitalizedName}</h3>
-        <div className={cx('types')}>
-          <p className={cx('label')}>Types:</p>
-          <div className={cx('list')}>
-            <span>{typeContent}</span>
-          </div>
-        </div>
-        <div className={cx('abilities')}>
-          <p className={cx('label')}>Abilities:</p>
-          <div className={cx('list')}>
-            <span>{abilityContent}</span>
-          </div>
-        </div>
-        {description && (
-          <div className={cx('description')}>
-            <p className={cx('label')}>Description:</p>
-            <p>{description}</p>
-          </div>
-        )}
-        <div className={cx('info')}>
-          <p>
-            <span className={cx('label')}>Height:</span> {height * 10} cm
-          </p>
-          <p>
-            <span className={cx('label')}>Weight:</span> {weight / 10} kg
-          </p>
-        </div>
+  const capitalizedName =
+    name.length > 0 ? name[0].toUpperCase() + name.slice(1) : name;
+
+  const isDetailed = variant === 'detailed';
+
+  const config = cardConfig(item);
+
+  const options = config.data.filter(
+    (option) =>
+      (option.visible === 'always' || isDetailed) && option.condition !== false,
+  );
+
+  const handleClick = () => {
+    onClick?.();
+  };
+
+  return (
+    <article
+      data-card
+      className={cx('card', { detailed: variant === 'detailed' })}
+      onClick={handleClick}
+    >
+      <div className={cx('image-container')}>
+        <span className={cx('card-id')}>
+          #{id.toString().padStart(ID_LENGTH, '0')}
+        </span>
+        <img
+          className={cx('image')}
+          src={imgSource}
+          alt={name || 'Pokémon image'}
+          onError={handleImageError}
+        />
       </div>
+      <h3 className={cx('name')}>{capitalizedName}</h3>
+      <div className={cx('card-options')}>
+        {options.map((option, index) => (
+          <CardOption
+            key={`${option.label}-${String(index)}`}
+            label={option.label}
+            value={option.value ?? '—'}
+            variant={option.variant}
+          />
+        ))}
+      </div>
+    </article>
+  );
+}
+
+type CardOptionProps = {
+  label: string;
+  value: string | number;
+  variant?: 'inline' | 'block';
+};
+
+export function CardOption({
+  label,
+  value,
+  variant = 'block',
+}: CardOptionProps) {
+  if (variant === 'inline') {
+    return (
+      <p className={cx('card-option', 'inline')}>
+        <span className={cx('params-label')}>{label}</span> {value}
+      </p>
     );
   }
+
+  return (
+    <div className={cx('card-option')}>
+      <p className={cx('params-label')}>{label}</p>
+      <div className={cx('params-list')}>{value}</div>
+    </div>
+  );
 }

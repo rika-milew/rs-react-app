@@ -1,18 +1,23 @@
 import {
-  isPokemonListResponse,
-  isPokemon,
-  isPokemonSpecies,
+  isValidListResponse,
+  isValidItem,
+  isValidItemSpecies,
 } from './type-guards';
+import { mockItemFull } from '@/test-utils/api-mock';
 
 describe('type guards', () => {
-  describe('isPokemonListResponse', () => {
+  describe('isValidListResponse', () => {
     it('returns true for valid data', () => {
       const data = {
         count: 2,
-        results: [{ name: 'charmeleon' }],
+        next: null,
+        previous: null,
+        results: [
+          { name: 'charmeleon', url: 'https://pokeapi.co/api/v2/pokemon/5/' },
+          { name: 'charizard', url: 'https://pokeapi.co/api/v2/pokemon/6/' },
+        ],
       };
-
-      expect(isPokemonListResponse(data)).toBe(true);
+      expect(isValidListResponse(data)).toBe(true);
     });
 
     it('returns false when results is not array', () => {
@@ -21,12 +26,12 @@ describe('type guards', () => {
         results: 'charmeleon',
       };
 
-      expect(isPokemonListResponse(data)).toBe(false);
+      expect(isValidListResponse(data)).toBe(false);
     });
 
     it('returns false when data is not object', () => {
-      expect(isPokemonListResponse(null)).toBe(false);
-      expect(isPokemonListResponse(100)).toBe(false);
+      expect(isValidListResponse(null)).toBe(false);
+      expect(isValidListResponse(100)).toBe(false);
     });
 
     it('returns false when count is not number', () => {
@@ -35,19 +40,13 @@ describe('type guards', () => {
         results: [],
       };
 
-      expect(isPokemonListResponse(data)).toBe(false);
+      expect(isValidListResponse(data)).toBe(false);
     });
   });
 
-  describe('isPokemon', () => {
+  describe('isValidItem', () => {
     it('returns true for valid data', () => {
-      const data = {
-        id: 1,
-        name: 'bulbasaur',
-        sprites: {},
-      };
-
-      expect(isPokemon(data)).toBe(true);
+      expect(isValidItem(mockItemFull)).toBe(true);
     });
 
     it('returns false when sprites is not object', () => {
@@ -57,7 +56,7 @@ describe('type guards', () => {
         sprites: null,
       };
 
-      expect(isPokemon(data)).toBe(false);
+      expect(isValidItem(data)).toBe(false);
     });
 
     it('returns false when name is missing', () => {
@@ -66,7 +65,7 @@ describe('type guards', () => {
         sprites: {},
       };
 
-      expect(isPokemon(data)).toBe(false);
+      expect(isValidItem(data)).toBe(false);
     });
 
     it('returns false when id is not number', () => {
@@ -76,11 +75,11 @@ describe('type guards', () => {
         sprites: {},
       };
 
-      expect(isPokemon(data)).toBe(false);
+      expect(isValidItem(data)).toBe(false);
     });
   });
 
-  describe('isPokemonSpecies', () => {
+  describe('isItemSpecies', () => {
     it('returns true for valid data', () => {
       const data = {
         flavor_text_entries: [
@@ -91,12 +90,12 @@ describe('type guards', () => {
         ],
       };
 
-      expect(isPokemonSpecies(data)).toBe(true);
+      expect(isValidItemSpecies(data)).toBe(true);
     });
 
     it('returns false when data is not object', () => {
-      expect(isPokemonSpecies(null)).toBe(false);
-      expect(isPokemonSpecies('string')).toBe(false);
+      expect(isValidItemSpecies(null)).toBe(false);
+      expect(isValidItemSpecies('string')).toBe(false);
     });
 
     it('returns false when entries are invalid objects', () => {
@@ -104,7 +103,7 @@ describe('type guards', () => {
         flavor_text_entries: [null],
       };
 
-      expect(isPokemonSpecies(data)).toBe(false);
+      expect(isValidItemSpecies(data)).toBe(false);
     });
 
     it('returns false when entries is not array', () => {
@@ -112,7 +111,7 @@ describe('type guards', () => {
         flavor_text_entries: {},
       };
 
-      expect(isPokemonSpecies(data)).toBe(false);
+      expect(isValidItemSpecies(data)).toBe(false);
     });
 
     it('returns false when language is missing', () => {
@@ -125,7 +124,7 @@ describe('type guards', () => {
         ],
       };
 
-      expect(isPokemonSpecies(data)).toBe(false);
+      expect(isValidItemSpecies(data)).toBe(false);
     });
   });
 });

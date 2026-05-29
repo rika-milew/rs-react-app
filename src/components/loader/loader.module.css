@@ -1,8 +1,23 @@
+.loader-container {
+  position: absolute;
+  z-index: 10;
+  inset: 0;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+
+  padding-top: 6rem;
+  border-radius: 1rem;
+
+  background-color: var(--color-gray-750);
+}
+
 .loader {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 1.75rem;
+  align-items: center;
 }
 
 .spinner {
@@ -11,7 +26,17 @@
   border: 3px solid var(--color-gray-500);
   border-top-color: var(--color-yellow-600);
   border-radius: 50%;
+
   animation: spin 1s linear infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    border: none;
+    background: conic-gradient(
+      var(--color-yellow-600) 0deg 90deg,
+      var(--color-gray-500) 90deg 360deg
+    );
+    animation: none;
+  }
 }
 
 .text {

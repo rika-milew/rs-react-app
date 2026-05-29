@@ -1,58 +1,165 @@
-import type { Pokemon, PokemonListResponse, PokemonSpecies } from '@/types/api';
+import type {
+  Pokemon,
+  PokemonListItem,
+  PokemonListResponse,
+  PokemonSpecies,
+} from '@/types/api';
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
 }
 
-export function isPokemonListResponse(
-  data: unknown
+export function isValidListItem(data: unknown): data is PokemonListItem {
+  if (!isObject(data)) {
+    return false;
+  }
+  const { name, url } = data;
+  return typeof name === 'string' && typeof url === 'string';
+}
+
+export function isValidListResponse(
+  data: unknown,
 ): data is PokemonListResponse {
   if (!isObject(data)) {
     return false;
   }
 
-  const results = data.results;
-  const count = data.count;
-
-  return Array.isArray(results) && typeof count === 'number';
-}
-
-export function isPokemon(data: unknown): data is Pokemon {
-  if (!isObject(data)) {
-    return false;
-  }
-
-  const name = data.name;
-  const id = data.id;
-  const sprites = data.sprites;
+  const { results, next, previous, count } = data;
 
   return (
-    typeof name === 'string' && typeof id === 'number' && isObject(sprites)
+    Array.isArray(results) &&
+    results.every(isValidListItem) &&
+    (next === null || typeof next === 'string') &&
+    (previous === null || typeof previous === 'string') &&
+    typeof count === 'number'
   );
 }
 
-export function isPokemonSpecies(data: unknown): data is PokemonSpecies {
+export function isValidItem(data: unknown): data is Pokemon {
   if (!isObject(data)) {
     return false;
   }
 
-  const entries = data.flavor_text_entries;
+  const { name, id, sprites, types, abilities, height, weight, species } = data;
 
-  if (!Array.isArray(entries)) {
+  if (
+    typeof name !== 'string' ||
+    typeof id !== 'number' ||
+    !isObject(sprites)
+  ) {
     return false;
   }
 
-  return entries.every((item) => {
+  if (!isValidSprites(sprites)) {
+    return false;
+  }
+
+  if (!Array.isArray(types)) {
+    return false;
+  }
+
+  const areValidTypes = types.every((typeItem: unknown) => {
+    if (!isObject(typeItem)) {
+      return false;
+    }
+    const slot = typeItem.slot;
+    const type = typeItem.type;
+    return (
+      typeof slot === 'number' &&
+      isObject(type) &&
+      typeof type.name === 'string'
+    );
+  });
+
+  if (!areValidTypes) {
+    return false;
+  }
+
+  if (data.abilities !== undefined && !Array.isArray(abilities)) {
+    return false;
+  }
+
+  if (Array.isArray(abilities)) {
+    const areValidAbilities = abilities.every((abilityItem: unknown) => {
+      if (!isObject(abilityItem)) {
+        return false;
+      }
+      const ability = abilityItem.ability;
+      return isObject(ability) && typeof ability.name === 'string';
+    });
+
+    if (!areValidAbilities) {
+      return false;
+    }
+  }
+
+  if (!isValidSpecies(species)) {
+    return false;
+  }
+
+  if (typeof height !== 'number' || typeof weight !== 'number') {
+    return false;
+  }
+
+  return true;
+}
+
+function isValidSprites(sprites: unknown): boolean {
+  if (!isObject(sprites)) {
+    return false;
+  }
+
+  const isFrontDefaultImage = typeof sprites.front_default === 'string';
+  const isArtworkImage =
+    isObject(sprites.other) &&
+    isObject(sprites.other['official-artwork']) &&
+    typeof sprites.other['official-artwork'].front_default === 'string';
+
+  return isFrontDefaultImage || isArtworkImage;
+}
+
+function isValidSpecies(species: unknown): boolean {
+  return (
+    isObject(species) &&
+    typeof species.name === 'string' &&
+    typeof species.url === 'string'
+  );
+}
+
+export function isValidItemSpecies(data: unknown): data is PokemonSpecies {
+  if (!isObject(data)) {
+    return false;
+  }
+
+  const { flavor_text_entries } = data;
+
+  if (!Array.isArray(flavor_text_entries)) {
+    return false;
+  }
+
+  const areValidEntries = flavor_text_entries.every((item: unknown) => {
     if (!isObject(item)) {
       return false;
     }
-
-    const language = item.language;
-
+    const { flavor_text, language } = item;
     return (
-      typeof item.flavor_text === 'string' &&
+      typeof flavor_text === 'string' &&
       isObject(language) &&
       typeof language.name === 'string'
     );
   });
+
+  if (!areValidEntries) {
+    return false;
+  }
+
+  const isLanguageEntry = flavor_text_entries.some((item: unknown) => {
+    if (!isObject(item)) {
+      return false;
+    }
+    const { language } = item;
+    return isObject(language) && language.name === 'en';
+  });
+
+  return isLanguageEntry;
 }

@@ -7,42 +7,64 @@ import type {
   PokemonSpecies,
 } from '@/types/api';
 import {
-  isPokemon,
-  isPokemonListResponse,
-  isPokemonSpecies,
+  isValidItem,
+  isValidListResponse,
+  isValidItemSpecies,
 } from '@/types/type-guards';
 
 import { ApiError } from '@/services/api-error';
 
+const TIMEOUT_MS = 20_000;
+
 async function fetchData<T>(
   url: string,
   validator: TypeGuard<T>,
-  errorMessage: string
+  errorMessage: string,
+  timeoutMs: number = TIMEOUT_MS,
 ): Promise<T> {
-  const res = await fetch(url);
-
-  if (!res.ok) {
-    throw new ApiError(res.status, errorMessage);
-  }
-
-  let data: unknown;
+  const abortController = new AbortController();
+  const timeoutId = setTimeout(() => {
+    abortController.abort();
+  }, timeoutMs);
 
   try {
-    data = await res.json();
-  } catch {
-    throw new Error('Invalid JSON response');
-  }
+    const res = await fetch(url, {
+      signal: abortController.signal,
+    });
 
-  if (!validator(data)) {
-    throw new Error('Invalid API response shape');
-  }
+    clearTimeout(timeoutId);
 
-  return data;
+    if (!res.ok) {
+      throw new ApiError(res.status, errorMessage);
+    }
+
+    let data: unknown;
+
+    try {
+      data = await res.json();
+    } catch {
+      throw new Error('Invalid JSON response');
+    }
+
+    if (!validator(data)) {
+      throw new Error('Invalid API response shape');
+    }
+
+    return data;
+  } catch (error) {
+    clearTimeout(timeoutId);
+
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error('Request timeout');
+    }
+
+    throw error;
+  }
 }
 
-export const getPokemons = (
+export const getItems = (
   offset: number,
-  limit: number
+  limit: number,
 ): Promise<PokemonListResponse> => {
   const params = new URLSearchParams({
     limit: String(limit),
@@ -51,33 +73,33 @@ export const getPokemons = (
 
   return fetchData<PokemonListResponse>(
     `${API_BASE_URL}?${params.toString()}`,
-    isPokemonListResponse,
-    'Failed to get pokemons'
+    isValidListResponse,
+    'Failed to get items',
   );
 };
 
-export const getPokemonByName = (name: string): Promise<Pokemon> =>
+export const getItemByName = (name: string): Promise<Pokemon> =>
   fetchData<Pokemon>(
     `${API_BASE_URL}/${name.toLowerCase().trim()}`,
-    isPokemon,
-    'Pokemon not found'
+    isValidItem,
+    'Pokemon not found',
   );
 
-export const getPokemonSpecies = (url: string): Promise<PokemonSpecies> =>
+export const getItemSpecies = (url: string): Promise<PokemonSpecies> =>
   fetchData<PokemonSpecies>(
     url,
-    isPokemonSpecies,
-    'Failed to get pokemon species'
+    isValidItemSpecies,
+    'Failed to get item species',
   );
 
-export const getPokemonFull = async (
-  name: string
+export const getItemFull = async (
+  name: string,
 ): Promise<PokemonWithDescription> => {
-  const pokemon = await getPokemonByName(name);
+  const item = await getItemByName(name);
 
-  const speciesUrl = pokemon.species.url;
+  const speciesUrl = item.species.url;
 
-  const species = await getPokemonSpecies(speciesUrl);
+  const species = await getItemSpecies(speciesUrl);
 
   const entries = species.flavor_text_entries;
 
@@ -86,7 +108,7 @@ export const getPokemonFull = async (
   const description = entry ? entry.flavor_text.replaceAll(/\f|\n/g, ' ') : '';
 
   return {
-    ...pokemon,
+    ...item,
     description,
   };
 };

@@ -1,0 +1,25 @@
+.heading {
+  font-size: 4rem;
+}
+
+.not-found {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+
+  max-width: 58rem;
+  height: 100%;
+}
+
+.text {
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  color: var(--color-gray-400);
+  text-align: center;
+}
+
+.height {
+  max-height: 3rem;
+}

@@ -1,36 +1,33 @@
-import React from 'react';
-import styles from './button.module.css';
 import classNames from 'classnames/bind';
+import styles from './button.module.css';
 
 const cx = classNames.bind(styles);
 
-type Props = {
+type ButtonProps = {
   text: string;
   onClick: () => void;
   disabled?: boolean;
-  variant?: 'basic' | 'error';
+  variant?: 'basic' | 'error' | 'secondary';
+  className?: string;
 };
 
-export class Button extends React.Component<Props> {
-  public static defaultProps = {
-    disabled: false,
-    variant: 'basic',
-  };
-
-  public render() {
-    const { text, onClick, disabled, variant } = this.props;
-
-    return (
-      <button
-        type="button"
-        onClick={onClick}
-        disabled={disabled}
-        className={cx('button', variant, {
-          disabled: disabled,
-        })}
-      >
-        {text}
-      </button>
-    );
-  }
+export function Button({
+  text,
+  onClick,
+  disabled = false,
+  variant = 'basic',
+  className,
+}: ButtonProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={cx('button', variant, className, {
+        disabled,
+      })}
+    >
+      {text}
+    </button>
+  );
 }

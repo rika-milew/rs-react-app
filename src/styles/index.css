@@ -1,5 +1,5 @@
-@import './variables.css';
-@import './reset.css';
+@import url('./variables.css');
+@import url('./reset.css');
 
 body {
   font-family: Inter, sans-serif;
@@ -7,13 +7,15 @@ body {
 }
 
 button {
-  width: 100%;
-  appearance: none;
-  padding: 0;
-  background: none;
-  border: none;
+  cursor: pointer;
+
   margin: 0;
+  padding: 0;
+  border: none;
+
   font: inherit;
   color: inherit;
-  cursor: pointer;
+
+  appearance: none;
+  background: none;
 }

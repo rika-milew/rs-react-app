@@ -1,74 +1,51 @@
-import React from 'react';
 import classNames from 'classnames/bind';
-import styles from './search-bar.module.css';
-
+import { useState } from 'react';
 import { Button } from '@/components/button/button';
+import styles from './search-bar.module.css';
 
 const cx = classNames.bind(styles);
 
-type Props = {
+type SearchBarProps = {
   value?: string;
   onSearch: (value: string) => void;
 };
 
-type State = {
-  query: string;
+export const SearchBar = ({ value = '', onSearch }: SearchBarProps) => {
+  const [query, setQuery] = useState(value);
+
+  const handleChange = (event_: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(event_.target.value);
+  };
+
+  const handleSearch = () => {
+    const trimmedQuery = query.trim();
+
+    setQuery(trimmedQuery);
+    onSearch(trimmedQuery);
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
+  return (
+    <div className={cx('search-container')}>
+      <label htmlFor="search-input" className={cx('visually-hidden')}>
+        Search Pokémon
+      </label>
+      <input
+        id="search-input"
+        type="search"
+        value={query}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        placeholder="Search Pokémon..."
+        className={cx('input')}
+      />
+
+      <Button text="Search" onClick={handleSearch} />
+    </div>
+  );
 };
-
-export class SearchBar extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-
-    this.state = {
-      query: props.value ?? '',
-    };
-  }
-
-  public componentDidUpdate(previousProps: Props) {
-    if (previousProps.value !== this.props.value) {
-      this.setState({
-        query: this.props.value ?? '',
-      });
-    }
-  }
-
-  public handleChange = (event_: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ query: event_.target.value });
-  };
-
-  public handleSearch = () => {
-    const trimmed = this.state.query.trim();
-
-    this.setState({ query: trimmed });
-
-    if (trimmed) {
-      localStorage.setItem('search', trimmed);
-    } else {
-      localStorage.removeItem('search');
-    }
-
-    this.props.onSearch(trimmed);
-  };
-
-  public render() {
-    const query = this.state.query;
-
-    return (
-      <div className={cx('search-container')}>
-        <input
-          type="text"
-          value={query}
-          onChange={this.handleChange}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter') {
-              this.handleSearch();
-            }
-          }}
-          placeholder="Search Pokémon..."
-          className={cx('input')}
-        />
-        <Button text="Search" onClick={this.handleSearch} />
-      </div>
-    );
-  }
-}
