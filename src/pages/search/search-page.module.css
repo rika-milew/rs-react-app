@@ -1,10 +1,10 @@
 .home-page-layout {
+  overflow: hidden;
   display: flex;
   gap: 1rem;
   width: 100%;
-  overflow: hidden;
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     flex-direction: column;
   }
 }
@@ -14,28 +14,28 @@
   min-width: 0;
   transition: flex var(--transition-default) var(--ease-in-cubic);
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
+    overflow-y: auto;
     order: 2;
     min-height: 0;
-    overflow-y: auto;
   }
 }
 
 .search-section.split {
   flex: 0 0 60%;
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     flex: 1;
   }
 }
 
 .detail-section {
+  overflow: hidden;
   flex: 0 0 0;
   min-width: 0;
-  overflow: hidden;
   transition: flex var(--transition-default) var(--ease-in-cubic);
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     order: 1;
     max-height: 0;
     transition: max-height var(--transition-default) var(--ease-in-cubic);
@@ -45,9 +45,9 @@
 .detail-section.open {
   flex: 0 0 40%;
 
-  @media (max-width: 768px) {
-    flex: unset;
+  @media (width <= 768px) {
     overflow-y: auto;
+    flex: unset;
     max-height: none;
   }
 }

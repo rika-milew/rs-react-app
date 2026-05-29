@@ -1,20 +1,23 @@
 .search-container {
   display: flex;
-  align-items: center;
   gap: 1rem;
+  align-items: center;
+
   width: 100%;
   height: 6rem;
   margin-bottom: 2rem;
   padding: 1.25rem;
   border: 1px solid var(--card-background);
-  box-shadow: 0 8px 24px -12px hsl(220 60% 2% / 0.6);
   border-radius: 1rem;
-  background-color: var(--container-background);
 
-  @media (max-width: 500px) {
+  background-color: var(--container-background);
+  box-shadow: 0 8px 24px -12px hsl(220deg 60% 2% / 60%);
+
+  @media (width <= 500px) {
     flex-direction: column;
-    align-items: stretch;
     gap: 0.75rem;
+    align-items: stretch;
+
     height: auto;
     padding: 1rem;
     border-radius: 0.75rem;
@@ -23,37 +26,44 @@
 
 .input {
   flex: 1 1 0%;
+
   padding: 1rem 0.75rem;
-  outline: 2px solid transparent;
-  outline-offset: 2px;
-  color: var(--text-basic);
-  font-size: 1rem;
-  line-height: 1.5rem;
-  background-color: hsla(from var(--card-background) h s l / var(--opacity-40));
   border: 1px solid var(--card-background);
   border-radius: 0.75rem;
+
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: var(--text-basic);
+
+  background-color: hsl(from var(--card-background) h s l / var(--opacity-40));
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+
   transition: outline-color var(--transition-default) var(--ease-in-cubic);
 
   &:focus {
     outline: 2px solid var(--accent-background);
   }
 
-  @media (max-width: 500px) {
+  @media (width <= 500px) {
     width: 100%;
-    padding: 0.75rem 0.75rem;
+    padding: 0.75rem;
     font-size: 0.875rem;
   }
 }
 
 .visually-hidden {
   position: absolute;
+
+  overflow: hidden;
+
   width: 1px;
   height: 1px;
-  padding: 0;
   margin: -1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+  padding: 0;
   border: 0;
+
   white-space: nowrap;
+
+  clip-path: inset(50%);
 }

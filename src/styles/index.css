@@ -1,6 +1,6 @@
-@import './variables.css';
-@import './reset.css';
-@import './theme.css';
+@import url('./variables.css');
+@import url('./reset.css');
+@import url('./theme.css');
 
 body {
   font-family: Inter, sans-serif;
@@ -8,12 +8,15 @@ body {
 }
 
 button {
-  appearance: none;
-  padding: 0;
-  background: none;
-  border: none;
+  cursor: pointer;
+
   margin: 0;
+  padding: 0;
+  border: none;
+
   font: inherit;
   color: inherit;
-  cursor: pointer;
+
+  appearance: none;
+  background: none;
 }

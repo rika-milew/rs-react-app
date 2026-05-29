@@ -1,23 +1,27 @@
 .button {
+  cursor: pointer;
+
   display: inline-flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+
   width: auto;
   height: 100%;
   max-height: 4rem;
   padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+
   font-size: 0.875rem;
-  line-height: 1.25rem;
   font-weight: 600;
+  line-height: 1.25rem;
   text-transform: uppercase;
   letter-spacing: 0.025em;
-  border-radius: 0.75rem;
-  cursor: pointer;
+
   transition: background-color var(--transition-default) var(--ease-in-cubic);
 
   &:disabled {
-    opacity: var(--opacity-40);
     cursor: not-allowed;
+    opacity: var(--opacity-40);
   }
 
   &:focus-visible {
@@ -65,10 +69,12 @@
 }
 
 .error {
+  float: right;
+
   width: 12rem;
   height: 3rem;
   margin: 1.5rem 0 0 auto;
-  float: right;
+
   background-color: var(--error-color);
 
   @media (hover: hover) and (pointer: fine) {
@@ -85,41 +91,46 @@
 }
 
 .pagination {
+  cursor: pointer;
+
   display: inline-flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+
   width: auto;
   min-width: 5rem;
   padding: 0.5rem 1.25rem;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  font-weight: 500;
-  text-transform: none;
-  color: var(--color-white);
-  background-color: hsla(from var(--color-gray-700) h s l / var(--opacity-40));
   border: 1px solid var(--color-gray-700);
   border-radius: 0.75rem;
-  cursor: pointer;
+
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  color: var(--color-white);
+  text-transform: none;
+
+  background-color: hsl(from var(--color-gray-700) h s l / var(--opacity-40));
+
   transition: all var(--transition-default) var(--ease-in-cubic);
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: var(--opacity-40);
+  }
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      color: var(--color-yellow-600);
       border: 1px solid
-        hsla(from var(--color-yellow-600) h s l / var(--opacity-60));
+        hsl(from var(--color-yellow-600) h s l / var(--opacity-60));
+      color: var(--color-yellow-600);
     }
   }
 
   @media (hover: none) {
     &:active {
-      color: var(--color-yellow-600);
       border: 1px solid
-        hsla(from var(--color-yellow-600) h s l / var(--opacity-60));
+        hsl(from var(--color-yellow-600) h s l / var(--opacity-60));
+      color: var(--color-yellow-600);
     }
-  }
-
-  &:disabled {
-    opacity: var(--opacity-40);
-    cursor: not-allowed;
   }
 }

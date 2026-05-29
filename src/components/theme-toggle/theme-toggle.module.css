@@ -1,35 +1,58 @@
 .theme-toggle {
+  cursor: pointer;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   width: 2.5rem;
   height: 2.5rem;
   padding: 0.5rem;
-  cursor: pointer;
+
   transition: all var(--transition-default) var(--ease-in-cubic);
 }
 
 .icon-container {
   position: relative;
-  width: 1.25rem;
-  height: 1.25rem;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .icon {
   position: absolute;
+  transform: scale(0.3) rotate(-90deg);
+
   width: 1.25rem;
   height: 1.25rem;
-  transition: all var(--transition-default) var(--ease-in-cubic);
+
   opacity: 0;
-  transform: scale(0.3) rotate(-90deg);
+
+  transition: all var(--transition-default) var(--ease-in-cubic);
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 .visible {
-  opacity: 1;
   transform: scale(1) rotate(0deg);
+  opacity: 1;
+  animation: pulse var(--transition-default) var(--ease-in-cubic);
 }
 
 .theme-toggle[data-theme='dark'] .icon {
@@ -46,20 +69,4 @@
 
 .theme-toggle[data-theme='light']:hover .visible {
   filter: drop-shadow(0 0 10px var(--text-muted));
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.2);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-.visible {
-  animation: pulse var(--transition-default) var(--ease-in-cubic);
 }
