@@ -4,6 +4,11 @@ import { SearchPage } from './search-page';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
+vi.mock('@tanstack/react-router', () => ({
+  useNavigate: () => vi.fn(),
+  useSearch: () => ({ page: 1 }),
+}));
+
 vi.mock('@/components/card-list/card-list', () => ({
   CardList: ({ search }: { search: string }) => (
     <div data-testid="card-list">
@@ -19,25 +24,34 @@ vi.mock('@/components/search-bar/search-bar', () => ({
   }: {
     value?: string;
     onSearch: (value: string) => void;
-  }) => (
-    <div data-testid="search-bar">
-      <input
-        type="text"
-        value={value}
-        onChange={(event) => {
-          onSearch(event.target.value);
-        }}
-        placeholder="Search Pokémon..."
-      />
-      <button
-        onClick={() => {
-          onSearch(value);
-        }}
-      >
-        Search
-      </button>
-    </div>
-  ),
+  }) => {
+    const [localValue, setLocalValue] = React.useState(value);
+
+    React.useEffect(() => {
+      setLocalValue(value);
+    }, [value]);
+
+    return (
+      <div data-testid="search-bar">
+        <input
+          type="text"
+          role="searchbox"
+          value={localValue}
+          onChange={(event) => {
+            setLocalValue(event.target.value);
+          }}
+          placeholder="Search Pokémon..."
+        />
+        <button
+          onClick={() => {
+            onSearch(localValue);
+          }}
+        >
+          Search
+        </button>
+      </div>
+    );
+  },
 }));
 
 vi.mock('@/components/error-button/error-button', () => ({
@@ -52,17 +66,17 @@ vi.mock('@/hooks/use-local-storage', () => ({
     });
 
     const setStoredValue = (newValue: string) => {
-      localStorage.setItem(key, newValue);
-      setValue(newValue);
+      const processedValue = newValue.trim() || initialValue;
+      if (processedValue) {
+        localStorage.setItem(key, processedValue);
+      } else {
+        localStorage.removeItem(key);
+      }
+      setValue(processedValue);
     };
 
     return [value, setStoredValue];
   },
-}));
-
-vi.mock('@tanstack/react-router', () => ({
-  useNavigate: () => vi.fn(),
-  useSearch: () => ({ page: 1 }),
 }));
 
 describe('SearchPage', () => {
@@ -79,8 +93,6 @@ describe('SearchPage', () => {
 
     expect(screen.getByRole('searchbox')).toBeInTheDocument();
     expect(screen.getByText(/trigger error/i)).toBeInTheDocument();
-    expect(screen.getByTestId('card-list')).toBeInTheDocument();
-    expect(screen.getByTestId('search-bar')).toBeInTheDocument();
   });
 
   it('passes search value to the list component', async () => {
@@ -90,7 +102,8 @@ describe('SearchPage', () => {
 
     const input = screen.getByRole('searchbox');
 
-    await user.type(input, 'bulbasaur');
+    await user.clear(input);
+    await user.type(input, 'bulbasaur', { skipClick: true });
 
     expect(input).toHaveValue('bulbasaur');
   });

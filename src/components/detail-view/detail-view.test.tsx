@@ -51,10 +51,10 @@ describe('DetailView', () => {
     vi.clearAllMocks();
   });
 
-  it('renders card with data when correctly', async () => {
+  it('renders card with data when correctly', () => {
     vi.mocked(useGetDetailQuery).mockReturnValue({
       data: {
-        type: API_STATUS.SUCCESS,
+        status: API_STATUS.SUCCESS,
         data: mockItemFull,
       },
       isLoading: false,
@@ -64,7 +64,7 @@ describe('DetailView', () => {
 
     render(<DetailView detailId="1" />);
 
-    expect(await screen.findByTestId('card')).toBeInTheDocument();
+    expect(screen.getByTestId('card')).toBeInTheDocument();
     expect(screen.getByText(mockItemFull.name)).toBeInTheDocument();
     expect(screen.queryByTestId('loader')).not.toBeInTheDocument();
     expect(screen.queryByTestId('error-state')).not.toBeInTheDocument();
@@ -90,7 +90,7 @@ describe('DetailView', () => {
 
     vi.mocked(useGetDetailQuery).mockReturnValue({
       data: {
-        type: API_STATUS.ERROR,
+        status: API_STATUS.ERROR,
         message: errorMessage,
       },
       isLoading: false,
@@ -109,7 +109,7 @@ describe('DetailView', () => {
   it('renders not found message when status is not found error', async () => {
     vi.mocked(useGetDetailQuery).mockReturnValue({
       data: {
-        type: API_STATUS.NOT_FOUND,
+        status: API_STATUS.NOT_FOUND,
       },
       isLoading: false,
       isFetching: false,

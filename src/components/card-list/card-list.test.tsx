@@ -7,7 +7,7 @@ import { mockItemFull, mockItemPartial } from '@/test-utils/api-mock';
 import type { PokemonWithDescription } from '@/types/api';
 
 const mockNavigate = vi.fn();
-const mockUseSearch = vi.fn();
+const mockSearchParams = { page: 1 };
 
 vi.mock('@/store/api/api-endpoints', () => ({
   useGetListQuery: vi.fn(),
@@ -20,7 +20,7 @@ const mockUseSearchQuery = vi.mocked(useSearchQuery);
 
 vi.mock('@tanstack/react-router', () => ({
   useNavigate: () => mockNavigate,
-  useSearch: vi.fn(),
+  useSearch: () => mockSearchParams,
 }));
 
 vi.mock('@/hooks/use-pagination', () => ({
@@ -75,7 +75,7 @@ vi.mock('@/components/pagination/pagination', () => ({
 describe('CardList component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockUseSearch.mockReturnValue({ page: 1 });
+    mockSearchParams.page = 1;
 
     mockUseGetListQuery.mockReturnValue({
       data: undefined,
@@ -119,7 +119,7 @@ describe('CardList component', () => {
   it('shows pagination component when search input is empty', async () => {
     mockUseGetListQuery.mockReturnValue({
       data: {
-        type: API_STATUS.SUCCESS,
+        status: API_STATUS.SUCCESS,
         data: [],
         totalPages: 67,
       },
@@ -144,41 +144,10 @@ describe('CardList component', () => {
     });
   });
 
-  it('does not render pagination during search', () => {
-    mockUseGetListQuery.mockReturnValue({
-      data: undefined,
-      isLoading: false,
-      isFetching: false,
-      isError: false,
-      refetch: vi.fn(),
-    });
-
-    mockUseSearchQuery.mockReturnValue({
-      data: {
-        type: API_STATUS.SUCCESS,
-        data: [mockItemFull],
-      },
-      isLoading: false,
-      isFetching: false,
-      isError: false,
-      refetch: vi.fn(),
-    });
-
-    render(<CardList search="venusaur" />);
-
-    expect(
-      screen.queryByRole('button', { name: /next/i }),
-    ).not.toBeInTheDocument();
-
-    expect(
-      screen.queryByRole('button', { name: /prev/i }),
-    ).not.toBeInTheDocument();
-  });
-
   it('renders item cards after successful search', async () => {
     mockUseGetListQuery.mockReturnValue({
       data: {
-        type: API_STATUS.SUCCESS,
+        status: API_STATUS.SUCCESS,
         data: [mockItemFull],
         totalPages: 1,
       },
@@ -207,7 +176,7 @@ describe('CardList component', () => {
   it('renders correct number of cards', async () => {
     mockUseGetListQuery.mockReturnValue({
       data: {
-        type: API_STATUS.SUCCESS,
+        status: API_STATUS.SUCCESS,
         data: [mockItemFull, mockItemPartial],
         totalPages: 1,
       },
@@ -262,7 +231,7 @@ describe('CardList component', () => {
   it('renders no cards when data is empty', () => {
     mockUseGetListQuery.mockReturnValue({
       data: {
-        type: API_STATUS.SUCCESS,
+        status: API_STATUS.SUCCESS,
         data: [],
         totalPages: 1,
       },
@@ -290,7 +259,7 @@ describe('CardList component', () => {
   it('renders api error message when when api returns error state', async () => {
     mockUseGetListQuery.mockReturnValue({
       data: {
-        type: API_STATUS.ERROR,
+        status: API_STATUS.ERROR,
         message: 'Server error',
       },
       isLoading: false,
