@@ -5,6 +5,23 @@ import { useGetListQuery, useSearchQuery } from '@/store/api/api-endpoints';
 import { API_STATUS, ERROR_MESSAGES } from '@/constants/constants';
 import { mockItemFull, mockItemPartial } from '@/test-utils/api-mock';
 import type { PokemonWithDescription } from '@/types/api';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+
+type MockRootState = {
+  api: Record<string, never>;
+};
+
+const createMockStore = () =>
+  configureStore<MockRootState>({
+    reducer: {
+      api: (state = {}) => state,
+    },
+  });
+const renderWithProvider = (ui: React.ReactElement) => {
+  const store = createMockStore();
+  return render(<Provider store={store}>{ui}</Provider>);
+};
 
 const mockNavigate = vi.fn();
 const mockSearchParams = { page: 1 };
@@ -111,7 +128,7 @@ describe('CardList component', () => {
       refetch: vi.fn(),
     });
 
-    render(<CardList search="" />);
+    renderWithProvider(<CardList search="" />);
 
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
   });
@@ -136,7 +153,8 @@ describe('CardList component', () => {
       isError: false,
       refetch: vi.fn(),
     });
-    render(<CardList search="" />);
+
+    renderWithProvider(<CardList search="" />);
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: /next/i })).toBeInTheDocument();
@@ -165,7 +183,7 @@ describe('CardList component', () => {
       refetch: vi.fn(),
     });
 
-    render(<CardList search="" />);
+    renderWithProvider(<CardList search="" />);
 
     expect(await screen.findByText(/bulbasaur/i)).toBeInTheDocument();
     expect(
@@ -194,7 +212,7 @@ describe('CardList component', () => {
       refetch: vi.fn(),
     });
 
-    render(<CardList search="" />);
+    renderWithProvider(<CardList search="" />);
 
     expect(await screen.findByText(/bulbasaur/i)).toBeInTheDocument();
     expect(screen.getByText(/ivysaur/i)).toBeInTheDocument();
@@ -220,7 +238,7 @@ describe('CardList component', () => {
       refetch: vi.fn(),
     });
 
-    render(<CardList search="unknown" />);
+    renderWithProvider(<CardList search="unknown" />);
 
     expect(
       await screen.findByText(ERROR_MESSAGES.NOTFOUND),
@@ -249,7 +267,7 @@ describe('CardList component', () => {
       refetch: vi.fn(),
     });
 
-    render(<CardList search="" />);
+    renderWithProvider(<CardList search="" />);
 
     const cards = screen.queryAllByRole('img');
 
@@ -276,7 +294,7 @@ describe('CardList component', () => {
       refetch: vi.fn(),
     });
 
-    render(<CardList search="" />);
+    renderWithProvider(<CardList search="" />);
 
     expect(await screen.findByText(ERROR_MESSAGES.DEFAULT)).toBeInTheDocument();
   });
@@ -299,7 +317,7 @@ describe('CardList component', () => {
       refetch: vi.fn(),
     });
 
-    render(<CardList search="" />);
+    renderWithProvider(<CardList search="" />);
 
     expect(
       await screen.findByText(/something went wrong/i),
@@ -315,7 +333,7 @@ describe('CardList component', () => {
       refetch: vi.fn(),
     });
 
-    render(<CardList search="   BulBAsaur   " />);
+    renderWithProvider(<CardList search="   BulBAsaur   " />);
 
     expect(mockUseSearchQuery).toHaveBeenCalledWith('bulbasaur', {
       skip: false,

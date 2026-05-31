@@ -6,6 +6,23 @@ import type { PokemonWithDescription } from '@/types/api';
 import { mockItemFull } from '@/test-utils/api-mock';
 import userEvent from '@testing-library/user-event';
 import { useGetDetailQuery } from '@/store/api/api-endpoints';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+
+type MockRootState = {
+  api: Record<string, never>;
+};
+
+const createMockStore = () =>
+  configureStore<MockRootState>({
+    reducer: {
+      api: (state = {}) => state,
+    },
+  });
+const renderWithProvider = (ui: React.ReactElement) => {
+  const store = createMockStore();
+  return render(<Provider store={store}>{ui}</Provider>);
+};
 
 vi.mock('@/store/api/api-endpoints', () => ({
   useGetDetailQuery: vi.fn(),
@@ -62,7 +79,7 @@ describe('DetailView', () => {
       refetch: vi.fn(),
     });
 
-    render(<DetailView detailId="1" />);
+    renderWithProvider(<DetailView detailId="1" />);
 
     expect(screen.getByTestId('card')).toBeInTheDocument();
     expect(screen.getByText(mockItemFull.name)).toBeInTheDocument();
@@ -78,7 +95,7 @@ describe('DetailView', () => {
       refetch: vi.fn(),
     });
 
-    render(<DetailView detailId="1" />);
+    renderWithProvider(<DetailView detailId="1" />);
 
     expect(screen.getByTestId('loader')).toBeInTheDocument();
     expect(screen.queryByTestId('card')).not.toBeInTheDocument();
@@ -98,7 +115,7 @@ describe('DetailView', () => {
       refetch: vi.fn(),
     });
 
-    render(<DetailView detailId="1" />);
+    renderWithProvider(<DetailView detailId="1" />);
 
     expect(await screen.findByTestId('error-state')).toBeInTheDocument();
     expect(screen.getByText(errorMessage)).toBeInTheDocument();
@@ -116,7 +133,7 @@ describe('DetailView', () => {
       refetch: vi.fn(),
     });
 
-    render(<DetailView detailId="1" />);
+    renderWithProvider(<DetailView detailId="1" />);
 
     expect(await screen.findByTestId('error-state')).toBeInTheDocument();
     expect(screen.getByText(ERROR_MESSAGES.NOTFOUND)).toBeInTheDocument();
@@ -137,7 +154,7 @@ describe('DetailView', () => {
       refetch: vi.fn(),
     });
 
-    render(<DetailView detailId="1" />);
+    renderWithProvider(<DetailView detailId="1" />);
 
     const closeButton = screen.getByText('✕');
     await user.click(closeButton);
@@ -159,7 +176,7 @@ describe('DetailView', () => {
       refetch: vi.fn(),
     });
 
-    render(<DetailView detailId="1" />);
+    renderWithProvider(<DetailView detailId="1" />);
 
     const detailElement = screen.getByRole('complementary');
 
@@ -181,7 +198,7 @@ describe('DetailView', () => {
       refetch: vi.fn(),
     });
 
-    render(<DetailView detailId="1" />);
+    renderWithProvider(<DetailView detailId="1" />);
 
     await user.click(document.body);
 

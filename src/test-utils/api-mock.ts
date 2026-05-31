@@ -51,6 +51,11 @@ export const mockItemPartial: PokemonWithDescription = {
   description: undefined,
 };
 
+export const mockPokemonList: PokemonWithDescription[] = [
+  mockItemFull,
+  mockItemPartial,
+];
+
 export function mockFetchData(data: unknown, status = HTTP_STATUS.OK): void {
   vi.spyOn(globalThis, 'fetch').mockResolvedValue(
     Response.json(data, { status }),
