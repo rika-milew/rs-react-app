@@ -33,6 +33,7 @@ export function CardList({ search }: CardListProps) {
     data: listResult,
     isLoading: listLoading,
     isError: listError,
+    isFetching: listFetching,
     refetch: refetchList,
   } = useGetListQuery({ search: '', page: currentPage }, { skip: isSearch });
 
@@ -40,6 +41,7 @@ export function CardList({ search }: CardListProps) {
     data: searchResult,
     isLoading: searchLoading,
     isError: searchError,
+    isFetching: searchFetching,
     refetch: refetchSearch,
   } = useSearchQuery(normalizedSearch, { skip: !isSearch });
 
@@ -63,6 +65,8 @@ export function CardList({ search }: CardListProps) {
     ],
   );
 
+  const isFetching = isSearch ? searchFetching : listFetching;
+
   const refreshData = useCallback(() => {
     if (search) {
       void refetchSearch();
@@ -78,7 +82,6 @@ export function CardList({ search }: CardListProps) {
       search: searchParams,
     });
   };
-
   const stateMessages = {
     error: error ?? ERROR_MESSAGES.DEFAULT,
     'not-found': ERROR_MESSAGES.NOTFOUND,
@@ -91,12 +94,12 @@ export function CardList({ search }: CardListProps) {
   }
 
   const isListLoaded = status === 'success';
-  const isLoading = status === 'loading';
+  const showLoader = status === 'loading' || isFetching;
 
   return (
     <section className={cx('section')}>
       <h2 className={cx('title')}>Results</h2>
-      {isLoading && <Loader />}
+      {showLoader && <Loader />}
       <div className={cx('card-container')}>
         {data.map((card) => (
           <Card
@@ -109,7 +112,7 @@ export function CardList({ search }: CardListProps) {
           />
         ))}
       </div>
-      {isListLoaded && !isLoading && <Pagination totalPages={totalPages} />}
+      {isListLoaded && !showLoader && <Pagination totalPages={totalPages} />}
     </section>
   );
 }
