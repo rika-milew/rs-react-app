@@ -1,20 +1,17 @@
 import { getItemFull } from '@/services/api';
 import { ApiError } from '@/services/api-error';
 import { API_STATUS, HTTP_STATUS, ERROR_MESSAGES } from '@/constants/constants';
-import type { PokemonWithDescription } from '@/types/api';
+import type { PokemonWithDescription, ApiResult } from '@/types/api';
 
-export type DetailResult =
-  | { type: typeof API_STATUS.SUCCESS; data: PokemonWithDescription }
-  | { type: typeof API_STATUS.NOT_FOUND }
-  | { type: typeof API_STATUS.ERROR; message: string };
+export type DetailResult = ApiResult<PokemonWithDescription>;
 
 export async function getDetailData(id: string): Promise<DetailResult> {
   try {
     const item = await getItemFull(id);
-    return { type: API_STATUS.SUCCESS, data: item };
+    return { status: API_STATUS.SUCCESS, data: item };
   } catch (error) {
     if (error instanceof ApiError && error.status === HTTP_STATUS.NOT_FOUND) {
-      return { type: API_STATUS.NOT_FOUND };
+      return { status: API_STATUS.NOT_FOUND };
     }
 
     let message: string = ERROR_MESSAGES.DEFAULT;
@@ -27,6 +24,6 @@ export async function getDetailData(id: string): Promise<DetailResult> {
       }
     }
 
-    return { type: API_STATUS.ERROR, message };
+    return { status: API_STATUS.ERROR, message };
   }
 }

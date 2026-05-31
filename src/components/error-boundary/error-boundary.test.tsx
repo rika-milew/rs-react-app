@@ -50,7 +50,7 @@ describe('ErrorBoundary component', () => {
     renderWithProvider(
       <ErrorBoundary>
         <div>App Content</div>
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(screen.getByText('App Content')).toBeInTheDocument();
@@ -60,12 +60,12 @@ describe('ErrorBoundary component', () => {
     renderWithProvider(
       <ErrorBoundary>
         <TestError isError={true} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(screen.getByText('Something went wrong')).toBeInTheDocument();
     expect(
-      screen.getByText('Please try again or reset the app.')
+      screen.getByText('Please try again or reset the app.'),
     ).toBeInTheDocument();
   });
 
@@ -73,7 +73,7 @@ describe('ErrorBoundary component', () => {
     renderWithProvider(
       <ErrorBoundary>
         <TestError isError={true} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(screen.getByRole('button')).toBeInTheDocument();
@@ -84,7 +84,7 @@ describe('ErrorBoundary component', () => {
     renderWithProvider(
       <ErrorBoundary>
         <div>App Content</div>
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(screen.getByText('App Content')).toBeInTheDocument();
@@ -97,7 +97,7 @@ describe('ErrorBoundary component', () => {
     renderWithProvider(
       <ErrorBoundary>
         <TestError isError={true} />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
@@ -109,7 +109,7 @@ describe('ErrorBoundary component', () => {
     await user.click(button);
 
     expect(
-      await screen.findByRole('button', { name: /try again/i })
+      await screen.findByRole('button', { name: /try again/i }),
     ).toBeInTheDocument();
   });
 });

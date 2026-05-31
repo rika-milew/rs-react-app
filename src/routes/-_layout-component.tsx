@@ -11,7 +11,7 @@ export function LayoutRoute() {
     select: (state) => state.matches,
   });
   const isDetailViewOpen = matches.some(
-    (match) => match.routeId === `${ROUTES.LAYOUT}${ROUTES.DETAIL}`
+    (match) => match.routeId === `${ROUTES.LAYOUT}${ROUTES.DETAIL}`,
   );
 
   return (

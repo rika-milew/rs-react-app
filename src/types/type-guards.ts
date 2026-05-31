@@ -18,7 +18,7 @@ export function isValidListItem(data: unknown): data is PokemonListItem {
 }
 
 export function isValidListResponse(
-  data: unknown
+  data: unknown,
 ): data is PokemonListResponse {
   if (!isObject(data)) {
     return false;

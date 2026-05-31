@@ -38,7 +38,7 @@ describe('card component', () => {
       const expectedName =
         mockItemFull.name.charAt(0).toUpperCase() + mockItemFull.name.slice(1);
       expect(
-        screen.getByRole('heading', { name: expectedName })
+        screen.getByRole('heading', { name: expectedName }),
       ).toBeInTheDocument();
 
       const expectedId = `#${mockItemFull.id.toString().padStart(ID_LENGTH, '0')}`;
@@ -100,7 +100,7 @@ describe('card component', () => {
         .join(', ');
 
       expect(screen.getByText('Types:').nextElementSibling).toHaveTextContent(
-        expectedType
+        expectedType,
       );
 
       expect(expectedType).not.toContain(',');
@@ -115,7 +115,7 @@ describe('card component', () => {
 
       expect(image).toHaveAttribute(
         'src',
-        mockItemPartial.sprites.front_default
+        mockItemPartial.sprites.front_default,
       );
     });
 

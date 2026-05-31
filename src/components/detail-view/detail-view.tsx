@@ -2,11 +2,11 @@ import classNames from 'classnames/bind';
 import { useEffect, useCallback } from 'react';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
-import { StateView } from '@/components/state-view/state-view';
+import { API_STATUS, ERROR_MESSAGES } from '@/constants/constants';
+import { ErrorState } from '@/components/error-state/error-state';
 import { Button } from '@/components/button/button';
-import { API_STATUS, ERROR_MESSAGES, ROUTES } from '@/constants/constants';
 import styles from './detail-view.module.css';
-import { useNavigate } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useGetDetailQuery } from '@/store/api/api-endpoints';
 
 const cx = classNames.bind(styles);
@@ -17,6 +17,7 @@ type DetailViewProps = {
 
 export function DetailView({ detailId }: DetailViewProps) {
   const navigate = useNavigate();
+
   const {
     data: result,
     isLoading,
@@ -24,15 +25,14 @@ export function DetailView({ detailId }: DetailViewProps) {
     refetch,
   } = useGetDetailQuery(detailId);
 
-  const closeDetailView = useCallback((): void => {
-    const parameters = new URLSearchParams(globalThis.location.search);
-    const page = Number(parameters.get('page')) || 1;
+  const search = useSearch({ from: '/_layout' });
 
+  const closeDetailView = useCallback(() => {
     void navigate({
-      to: ROUTES.HOME,
-      search: { page },
+      to: '/',
+      search,
     });
-  }, [navigate]);
+  }, [navigate, search]);
 
   useEffect(() => {
     const handleKeyDown = (event_: KeyboardEvent) => {
@@ -71,10 +71,10 @@ export function DetailView({ detailId }: DetailViewProps) {
     );
   }
 
-  if (result?.type === API_STATUS.NOT_FOUND) {
+  if (result?.status === API_STATUS.NOT_FOUND) {
     return (
       <DetailLayout closeDetailView={closeDetailView}>
-        <StateView
+        <ErrorState
           message={ERROR_MESSAGES.NOTFOUND}
           onReload={() => void refetch()}
         />
@@ -82,17 +82,17 @@ export function DetailView({ detailId }: DetailViewProps) {
     );
   }
 
-  if (result?.type === API_STATUS.ERROR) {
+  if (result?.status === API_STATUS.ERROR) {
     return (
       <DetailLayout closeDetailView={closeDetailView}>
-        <StateView message={result.message} onReload={() => void refetch()} />
+        <ErrorState message={result.message} onReload={() => void refetch()} />
       </DetailLayout>
     );
   }
 
   return (
     <DetailLayout closeDetailView={closeDetailView}>
-      {result?.type === API_STATUS.SUCCESS && (
+      {result?.status === API_STATUS.SUCCESS && (
         <Card item={result.data} variant="detailed" />
       )}
       <Button

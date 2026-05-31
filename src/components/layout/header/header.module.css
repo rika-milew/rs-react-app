@@ -1,24 +1,30 @@
 .header {
   position: sticky;
-  top: 0;
   z-index: 1000;
-  width: 100%;
-  height: 4rem;
+  top: 0;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  width: 100%;
+  height: 4rem;
   padding: 1.25rem 1.5rem;
-  color: var(--text-basic);
-  background: var(--background);
   border-bottom: 1px solid var(--card-background);
 
-  @media (max-width: 768px) {
+  color: var(--text-basic);
+
+  background: var(--background);
+
+  @media (width <= 768px) {
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
     gap: 0.75rem;
+    align-items: center;
+    justify-content: center;
+
     height: auto;
+
+    text-align: center;
   }
 }
 
@@ -33,24 +39,25 @@
 
 .menu {
   display: flex;
+  gap: 1.5rem;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
 }
 
 .nav {
   display: flex;
-  justify-content: space-between;
   flex-direction: row;
   gap: 1rem;
+  justify-content: space-between;
 }
 
 .link {
   font-size: 1rem;
+  font-weight: var(--font-weight-semibold);
   line-height: 1.25rem;
   color: var(--text-muted);
-  font-weight: var(--font-weight-semibold);
   text-decoration: none;
+
   transition: color var(--transition-default) var(--ease-in-cubic);
 }
 
@@ -60,18 +67,20 @@
 
 .skip-link {
   position: absolute;
-  left: -9999px;
   top: 0;
+  left: -9999px;
 }
 
 .skip-link:focus {
   position: relative;
-  left: 0;
-  top: 0;
   z-index: 1000;
+  top: 0;
+  left: 0;
+
   width: auto;
   height: auto;
   padding: 0.75rem 1rem;
+
   color: var(--text-muted);
   text-decoration: none;
 }

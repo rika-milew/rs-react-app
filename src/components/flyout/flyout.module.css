@@ -1,24 +1,27 @@
 .flyout {
   position: sticky;
+  z-index: 50;
+  right: 0;
   bottom: 0;
   left: 0;
-  right: 0;
-  z-index: 50;
+
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+
   width: 100%;
   margin: 0 auto;
   padding: 1.25rem 1.5rem;
-  background-color: var(--background);
   border-top: 1px solid var(--card-background);
+
+  background-color: var(--background);
 }
 
 .count {
   font-size: 0.875rem;
-  line-height: 1.25rem;
   font-weight: var(--font-weight-bold);
+  line-height: 1.25rem;
   color: var(--text-basic);
 }
 
@@ -28,6 +31,6 @@
 
 .buttons {
   display: flex;
-  justify-content: space-between;
   gap: 0.75rem;
+  justify-content: space-between;
 }

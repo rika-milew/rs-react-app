@@ -31,7 +31,7 @@ describe('ThemeProvider component', () => {
     render(
       <ThemeProvider>
         <TestComponent />
-      </ThemeProvider>
+      </ThemeProvider>,
     );
 
     expect(screen.getByTestId('theme').textContent).toBe('dark');
@@ -43,7 +43,7 @@ describe('ThemeProvider component', () => {
     render(
       <ThemeProvider>
         <TestComponent />
-      </ThemeProvider>
+      </ThemeProvider>,
     );
 
     expect(screen.getByTestId('theme').textContent).toBe('dark');
@@ -59,7 +59,7 @@ describe('ThemeProvider component', () => {
     render(
       <ThemeProvider defaultTheme="light">
         <TestComponent />
-      </ThemeProvider>
+      </ThemeProvider>,
     );
 
     expect(screen.getByTestId('theme').textContent).toBe('light');
@@ -73,7 +73,7 @@ describe('ThemeProvider component', () => {
     render(
       <ThemeProvider>
         <div>Content</div>
-      </ThemeProvider>
+      </ThemeProvider>,
     );
 
     expect(document.documentElement.dataset.theme).toBe('dark');
@@ -83,7 +83,7 @@ describe('ThemeProvider component', () => {
     render(
       <ThemeProvider defaultTheme="light">
         <TestComponent />
-      </ThemeProvider>
+      </ThemeProvider>,
     );
 
     expect(screen.getByTestId('theme').textContent).toBe('light');
@@ -96,7 +96,7 @@ describe('ThemeProvider component', () => {
     render(
       <ThemeProvider>
         <TestComponent />
-      </ThemeProvider>
+      </ThemeProvider>,
     );
 
     const button = screen.getByText('Toggle');
@@ -115,7 +115,7 @@ describe('ThemeProvider component', () => {
     render(
       <ThemeProvider>
         <div data-testid="child">Content</div>
-      </ThemeProvider>
+      </ThemeProvider>,
     );
 
     expect(screen.getByTestId('child')).toBeInTheDocument();

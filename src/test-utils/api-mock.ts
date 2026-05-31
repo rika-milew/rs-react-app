@@ -53,18 +53,18 @@ export const mockItemPartial: PokemonWithDescription = {
 
 export function mockFetchData(data: unknown, status = HTTP_STATUS.OK): void {
   vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-    Response.json(data, { status })
+    Response.json(data, { status }),
   );
 }
 
 export function mockFetchDataError(
-  status = HTTP_STATUS.INTERNAL_SERVER_ERROR
+  status = HTTP_STATUS.INTERNAL_SERVER_ERROR,
 ): void {
   vi.spyOn(globalThis, 'fetch').mockResolvedValue(
     new Response(null, {
       status,
       statusText: 'Error',
       headers: { 'Content-Type': 'application/json' },
-    })
+    }),
   );
 }

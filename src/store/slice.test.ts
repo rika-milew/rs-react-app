@@ -12,7 +12,7 @@ describe('selectedItems slice', () => {
 
   it('returns initial state correctly', () => {
     expect(selectedItemsReducer(undefined, { type: 'unknown' })).toEqual(
-      initialState
+      initialState,
     );
   });
 

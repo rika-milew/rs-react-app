@@ -12,7 +12,7 @@ const cx = classNames.bind(styles);
 export function Flyout() {
   const dispatch = useDispatch();
   const selectedItems = useSelector(
-    (state: RootState) => state.selectedItems.selectedItems
+    (state: RootState) => state.selectedItems.selectedItems,
   );
   const count = selectedItems.length;
   const [downloadItems, { isLoading }] = useDownloadMutation();
@@ -51,7 +51,11 @@ export function Flyout() {
         </span>
       </span>
       <div className={cx('buttons')}>
-        <Button variant="gray" onClick={handleClearAll} text="Unselect all" />
+        <Button
+          variant="primary"
+          onClick={handleClearAll}
+          text="Unselect all"
+        />
         <Button
           variant="basic"
           onClick={() => {

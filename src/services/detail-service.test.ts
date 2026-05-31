@@ -20,7 +20,7 @@ describe('getDetailData', () => {
     const result = await getDetailData('1');
 
     expect(result).toEqual({
-      type: API_STATUS.SUCCESS,
+      status: API_STATUS.SUCCESS,
       data: mockItemFull,
     });
     expect(getItemFull).toHaveBeenCalledWith('1');
@@ -28,36 +28,36 @@ describe('getDetailData', () => {
 
   it('returns not found status when API returns 404', async () => {
     vi.mocked(getItemFull).mockRejectedValue(
-      new ApiError(HTTP_STATUS.NOT_FOUND, 'Not Found')
+      new ApiError(HTTP_STATUS.NOT_FOUND, 'Not Found'),
     );
 
     const result = await getDetailData('1000');
 
-    expect(result).toEqual({ type: API_STATUS.NOT_FOUND });
+    expect(result).toEqual({ status: API_STATUS.NOT_FOUND });
   });
 
   it('returns error status with server message when API returns 500', async () => {
     vi.mocked(getItemFull).mockRejectedValue(
-      new ApiError(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Server Error')
+      new ApiError(HTTP_STATUS.INTERNAL_SERVER_ERROR, 'Server Error'),
     );
 
     const result = await getDetailData('1');
 
     expect(result).toEqual({
-      type: API_STATUS.ERROR,
+      status: API_STATUS.ERROR,
       message: ERROR_MESSAGES.SERVER,
     });
   });
 
   it('returns error status with network message for network error', async () => {
     vi.mocked(getItemFull).mockRejectedValue(
-      new ApiError(HTTP_STATUS.NETWORK_ERROR, 'Network Error')
+      new ApiError(HTTP_STATUS.NETWORK_ERROR, 'Network Error'),
     );
 
     const result = await getDetailData('1');
 
     expect(result).toEqual({
-      type: API_STATUS.ERROR,
+      status: API_STATUS.ERROR,
       message: ERROR_MESSAGES.NETWORK,
     });
   });
@@ -68,7 +68,7 @@ describe('getDetailData', () => {
     const result = await getDetailData('1');
 
     expect(result).toEqual({
-      type: API_STATUS.ERROR,
+      status: API_STATUS.ERROR,
       message: ERROR_MESSAGES.DEFAULT,
     });
   });

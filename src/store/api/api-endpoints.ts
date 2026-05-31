@@ -8,13 +8,13 @@ import { getDetailData } from '@/services/detail-service';
 import type { DetailResult } from '@/services/detail-service';
 
 type ListData = {
-  type: typeof API_STATUS.SUCCESS;
+  status: typeof API_STATUS.SUCCESS;
   data: PokemonWithDescription[];
   totalPages: number;
 };
 
 type NotFoundData = {
-  type: typeof API_STATUS.NOT_FOUND;
+  status: typeof API_STATUS.NOT_FOUND;
 };
 
 type ListResult = ListData | NotFoundData;
@@ -29,16 +29,19 @@ export const apiEndpoints = apiSlice.injectEndpoints({
       queryFn: async ({ search, page }: { search: string; page: number }) => {
         const result = await getData(page, search);
 
-        if (result.type === API_STATUS.SUCCESS) {
+        if (result.status === API_STATUS.SUCCESS) {
           return { data: result };
         }
-        if (result.type === API_STATUS.NOT_FOUND) {
-          return { data: { type: API_STATUS.NOT_FOUND } };
+        if (result.status === API_STATUS.NOT_FOUND) {
+          return { data: { status: API_STATUS.NOT_FOUND } };
         }
         return {
           error: {
             status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-            data: result.message || ERROR_MESSAGES.SERVER,
+            data:
+              result.status === API_STATUS.ERROR
+                ? result.message
+                : ERROR_MESSAGES.SERVER,
           },
         };
       },
@@ -59,16 +62,19 @@ export const apiEndpoints = apiSlice.injectEndpoints({
       queryFn: async (id: string) => {
         const result = await getDetailData(id);
 
-        if (result.type === API_STATUS.SUCCESS) {
+        if (result.status === API_STATUS.SUCCESS) {
           return { data: result };
         }
-        if (result.type === API_STATUS.NOT_FOUND) {
-          return { data: { type: API_STATUS.NOT_FOUND } };
+        if (result.status === API_STATUS.NOT_FOUND) {
+          return { data: { status: API_STATUS.NOT_FOUND } };
         }
         return {
           error: {
             status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-            data: result.message || ERROR_MESSAGES.SERVER,
+            data:
+              result.status === API_STATUS.ERROR
+                ? result.message
+                : ERROR_MESSAGES.SERVER,
           },
         };
       },
@@ -88,7 +94,7 @@ export const apiEndpoints = apiSlice.injectEndpoints({
 });
 
 const handleQueryError = (
-  error: unknown
+  error: unknown,
 ): { error: { status: number; data: string } } => {
   if (error instanceof ApiError) {
     return { error: { status: error.status, data: error.message } };

@@ -3,25 +3,23 @@ import {
   API_CONCURRENCY,
   ERROR_MESSAGES,
   MAX_ITEMS,
+  CARD_LIMIT,
+  HTTP_STATUS,
+  API_STATUS,
 } from '@/constants/constants';
 import { getItems, getItemFull } from '@/services/api';
 import { ApiError } from '@/services/api-error';
-import { CARD_LIMIT, HTTP_STATUS, API_STATUS } from '@/constants/constants';
 
-import type { PokemonWithDescription } from '@/types/api';
+import type { PokemonWithDescription, ApiResult } from '@/types/api';
 
-export type Result =
-  | {
-      type: typeof API_STATUS.SUCCESS;
-      data: PokemonWithDescription[];
-      totalPages: number;
-    }
-  | { type: typeof API_STATUS.NOT_FOUND }
-  | { type: typeof API_STATUS.ERROR; message: string };
+export type Result = ApiResult<
+  PokemonWithDescription[],
+  { totalPages: number }
+>;
 
 export async function getData(
   page: number,
-  searchQuery?: string
+  searchQuery?: string,
 ): Promise<Result> {
   try {
     let data: PokemonWithDescription[] = [];
@@ -33,12 +31,13 @@ export async function getData(
       try {
         const item = await getItemFull(query);
         data = [item];
+        totalPages = 1;
       } catch (error) {
         if (
           error instanceof ApiError &&
           error.status === HTTP_STATUS.NOT_FOUND
         ) {
-          return { type: API_STATUS.NOT_FOUND };
+          return { status: API_STATUS.NOT_FOUND };
         }
 
         throw error;
@@ -47,21 +46,21 @@ export async function getData(
       const offset = page * CARD_LIMIT;
       const searchData = await getItems(offset, CARD_LIMIT);
       totalPages = Math.ceil(
-        Math.min(searchData.count, MAX_ITEMS) / CARD_LIMIT
+        Math.min(searchData.count, MAX_ITEMS) / CARD_LIMIT,
       );
 
       const limit = pLimit(API_CONCURRENCY);
 
       data = await Promise.all(
-        searchData.results.map((item) => limit(() => getItemFull(item.name)))
+        searchData.results.map((item) => limit(() => getItemFull(item.name))),
       );
     }
 
     if (data.length === 0) {
-      return { type: API_STATUS.NOT_FOUND };
+      return { status: API_STATUS.NOT_FOUND };
     }
 
-    return { type: API_STATUS.SUCCESS, data, totalPages };
+    return { status: API_STATUS.SUCCESS, data, totalPages };
   } catch (error) {
     let message: string = ERROR_MESSAGES.DEFAULT;
 
@@ -75,6 +74,6 @@ export async function getData(
       }
     }
 
-    return { type: API_STATUS.ERROR, message };
+    return { status: API_STATUS.ERROR, message };
   }
 }

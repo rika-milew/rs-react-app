@@ -40,7 +40,7 @@ describe('ErrorButton component', () => {
   it('renders error button', () => {
     renderWithProvider(<ErrorButton />);
     expect(
-      screen.getByRole('button', { name: 'Trigger error' })
+      screen.getByRole('button', { name: 'Trigger error' }),
     ).toBeInTheDocument();
   });
 
@@ -50,7 +50,7 @@ describe('ErrorButton component', () => {
     renderWithProvider(
       <ErrorBoundary>
         <ErrorButton />
-      </ErrorBoundary>
+      </ErrorBoundary>,
     );
 
     await user.click(screen.getByRole('button'));

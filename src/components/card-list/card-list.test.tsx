@@ -6,6 +6,9 @@ import { API_STATUS, ERROR_MESSAGES } from '@/constants/constants';
 import { mockItemFull, mockItemPartial } from '@/test-utils/api-mock';
 import type { PokemonWithDescription } from '@/types/api';
 
+const mockNavigate = vi.fn();
+const mockUseSearch = vi.fn();
+
 vi.mock('@/store/api/api-endpoints', () => ({
   useGetListQuery: vi.fn(),
   useSearchQuery: vi.fn(),
@@ -16,7 +19,8 @@ const mockUseGetListQuery = vi.mocked(useGetListQuery);
 const mockUseSearchQuery = vi.mocked(useSearchQuery);
 
 vi.mock('@tanstack/react-router', () => ({
-  useNavigate: () => vi.fn(),
+  useNavigate: () => mockNavigate,
+  useSearch: vi.fn(),
 }));
 
 vi.mock('@/hooks/use-pagination', () => ({
@@ -33,8 +37,8 @@ vi.mock('@/components/loader/loader', () => ({
   Loader: () => <div>Loading...</div>,
 }));
 
-vi.mock('@/components/state-view/state-view', () => ({
-  StateView: ({
+vi.mock('@/components/error-state/error-state', () => ({
+  ErrorState: ({
     message,
     onReload,
   }: {
@@ -57,9 +61,37 @@ vi.mock('@/components/card/card', () => ({
   ),
 }));
 
+vi.mock('@/components/pagination/pagination', () => ({
+  Pagination: ({ totalPages }: { totalPages: number }) => (
+    <div data-testid="pagination">
+      <button>Prev</button>
+      <span>Page</span>
+      <button>Next</button>
+      <span>Total: {totalPages}</span>
+    </div>
+  ),
+}));
+
 describe('CardList component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockUseSearch.mockReturnValue({ page: 1 });
+
+    mockUseGetListQuery.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isFetching: true,
+      isError: false,
+      refetch: vi.fn(),
+    });
+
+    mockUseSearchQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: vi.fn(),
+    });
   });
 
   it('renders loading state initially', () => {
@@ -135,11 +167,11 @@ describe('CardList component', () => {
     render(<CardList search="venusaur" />);
 
     expect(
-      screen.queryByRole('button', { name: /next/i })
+      screen.queryByRole('button', { name: /next/i }),
     ).not.toBeInTheDocument();
 
     expect(
-      screen.queryByRole('button', { name: /prev/i })
+      screen.queryByRole('button', { name: /prev/i }),
     ).not.toBeInTheDocument();
   });
 
@@ -168,7 +200,7 @@ describe('CardList component', () => {
 
     expect(await screen.findByText(/bulbasaur/i)).toBeInTheDocument();
     expect(
-      screen.getByText(/A strange seed was planted on its back at birth./i)
+      screen.getByText(/A strange seed was planted on its back at birth./i),
     ).toBeInTheDocument();
   });
 
@@ -222,7 +254,7 @@ describe('CardList component', () => {
     render(<CardList search="unknown" />);
 
     expect(
-      await screen.findByText(ERROR_MESSAGES.NOTFOUND)
+      await screen.findByText(ERROR_MESSAGES.NOTFOUND),
     ).toBeInTheDocument();
     expect(screen.getByText(ERROR_MESSAGES.NOTFOUND)).toBeInTheDocument();
   });
@@ -301,7 +333,7 @@ describe('CardList component', () => {
     render(<CardList search="" />);
 
     expect(
-      await screen.findByText(/something went wrong/i)
+      await screen.findByText(/something went wrong/i),
     ).toBeInTheDocument();
   });
 

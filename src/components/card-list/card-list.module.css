@@ -1,22 +1,26 @@
 .section {
   position: relative;
-  width: 100%;
+
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  width: 100%;
   min-height: 30rem;
   padding: 1.5rem;
-  box-shadow: 0 8px 24px -12px hsl(220 60% 2% / 0.6);
-  border-radius: 1rem;
   border: 1px solid var(--card-background);
+  border-radius: 1rem;
+
   background-color: var(--container-background);
+  box-shadow: 0 8px 24px -12px hsl(220deg 60% 2% / 60%);
 }
 
 .title {
   margin-bottom: 1rem;
+
   font-size: 1.5rem;
-  line-height: 2rem;
   font-weight: 600;
+  line-height: 2rem;
   text-align: center;
 }
 
@@ -26,11 +30,11 @@
   gap: 1rem;
   align-items: stretch;
 
-  @media (max-width: 980px) {
+  @media (width <= 980px) {
     grid-template-columns: repeat(2, minmax(10rem, 1fr));
   }
 
-  @media (max-width: 640px) {
+  @media (width <= 640px) {
     grid-template-columns: repeat(1, minmax(10rem, 1fr));
   }
 }

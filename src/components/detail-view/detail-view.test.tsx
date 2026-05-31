@@ -12,9 +12,11 @@ vi.mock('@/store/api/api-endpoints', () => ({
 }));
 
 const mockNavigate = vi.fn();
+const mockSearch = { search: 'pikachu', page: 1 };
 
 vi.mock('@tanstack/react-router', () => ({
   useNavigate: () => mockNavigate,
+  useSearch: () => mockSearch,
 }));
 
 vi.mock('@/components/card/card', () => ({
@@ -23,7 +25,7 @@ vi.mock('@/components/card/card', () => ({
       <div data-testid="card" data-variant={variant}>
         {item.name}
       </div>
-    )
+    ),
   ),
 }));
 
@@ -31,16 +33,16 @@ vi.mock('@/components/loader/loader', () => ({
   Loader: vi.fn(() => <div data-testid="loader">Loading...</div>),
 }));
 
-vi.mock('@/components/state-view/state-view', () => ({
-  StateView: vi.fn(
+vi.mock('@/components/error-state/error-state', () => ({
+  ErrorState: vi.fn(
     ({ message, onReload }: { message: string; onReload: () => void }) => (
-      <div data-testid="state-view">
+      <div data-testid="error-state">
         <span>{message}</span>
         <button data-testid="reload-button" onClick={onReload}>
           Reload
         </button>
       </div>
-    )
+    ),
   ),
 }));
 
@@ -65,7 +67,7 @@ describe('DetailView', () => {
     expect(await screen.findByTestId('card')).toBeInTheDocument();
     expect(screen.getByText(mockItemFull.name)).toBeInTheDocument();
     expect(screen.queryByTestId('loader')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('state-view')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('error-state')).not.toBeInTheDocument();
   });
 
   it('renders loader when the content is loading', () => {
@@ -80,7 +82,7 @@ describe('DetailView', () => {
 
     expect(screen.getByTestId('loader')).toBeInTheDocument();
     expect(screen.queryByTestId('card')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('state-view')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('error-state')).not.toBeInTheDocument();
   });
 
   it('renders error message when status is error', async () => {
@@ -98,7 +100,7 @@ describe('DetailView', () => {
 
     render(<DetailView detailId="1" />);
 
-    expect(await screen.findByTestId('state-view')).toBeInTheDocument();
+    expect(await screen.findByTestId('error-state')).toBeInTheDocument();
     expect(screen.getByText(errorMessage)).toBeInTheDocument();
     expect(screen.queryByTestId('card')).not.toBeInTheDocument();
     expect(screen.queryByTestId('loader')).not.toBeInTheDocument();
@@ -116,7 +118,7 @@ describe('DetailView', () => {
 
     render(<DetailView detailId="1" />);
 
-    expect(await screen.findByTestId('state-view')).toBeInTheDocument();
+    expect(await screen.findByTestId('error-state')).toBeInTheDocument();
     expect(screen.getByText(ERROR_MESSAGES.NOTFOUND)).toBeInTheDocument();
     expect(screen.queryByTestId('card')).not.toBeInTheDocument();
     expect(screen.queryByTestId('loader')).not.toBeInTheDocument();
@@ -141,10 +143,7 @@ describe('DetailView', () => {
     await user.click(closeButton);
 
     expect(mockNavigate).toHaveBeenCalledTimes(1);
-    expect(mockNavigate).toHaveBeenCalledWith({
-      to: '/',
-      search: { page: 1 },
-    });
+    expect(mockNavigate).toHaveBeenCalledWith({ to: '/', search: mockSearch });
   });
 
   it('does not close the card when clicking on the detail card', async () => {

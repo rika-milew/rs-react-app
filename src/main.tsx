@@ -21,5 +21,5 @@ createRoot(rootElement).render(
         </ThemeProvider>
       </Provider>
     </ErrorBoundary>
-  </StrictMode>
+  </StrictMode>,
 );

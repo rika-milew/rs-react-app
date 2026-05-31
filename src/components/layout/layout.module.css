@@ -1,25 +1,29 @@
 .wrapper {
   display: flex;
   flex-direction: column;
+
   min-height: 100vh;
-  background-color: var(--background);
+
   color: var(--text-basic);
+
+  background-color: var(--background);
 }
 
 .main {
   display: flex;
-  justify-content: center;
   flex: 1;
+  justify-content: center;
   padding: 2rem 1.5rem;
 }
 
 .container {
   display: flex;
-  align-items: center;
   flex-direction: column;
+  align-items: center;
+
   width: 100%;
   max-width: 72rem;
   margin: 0 auto;
-  padding-left: 0.5rem;
   padding-right: 0.5rem;
+  padding-left: 0.5rem;
 }

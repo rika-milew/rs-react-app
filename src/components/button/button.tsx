@@ -3,11 +3,11 @@ import styles from './button.module.css';
 
 const cx = classNames.bind(styles);
 
-type Props = {
+type ButtonProps = {
   text: string;
   onClick: () => void;
   disabled?: boolean;
-  variant?: 'basic' | 'gray' | 'error';
+  variant?: 'basic' | 'primary' | 'error' | 'secondary';
   className?: string;
 };
 
@@ -17,7 +17,7 @@ export function Button({
   disabled = false,
   variant = 'basic',
   className,
-}: Props) {
+}: ButtonProps) {
   return (
     <button
       type="button"

@@ -1,51 +1,44 @@
 import classNames from 'classnames/bind';
-import { useEffect, useCallback, useMemo } from 'react';
+import { useSearch } from '@tanstack/react-router';
+import { useCallback, useMemo } from 'react';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
 import { Pagination } from '@/components/pagination/pagination';
-import { StateView } from '@/components/state-view/state-view';
-import { Button } from '@/components/button/button';
-import { usePagination } from '@/hooks/use-pagination';
-import { ERROR_MESSAGES } from '@/constants/constants';
+import { ERROR_MESSAGES, ROUTES } from '@/constants/constants';
+import { ErrorState } from '@/components/error-state/error-state';
 import styles from './card-list.module.css';
 import { useNavigate } from '@tanstack/react-router';
 import { useGetListQuery, useSearchQuery } from '@/store/api/api-endpoints';
-import {
-  getCardListState,
-  getCurrentPage,
-  getDetailParams,
-} from './helpers/card-list-state';
-import type { PokemonWithDescription } from '@/types/api';
+import { getCardListState } from './helpers/card-list-state';
 
 const cx = classNames.bind(styles);
 
-const normalize = (value: string): string => value.trim().toLowerCase();
-
-type Props = {
+type CardListProps = {
   search: string;
 };
 
-export function CardList({ search }: Props) {
+const normalize = (value: string): string => value.trim().toLowerCase();
+
+export function CardList({ search }: CardListProps) {
   const navigate = useNavigate();
+  const searchParams = useSearch({ from: '/_layout' });
+  const { page = 1 } = searchParams;
 
   const normalizedSearch = normalize(search);
   const isSearch = !!normalizedSearch;
 
-  const { page, setPage, setTotalPages, handlePrevious, handleNext } =
-    usePagination(0);
+  const currentPage = page - 1;
 
   const {
     data: listResult,
     isLoading: listLoading,
-    isFetching: listFetching,
     isError: listError,
     refetch: refetchList,
-  } = useGetListQuery({ search: '', page }, { skip: isSearch });
+  } = useGetListQuery({ search: '', page: currentPage }, { skip: isSearch });
 
   const {
     data: searchResult,
     isLoading: searchLoading,
-    isFetching: searchFetching,
     isError: searchError,
     refetch: refetchSearch,
   } = useSearchQuery(normalizedSearch, { skip: !isSearch });
@@ -57,7 +50,7 @@ export function CardList({ search }: Props) {
         isSearch ? searchError : listError,
         isSearch,
         searchResult,
-        listResult
+        listResult,
       ),
     [
       searchLoading,
@@ -67,7 +60,7 @@ export function CardList({ search }: Props) {
       isSearch,
       searchResult,
       listResult,
-    ]
+    ],
   );
 
   const refreshData = useCallback(() => {
@@ -78,18 +71,13 @@ export function CardList({ search }: Props) {
     }
   }, [search, refetchSearch, refetchList]);
 
-  const openDetailView = useCallback(
-    (id: number) => void navigate(getDetailParams(id, getCurrentPage())),
-    [navigate]
-  );
-
-  useEffect(() => {
-    setPage(0);
-  }, [normalizedSearch, setPage]);
-
-  useEffect(() => {
-    setTotalPages(totalPages);
-  }, [totalPages, setTotalPages]);
+  const openDetailView = (id: number) => {
+    void navigate({
+      to: ROUTES.DETAIL,
+      params: { detailId: String(id) },
+      search: searchParams,
+    });
+  };
 
   const stateMessages = {
     error: error ?? ERROR_MESSAGES.DEFAULT,
@@ -97,56 +85,18 @@ export function CardList({ search }: Props) {
   };
 
   if (status === 'error' || status === 'not-found') {
-    return <StateView message={stateMessages[status]} onReload={refreshData} />;
+    return (
+      <ErrorState message={stateMessages[status]} onReload={refreshData} />
+    );
   }
 
   const isListLoaded = status === 'success';
+  const isLoading = status === 'loading';
 
-  return (
-    <CardListView
-      data={data}
-      status={isListLoaded ? 'success' : 'loading'}
-      page={page}
-      totalPages={totalPages}
-      onPrev={handlePrevious}
-      onNext={handleNext}
-      onCardClick={openDetailView}
-      onRefresh={refreshData}
-      isRefreshing={isSearch ? searchFetching : listFetching}
-      isSearch={isSearch}
-    />
-  );
-}
-
-type CardListViewProps = {
-  data: PokemonWithDescription[];
-  status: 'loading' | 'success';
-  page: number;
-  totalPages: number;
-  onPrev: () => void;
-  onNext: () => void;
-  onCardClick: (id: number) => void;
-  onRefresh: () => void;
-  isRefreshing: boolean;
-  isSearch: boolean;
-};
-
-export function CardListView({
-  data,
-  status,
-  page,
-  totalPages,
-  onPrev,
-  onNext,
-  onCardClick,
-  onRefresh,
-  isRefreshing,
-  isSearch,
-}: CardListViewProps) {
   return (
     <section className={cx('section')}>
       <h2 className={cx('title')}>Results</h2>
-      {status === 'loading' && <Loader />}
+      {isLoading && <Loader />}
       <div className={cx('card-container')}>
         {data.map((card) => (
           <Card
@@ -154,26 +104,12 @@ export function CardListView({
             item={card}
             variant="short"
             onClick={() => {
-              onCardClick(card.id);
+              openDetailView(card.id);
             }}
           />
         ))}
       </div>
-      {status === 'success' && !isSearch && (
-        <Pagination
-          page={page}
-          totalPages={totalPages}
-          loading={false}
-          onPrev={onPrev}
-          onNext={onNext}
-        />
-      )}
-      <Button
-        onClick={onRefresh}
-        text={isRefreshing ? 'Updating...' : 'Refresh'}
-        disabled={isRefreshing}
-        className="refresh-button"
-      />
+      {isListLoaded && !isLoading && <Pagination totalPages={totalPages} />}
     </section>
   );
 }

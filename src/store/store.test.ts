@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { configureStore, type Store } from '@reduxjs/toolkit';
-
 import selectedItemsReducer, { toggleItem, clearAllItems } from './slice';
 
 type RootState = {

@@ -1,57 +1,67 @@
 .detail-view {
   position: relative;
+
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  height: 100%;
   max-width: 100%;
+  height: 100%;
   padding: 1rem;
-  overflow-y: auto;
 
-  @media (max-width: 560px) {
+  @media (width <= 560px) {
     padding: 0;
   }
 }
 
 .header {
   position: relative;
+
   display: flex;
-  justify-content: center;
   align-items: center;
-  margin-bottom: 1rem;
+  justify-content: center;
+
   width: 100%;
+  margin-bottom: 1rem;
 }
 
 .title {
   margin: 0;
+
   font-size: 1.5rem;
   font-weight: var(--font-weight-semibold);
   line-height: 1;
   text-align: center;
 
-  @media (max-width: 900px) {
+  @media (width <= 900px) {
     font-size: 1.25rem;
   }
 }
 
 .close-button {
+  cursor: pointer;
+
   position: absolute;
-  right: 0;
   top: 50%;
+  right: 0;
   transform: translateY(-50%);
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   width: 2rem;
   height: 2rem;
   padding: 0.5rem;
   border: none;
   border-radius: 50%;
+
   font-size: 1.5rem;
   line-height: 1;
+
   background: none;
-  cursor: pointer;
+
   transition: background-color var(--transition-default) var(--ease-in-cubic);
 
   &:hover {
@@ -74,11 +84,9 @@
 
 .loader-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
+
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 }
