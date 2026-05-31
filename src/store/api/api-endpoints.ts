@@ -23,6 +23,8 @@ type SearchResult =
   | { data: null }
   | { error: { status: number; data: string } };
 
+type ErrorResult = { error: { status: number; data: string } };
+
 export const apiEndpoints = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getList: builder.query<ListResult, { search: string; page: number }>({
@@ -35,15 +37,7 @@ export const apiEndpoints = apiSlice.injectEndpoints({
         if (result.status === API_STATUS.NOT_FOUND) {
           return { data: { status: API_STATUS.NOT_FOUND } };
         }
-        return {
-          error: {
-            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-            data:
-              result.status === API_STATUS.ERROR
-                ? result.message
-                : ERROR_MESSAGES.SERVER,
-          },
-        };
+        return handleErrorResult(result);
       },
       providesTags: ['List'],
     }),
@@ -68,15 +62,7 @@ export const apiEndpoints = apiSlice.injectEndpoints({
         if (result.status === API_STATUS.NOT_FOUND) {
           return { data: { status: API_STATUS.NOT_FOUND } };
         }
-        return {
-          error: {
-            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-            data:
-              result.status === API_STATUS.ERROR
-                ? result.message
-                : ERROR_MESSAGES.SERVER,
-          },
-        };
+        return handleErrorResult(result);
       },
       providesTags: (_result, _error, id) => [{ type: 'Detail', id }],
     }),
@@ -93,9 +79,24 @@ export const apiEndpoints = apiSlice.injectEndpoints({
   }),
 });
 
-const handleQueryError = (
-  error: unknown,
-): { error: { status: number; data: string } } => {
+const handleErrorResult = (result: {
+  status: string;
+  message?: string;
+}): ErrorResult => {
+  const errorMessage =
+    result.status === API_STATUS.ERROR && result.message
+      ? result.message
+      : ERROR_MESSAGES.SERVER;
+
+  return {
+    error: {
+      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      data: errorMessage,
+    },
+  };
+};
+
+const handleQueryError = (error: unknown): ErrorResult => {
   if (error instanceof ApiError) {
     return { error: { status: error.status, data: error.message } };
   }
