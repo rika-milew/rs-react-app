@@ -62,7 +62,7 @@ export function CardList({ search }: CardListProps) {
   return (
     <section className={cx('section')}>
       <h2 className={cx('title')}>Results</h2>
-      {status === 'loading' && <Loader />}
+      {isLoading && <Loader />}
       <div className={cx('card-container')}>
         {data.map((card) => (
           <Card
