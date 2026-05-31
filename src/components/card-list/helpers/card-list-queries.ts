@@ -1,4 +1,5 @@
 import { ERROR_MESSAGES, API_STATUS } from '@/constants/constants';
+import { useGetListQuery, useSearchQuery } from '@/store/api/api-endpoints';
 import type { PokemonWithDescription } from '@/types/api';
 
 type CardState = {
@@ -51,4 +52,37 @@ export function getCardListState(
   }
 
   return { data: [], totalPages: 0, status: 'not-found', error: null };
+}
+
+type CardListQueriesResult = {
+  listResult: ListResult;
+  searchResult: PokemonWithDescription | null | undefined;
+  loading: boolean;
+  queryError: boolean;
+  isFetching: boolean;
+};
+
+export function useCardListQueries(
+  isSearch: boolean,
+  normalizedSearch: string,
+  currentPage: number,
+): CardListQueriesResult {
+  const listQuery = useGetListQuery(
+    { search: '', page: currentPage },
+    { skip: isSearch },
+  );
+
+  const searchQuery = useSearchQuery(normalizedSearch, { skip: !isSearch });
+
+  const loading = isSearch ? searchQuery.isLoading : listQuery.isLoading;
+  const queryError = isSearch ? searchQuery.isError : listQuery.isError;
+  const isFetching = isSearch ? searchQuery.isFetching : listQuery.isFetching;
+
+  return {
+    listResult: listQuery.data,
+    searchResult: searchQuery.data,
+    loading,
+    queryError,
+    isFetching,
+  };
 }

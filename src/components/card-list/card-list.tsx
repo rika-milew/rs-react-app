@@ -9,12 +9,11 @@ import { ERROR_MESSAGES, ROUTES } from '@/constants/constants';
 import { ErrorState } from '@/components/error-state/error-state';
 import styles from './card-list.module.css';
 import { useNavigate } from '@tanstack/react-router';
+import { apiEndpoints } from '@/store/api/api-endpoints';
 import {
-  apiEndpoints,
-  useGetListQuery,
-  useSearchQuery,
-} from '@/store/api/api-endpoints';
-import { getCardListState } from './helpers/card-list-state';
+  getCardListState,
+  useCardListQueries,
+} from './helpers/card-list-queries';
 import { useDispatch } from 'react-redux';
 
 const cx = classNames.bind(styles);
@@ -36,41 +35,14 @@ export function CardList({ search }: CardListProps) {
 
   const currentPage = page - 1;
 
-  const {
-    data: listResult,
-    isLoading: listLoading,
-    isError: listError,
-    isFetching: listFetching,
-  } = useGetListQuery({ search: '', page: currentPage }, { skip: isSearch });
+  const { listResult, searchResult, loading, queryError, isFetching } =
+    useCardListQueries(isSearch, normalizedSearch, currentPage);
 
-  const {
-    data: searchResult,
-    isLoading: searchLoading,
-    isError: searchError,
-    isFetching: searchFetching,
-  } = useSearchQuery(normalizedSearch, { skip: !isSearch });
-
-  const { data, totalPages, status, error } = useMemo(
+  const { data, totalPages, status } = useMemo(
     () =>
-      getCardListState(
-        isSearch ? searchLoading : listLoading,
-        isSearch ? searchError : listError,
-        isSearch,
-        searchResult,
-        listResult,
-      ),
-    [
-      searchLoading,
-      listLoading,
-      searchError,
-      listError,
-      isSearch,
-      searchResult,
-      listResult,
-    ],
+      getCardListState(loading, queryError, isSearch, searchResult, listResult),
+    [loading, queryError, isSearch, searchResult, listResult],
   );
-
-  const isFetching = isSearch ? searchFetching : listFetching;
 
   const refreshData = useCallback(() => {
     if (search) {
@@ -88,14 +60,14 @@ export function CardList({ search }: CardListProps) {
     });
   };
 
-  const stateMessages = {
-    error: error ?? ERROR_MESSAGES.DEFAULT,
-    'not-found': ERROR_MESSAGES.NOTFOUND,
-  };
-
   if (status === 'error' || status === 'not-found') {
     return (
-      <ErrorState message={stateMessages[status]} onReload={refreshData} />
+      <ErrorState
+        message={
+          status === 'error' ? ERROR_MESSAGES.DEFAULT : ERROR_MESSAGES.NOTFOUND
+        }
+        onReload={refreshData}
+      />
     );
   }
 
