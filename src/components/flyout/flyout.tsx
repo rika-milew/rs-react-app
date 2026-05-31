@@ -16,6 +16,7 @@ export function Flyout() {
   );
   const count = selectedItems.length;
   const [downloadItems, { isLoading }] = useDownloadMutation();
+
   if (count === 0) {
     return null;
   }
@@ -55,13 +56,13 @@ export function Flyout() {
           variant="primary"
           onClick={handleClearAll}
           text="Unselect all"
+          disabled={isLoading}
         />
         <Button
           variant="basic"
-          onClick={() => {
-            handleDownload();
-          }}
-          text="Download"
+          onClick={handleDownload}
+          text={isLoading ? 'Downloading...' : 'Download'}
+          disabled={isLoading}
         />
       </div>
     </div>

@@ -4,12 +4,18 @@ import { useCallback, useMemo } from 'react';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
 import { Pagination } from '@/components/pagination/pagination';
+import { Button } from '@/components/button/button';
 import { ERROR_MESSAGES, ROUTES } from '@/constants/constants';
 import { ErrorState } from '@/components/error-state/error-state';
 import styles from './card-list.module.css';
 import { useNavigate } from '@tanstack/react-router';
-import { useGetListQuery, useSearchQuery } from '@/store/api/api-endpoints';
+import {
+  apiEndpoints,
+  useGetListQuery,
+  useSearchQuery,
+} from '@/store/api/api-endpoints';
 import { getCardListState } from './helpers/card-list-state';
+import { useDispatch } from 'react-redux';
 
 const cx = classNames.bind(styles);
 
@@ -20,6 +26,7 @@ type CardListProps = {
 const normalize = (value: string): string => value.trim().toLowerCase();
 
 export function CardList({ search }: CardListProps) {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const searchParams = useSearch({ from: '/_layout' });
   const { page = 1 } = searchParams;
@@ -34,7 +41,6 @@ export function CardList({ search }: CardListProps) {
     isLoading: listLoading,
     isError: listError,
     isFetching: listFetching,
-    refetch: refetchList,
   } = useGetListQuery({ search: '', page: currentPage }, { skip: isSearch });
 
   const {
@@ -42,7 +48,6 @@ export function CardList({ search }: CardListProps) {
     isLoading: searchLoading,
     isError: searchError,
     isFetching: searchFetching,
-    refetch: refetchSearch,
   } = useSearchQuery(normalizedSearch, { skip: !isSearch });
 
   const { data, totalPages, status, error } = useMemo(
@@ -69,11 +74,11 @@ export function CardList({ search }: CardListProps) {
 
   const refreshData = useCallback(() => {
     if (search) {
-      void refetchSearch();
+      dispatch(apiEndpoints.util.invalidateTags(['Search']));
     } else {
-      void refetchList();
+      dispatch(apiEndpoints.util.invalidateTags(['List']));
     }
-  }, [search, refetchSearch, refetchList]);
+  }, [search, dispatch]);
 
   const openDetailView = (id: number) => {
     void navigate({
@@ -82,6 +87,7 @@ export function CardList({ search }: CardListProps) {
       search: searchParams,
     });
   };
+
   const stateMessages = {
     error: error ?? ERROR_MESSAGES.DEFAULT,
     'not-found': ERROR_MESSAGES.NOTFOUND,
@@ -113,6 +119,12 @@ export function CardList({ search }: CardListProps) {
         ))}
       </div>
       {isListLoaded && !showLoader && <Pagination totalPages={totalPages} />}
+      <Button
+        onClick={refreshData}
+        text={isFetching ? 'Updating...' : 'Refresh'}
+        disabled={isFetching}
+        className="refresh-button"
+      />
     </section>
   );
 }

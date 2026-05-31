@@ -7,7 +7,8 @@ import { ErrorState } from '@/components/error-state/error-state';
 import { Button } from '@/components/button/button';
 import styles from './detail-view.module.css';
 import { useNavigate, useSearch } from '@tanstack/react-router';
-import { useGetDetailQuery } from '@/store/api/api-endpoints';
+import { apiEndpoints, useGetDetailQuery } from '@/store/api/api-endpoints';
+import { useDispatch } from 'react-redux';
 
 const cx = classNames.bind(styles);
 
@@ -16,16 +17,18 @@ type DetailViewProps = {
 };
 
 export function DetailView({ detailId }: DetailViewProps) {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const {
-    data: result,
-    isLoading,
-    isFetching,
-    refetch,
-  } = useGetDetailQuery(detailId);
+  const { data: result, isLoading, isFetching } = useGetDetailQuery(detailId);
 
   const search = useSearch({ from: '/_layout' });
+
+  const handleRefresh = useCallback(() => {
+    dispatch(
+      apiEndpoints.util.invalidateTags([{ type: 'Detail', id: detailId }]),
+    );
+  }, [detailId, dispatch]);
 
   const closeDetailView = useCallback(() => {
     void navigate({
@@ -76,7 +79,7 @@ export function DetailView({ detailId }: DetailViewProps) {
       <DetailLayout closeDetailView={closeDetailView}>
         <ErrorState
           message={ERROR_MESSAGES.NOTFOUND}
-          onReload={() => void refetch()}
+          onReload={() => handleRefresh()}
         />
       </DetailLayout>
     );
@@ -85,7 +88,7 @@ export function DetailView({ detailId }: DetailViewProps) {
   if (result?.status === API_STATUS.ERROR) {
     return (
       <DetailLayout closeDetailView={closeDetailView}>
-        <ErrorState message={result.message} onReload={() => void refetch()} />
+        <ErrorState message={result.message} onReload={() => handleRefresh} />
       </DetailLayout>
     );
   }
@@ -96,7 +99,7 @@ export function DetailView({ detailId }: DetailViewProps) {
         <Card item={result.data} variant="detailed" />
       )}
       <Button
-        onClick={() => void refetch()}
+        onClick={handleRefresh}
         text={isFetching ? 'Updating...' : 'Refresh'}
         disabled={isFetching}
         className="refresh-button"
