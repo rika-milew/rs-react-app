@@ -119,7 +119,7 @@ describe('DetailView', () => {
   });
 
   it('renders error message when status is error', async () => {
-    const errorMessage = 'Failed to get data';
+    const errorMessage = ERROR_MESSAGES.DEFAULT;
 
     vi.mocked(useGetDetailQuery).mockReturnValue({
       data: {
