@@ -79,7 +79,7 @@ export const apiEndpoints = apiSlice.injectEndpoints({
   }),
 });
 
-const handleErrorResult = (result: {
+export const handleErrorResult = (result: {
   status: string;
   message?: string;
 }): ErrorResult => {
@@ -96,7 +96,7 @@ const handleErrorResult = (result: {
   };
 };
 
-const handleQueryError = (error: unknown): ErrorResult => {
+export const handleQueryError = (error: unknown): ErrorResult => {
   if (error instanceof ApiError) {
     return { error: { status: error.status, data: error.message } };
   }
@@ -108,7 +108,7 @@ const handleQueryError = (error: unknown): ErrorResult => {
   };
 };
 
-const handleSearchError = (error: unknown): SearchResult => {
+export const handleSearchError = (error: unknown): SearchResult => {
   if (error instanceof ApiError) {
     if (error.status === HTTP_STATUS.NOT_FOUND) {
       return { data: null };

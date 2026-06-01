@@ -13,6 +13,7 @@ export const DEFAULT_CACHE_TTL = 300;
 export const HTTP_STATUS = {
   NETWORK_ERROR: 0,
   OK: 200,
+  BAD_REQUEST: 400,
   NOT_FOUND: 404,
   INTERNAL_SERVER_ERROR: 500,
 } as const;
