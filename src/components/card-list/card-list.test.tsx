@@ -6,7 +6,9 @@ import { API_STATUS, ERROR_MESSAGES } from '@/constants/constants';
 import { mockItemFull, mockItemPartial } from '@/test-utils/api-mock';
 import type { PokemonWithDescription } from '@/types/api';
 import { Provider } from 'react-redux';
+import type { EnhancedStore } from '@reduxjs/toolkit';
 import { configureStore } from '@reduxjs/toolkit';
+import userEvent from '@testing-library/user-event';
 
 type MockRootState = {
   api: Record<string, never>;
@@ -18,18 +20,33 @@ const createMockStore = () =>
       api: (state = {}) => state,
     },
   });
-const renderWithProvider = (ui: React.ReactElement) => {
-  const store = createMockStore();
-  return render(<Provider store={store}>{ui}</Provider>);
+const renderWithProvider = (
+  ui: React.ReactElement,
+): ReturnType<typeof render> & { store: EnhancedStore<MockRootState> } => {
+  const testStore = createMockStore();
+  const utilities = render(<Provider store={testStore}>{ui}</Provider>);
+  return { store: testStore, ...utilities };
 };
 
 const mockNavigate = vi.fn();
 const mockSearchParams = { page: 1 };
 
+const { mockInvalidateTags } = vi.hoisted(() => ({
+  mockInvalidateTags: vi.fn(() => ({
+    type: 'api/invalidateTags',
+    payload: [],
+  })),
+}));
+
 vi.mock('@/store/api/api-endpoints', () => ({
   useGetListQuery: vi.fn(),
   useSearchQuery: vi.fn(),
   useGetDetailQuery: vi.fn(),
+  apiEndpoints: {
+    util: {
+      invalidateTags: mockInvalidateTags,
+    },
+  },
 }));
 
 const mockUseGetListQuery = vi.mocked(useGetListQuery);
@@ -111,6 +128,10 @@ describe('CardList component', () => {
     });
   });
 
+  afterEach(() => {
+    vi.clearAllTimers();
+  });
+
   it('renders loading state initially', () => {
     mockUseGetListQuery.mockReturnValue({
       data: undefined,
@@ -131,6 +152,82 @@ describe('CardList component', () => {
     renderWithProvider(<CardList search="" />);
 
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
+  });
+
+  it('shows loader during search loading state', () => {
+    mockUseGetListQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: vi.fn(),
+    });
+
+    mockUseSearchQuery.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isFetching: true,
+      isError: false,
+      refetch: vi.fn(),
+    });
+
+    renderWithProvider(<CardList search="pikachu" />);
+
+    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+  });
+
+  it('shows loading state during page transition', () => {
+    mockSearchParams.page = 2;
+
+    mockUseGetListQuery.mockReturnValue({
+      data: {
+        status: API_STATUS.SUCCESS,
+        data: [mockItemFull],
+        totalPages: 67,
+      },
+      isLoading: true,
+      isFetching: true,
+      isError: false,
+      refetch: vi.fn(),
+    });
+
+    mockUseSearchQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: vi.fn(),
+    });
+
+    renderWithProvider(<CardList search="" />);
+
+    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+  });
+
+  it('hides loader when data is loaded', () => {
+    mockUseGetListQuery.mockReturnValue({
+      data: {
+        status: API_STATUS.SUCCESS,
+        data: [mockItemFull],
+        totalPages: 1,
+      },
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: vi.fn(),
+    });
+
+    mockUseSearchQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: vi.fn(),
+    });
+
+    renderWithProvider(<CardList search="" />);
+
+    expect(screen.queryByTestId('loader')).not.toBeInTheDocument();
   });
 
   it('shows pagination component when search input is empty', async () => {
@@ -324,6 +421,29 @@ describe('CardList component', () => {
     ).toBeInTheDocument();
   });
 
+  it('displays error state if search query failed', async () => {
+    mockUseGetListQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: vi.fn(),
+    });
+
+    mockUseSearchQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isFetching: false,
+      isError: true,
+      error: { message: 'Search failed' },
+      refetch: vi.fn(),
+    });
+
+    renderWithProvider(<CardList search="invalid" />);
+
+    expect(await screen.findByText(ERROR_MESSAGES.DEFAULT)).toBeInTheDocument();
+  });
+
   it('calls api with normalized search query', () => {
     mockUseGetListQuery.mockReturnValue({
       data: undefined,
@@ -338,5 +458,122 @@ describe('CardList component', () => {
     expect(mockUseSearchQuery).toHaveBeenCalledWith('bulbasaur', {
       skip: false,
     });
+  });
+
+  it('shows cached data without loading on subsequent renders', () => {
+    mockUseGetListQuery.mockReturnValue({
+      data: {
+        status: API_STATUS.SUCCESS,
+        data: [mockItemFull],
+        totalPages: 1,
+      },
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: vi.fn(),
+    });
+
+    mockUseSearchQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: vi.fn(),
+    });
+
+    const { rerender, store } = renderWithProvider(<CardList search="" />);
+
+    expect(screen.getByText(/bulbasaur/i)).toBeInTheDocument();
+
+    mockUseGetListQuery.mockReturnValue({
+      data: {
+        status: API_STATUS.SUCCESS,
+        data: [mockItemFull],
+        totalPages: 1,
+      },
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: vi.fn(),
+    });
+
+    rerender(
+      <Provider store={store}>
+        <CardList search="" />
+      </Provider>,
+    );
+
+    expect(screen.queryByTestId('loader')).not.toBeInTheDocument();
+    expect(screen.getByText(/bulbasaur/i)).toBeInTheDocument();
+  });
+
+  it('invalidates cache and refetches data when refresh button is clicked', async () => {
+    const user = userEvent.setup();
+
+    mockUseGetListQuery.mockReturnValue({
+      data: {
+        status: API_STATUS.SUCCESS,
+        data: [mockItemFull],
+        totalPages: 1,
+      },
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useGetListQuery>);
+
+    mockUseSearchQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useSearchQuery>);
+
+    renderWithProvider(<CardList search="" />);
+
+    const refreshButton = screen.getByRole('button', { name: /refresh/i });
+    await user.click(refreshButton);
+
+    expect(mockInvalidateTags).toHaveBeenCalledWith(['List']);
+  });
+
+  it('does not trigger unnecessary refetches for same normalized search term', () => {
+    mockUseGetListQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: vi.fn(),
+    });
+
+    mockUseSearchQuery.mockReturnValue({
+      data: {
+        status: API_STATUS.SUCCESS,
+        data: [mockItemPartial],
+        totalPages: 1,
+      },
+      isLoading: false,
+      isFetching: false,
+      isError: false,
+      refetch: vi.fn(),
+    });
+
+    const { rerender, store } = renderWithProvider(
+      <CardList search="pikachu" />,
+    );
+
+    expect(mockUseSearchQuery).toHaveBeenCalledTimes(1);
+
+    rerender(
+      <Provider store={store}>
+        <CardList search="PIKACHU" />
+      </Provider>,
+    );
+
+    expect(mockUseSearchQuery).toHaveBeenCalledWith(
+      'pikachu',
+      expect.objectContaining({ skip: false }),
+    );
   });
 });
