@@ -6,14 +6,17 @@ import { configureStore } from '@reduxjs/toolkit';
 import { Flyout } from './flyout';
 import { mockItemFull } from '@/test-utils/api-mock';
 import { downloadCSV } from '@/utils/download-csv';
+import type { EnhancedStore } from '@reduxjs/toolkit';
 
 const mockUnwrap = vi.fn();
 const mockDownloadItems = vi.fn(() => ({
   unwrap: mockUnwrap,
 }));
 
+let mockIsLoading = false;
+
 vi.mock('@/store/api/api-endpoints', () => ({
-  useDownloadMutation: () => [mockDownloadItems, { isLoading: false }],
+  useDownloadMutation: () => [mockDownloadItems, { isLoading: mockIsLoading }],
 }));
 
 vi.mock('@/utils/download-csv', () => ({
@@ -24,14 +27,28 @@ vi.mock('@/components/button/button', () => ({
   Button: ({
     text,
     onClick,
+    disabled,
   }: {
     text: string;
     onClick: () => void;
     variant: string;
-  }) => <button onClick={onClick}>{text}</button>,
+    disabled?: boolean;
+  }) => (
+    <button onClick={onClick} disabled={disabled}>
+      {text}
+    </button>
+  ),
 }));
 
-const createMockStore = (selectedItems: number[] = []) => {
+type MockRootState = {
+  selectedItems: {
+    selectedItems: number[];
+  };
+};
+
+const createMockStore = (
+  selectedItems: number[] = [],
+): EnhancedStore<MockRootState> => {
   return configureStore({
     reducer: {
       selectedItems: () => ({
@@ -52,7 +69,6 @@ const renderWithProvider = (selectedItems: number[] = []) => {
     store,
   };
 };
-
 describe('flyout component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -131,5 +147,27 @@ describe('flyout component', () => {
     });
 
     consoleSpy.mockRestore();
+  });
+
+  it('shows downloading text on button when download is in progress', () => {
+    mockIsLoading = true;
+
+    renderWithProvider([1, 2]);
+
+    const downloadButton = screen.getByText('Downloading...');
+    expect(downloadButton).toBeInTheDocument();
+    expect(downloadButton).toBeDisabled();
+  });
+
+  it('prevents multiple downloads', async () => {
+    const user = userEvent.setup();
+    mockIsLoading = true;
+
+    renderWithProvider([1, 2]);
+
+    const downloadButton = screen.getByText('Downloading...');
+    await user.click(downloadButton);
+
+    expect(mockDownloadItems).not.toHaveBeenCalled();
   });
 });
