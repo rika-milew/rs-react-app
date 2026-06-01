@@ -68,7 +68,7 @@ vi.mock('@/hooks/use-pagination', () => ({
 }));
 
 vi.mock('@/components/loader/loader', () => ({
-  Loader: () => <div>Loading...</div>,
+  Loader: () => <div data-testid="loader">Loading...</div>,
 }));
 
 vi.mock('@/components/error-state/error-state', () => ({

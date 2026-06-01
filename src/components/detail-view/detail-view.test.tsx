@@ -8,6 +8,7 @@ import userEvent from '@testing-library/user-event';
 import { useGetDetailQuery } from '@/store/api/api-endpoints';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
+import type { EnhancedStore } from '@reduxjs/toolkit';
 
 type MockRootState = {
   api: Record<string, never>;
@@ -19,13 +20,28 @@ const createMockStore = () =>
       api: (state = {}) => state,
     },
   });
-const renderWithProvider = (ui: React.ReactElement) => {
-  const store = createMockStore();
-  return render(<Provider store={store}>{ui}</Provider>);
+const renderWithProvider = (
+  ui: React.ReactElement,
+): ReturnType<typeof render> & { store: EnhancedStore<MockRootState> } => {
+  const testStore = createMockStore();
+  const utilities = render(<Provider store={testStore}>{ui}</Provider>);
+  return { store: testStore, ...utilities };
 };
+
+const { mockInvalidateTags } = vi.hoisted(() => ({
+  mockInvalidateTags: vi.fn(() => ({
+    type: 'api/invalidateTags',
+    payload: [],
+  })),
+}));
 
 vi.mock('@/store/api/api-endpoints', () => ({
   useGetDetailQuery: vi.fn(),
+  apiEndpoints: {
+    util: {
+      invalidateTags: mockInvalidateTags,
+    },
+  },
 }));
 
 const mockNavigate = vi.fn();
@@ -203,5 +219,114 @@ describe('DetailView', () => {
     await user.click(document.body);
 
     expect(mockNavigate).toHaveBeenCalledTimes(1);
+  });
+
+  it('shows cached data without loading on subsequent renders with the same item id', () => {
+    vi.mocked(useGetDetailQuery).mockReturnValue({
+      data: {
+        status: API_STATUS.SUCCESS,
+        data: mockItemFull,
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    });
+
+    const { rerender, store } = renderWithProvider(<DetailView detailId="1" />);
+
+    expect(screen.getByTestId('card')).toBeInTheDocument();
+    expect(screen.queryByTestId('loader')).not.toBeInTheDocument();
+
+    vi.mocked(useGetDetailQuery).mockReturnValue({
+      data: {
+        status: API_STATUS.SUCCESS,
+        data: mockItemFull,
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    });
+
+    rerender(
+      <Provider store={store}>
+        <DetailView detailId="1" />
+      </Provider>,
+    );
+
+    expect(screen.getByTestId('card')).toBeInTheDocument();
+    expect(screen.queryByTestId('loader')).not.toBeInTheDocument();
+  });
+
+  it('shows loading state when item id changes and new detail data is loading', () => {
+    vi.mocked(useGetDetailQuery).mockReturnValue({
+      data: {
+        status: API_STATUS.SUCCESS,
+        data: mockItemFull,
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    });
+
+    const { rerender, store } = renderWithProvider(<DetailView detailId="1" />);
+
+    expect(screen.getByTestId('card')).toBeInTheDocument();
+
+    vi.mocked(useGetDetailQuery).mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isFetching: true,
+      refetch: vi.fn(),
+    });
+
+    rerender(
+      <Provider store={store}>
+        <DetailView detailId="2" />
+      </Provider>,
+    );
+
+    expect(screen.getByTestId('loader')).toBeInTheDocument();
+    expect(screen.queryByTestId('card')).not.toBeInTheDocument();
+  });
+
+  it('invalidates cache when refresh button is clicked', async () => {
+    const user = userEvent.setup();
+
+    vi.mocked(useGetDetailQuery).mockReturnValue({
+      data: {
+        status: API_STATUS.SUCCESS,
+        data: mockItemFull,
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    });
+
+    renderWithProvider(<DetailView detailId="1" />);
+
+    const refreshButton = screen.getByRole('button', { name: /refresh/i });
+    await user.click(refreshButton);
+
+    expect(mockInvalidateTags).toHaveBeenCalledWith([
+      { type: 'Detail', id: '1' },
+    ]);
+  });
+
+  it('shows updating text on refresh button during refetch', () => {
+    vi.mocked(useGetDetailQuery).mockReturnValue({
+      data: {
+        status: API_STATUS.SUCCESS,
+        data: mockItemFull,
+      },
+      isLoading: false,
+      isFetching: true,
+      refetch: vi.fn(),
+    });
+
+    renderWithProvider(<DetailView detailId="1" />);
+
+    const refreshButton = screen.getByRole('button', { name: /updating/i });
+    expect(refreshButton).toBeInTheDocument();
+    expect(refreshButton).toBeDisabled();
   });
 });
