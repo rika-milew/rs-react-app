@@ -4,6 +4,8 @@ import type {
   PokemonListResponse,
   PokemonSpecies,
 } from '@/types/api';
+import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import type { SerializedError } from '@reduxjs/toolkit';
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
@@ -162,4 +164,14 @@ export function isValidItemSpecies(data: unknown): data is PokemonSpecies {
   });
 
   return isLanguageEntry;
+}
+
+export function isFetchBaseQueryError(
+  error: unknown,
+): error is FetchBaseQueryError {
+  return typeof error === 'object' && error !== null && 'status' in error;
+}
+
+export function isSerializedError(error: unknown): error is SerializedError {
+  return typeof error === 'object' && error !== null && 'message' in error;
 }

@@ -2,13 +2,14 @@ import classNames from 'classnames/bind';
 import { useEffect, useCallback } from 'react';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
-import { API_STATUS, ERROR_MESSAGES } from '@/constants/constants';
+import { API_STATUS, ERROR_MESSAGES, HTTP_STATUS } from '@/constants/constants';
 import { ErrorState } from '@/components/error-state/error-state';
 import { Button } from '@/components/button/button';
 import styles from './detail-view.module.css';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { apiEndpoints, useGetDetailQuery } from '@/store/api/api-endpoints';
 import { useDispatch } from 'react-redux';
+import { isFetchBaseQueryError, isSerializedError } from '@/types/type-guards';
 
 const cx = classNames.bind(styles);
 
@@ -20,7 +21,12 @@ export function DetailView({ detailId }: DetailViewProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { data: result, isLoading, isFetching } = useGetDetailQuery(detailId);
+  const {
+    data: result,
+    isLoading,
+    isFetching,
+    error,
+  } = useGetDetailQuery(detailId);
 
   const search = useSearch({ from: '/_layout' });
 
@@ -74,7 +80,15 @@ export function DetailView({ detailId }: DetailViewProps) {
     );
   }
 
-  if (result?.status === API_STATUS.NOT_FOUND) {
+  if (error || !result || result.status === API_STATUS.ERROR) {
+    return (
+      <DetailLayout closeDetailView={closeDetailView}>
+        <ErrorState message={getErrorMessage(error)} onReload={handleRefresh} />
+      </DetailLayout>
+    );
+  }
+
+  if (result.status === API_STATUS.NOT_FOUND) {
     return (
       <DetailLayout closeDetailView={closeDetailView}>
         <ErrorState
@@ -85,17 +99,9 @@ export function DetailView({ detailId }: DetailViewProps) {
     );
   }
 
-  if (result?.status === API_STATUS.ERROR) {
-    return (
-      <DetailLayout closeDetailView={closeDetailView}>
-        <ErrorState message={result.message} onReload={() => handleRefresh} />
-      </DetailLayout>
-    );
-  }
-
   return (
     <DetailLayout closeDetailView={closeDetailView}>
-      {result?.status === API_STATUS.SUCCESS && (
+      {result.status === API_STATUS.SUCCESS && (
         <Card item={result.data} variant="detailed" />
       )}
       <Button
@@ -131,3 +137,22 @@ function DetailLayout({
     </aside>
   );
 }
+
+const getErrorMessage = (error: unknown): string => {
+  if (!error) {
+    return ERROR_MESSAGES.DEFAULT;
+  }
+
+  if (isFetchBaseQueryError(error)) {
+    if (error.status === HTTP_STATUS.NOT_FOUND) {
+      return ERROR_MESSAGES.NOTFOUND;
+    }
+    return ERROR_MESSAGES.DEFAULT;
+  }
+
+  if (isSerializedError(error)) {
+    return ERROR_MESSAGES.DEFAULT;
+  }
+
+  return ERROR_MESSAGES.DEFAULT;
+};
