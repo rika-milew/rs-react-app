@@ -36,7 +36,6 @@ export function Flyout() {
     setError(null);
 
     try {
-      throw new Error('Test error');
       const items = await getItemsById(selectedItems);
       if (items.length > 0) {
         downloadCSV(items);
@@ -51,7 +50,7 @@ export function Flyout() {
 
   return (
     <div className={cx('flyout')}>
-      <span className={cx('count')}>
+      <span className={cx('count')} aria-live="polite">
         Selected Items:
         <span>
           {' '}
