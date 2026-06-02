@@ -66,6 +66,12 @@ export function Card({ item, variant = 'detailed', onClick }: CardProps) {
       onClick={handleClick}
       onKeyDown={(event_) => {
         if (event_.key === 'Enter' || event_.key === ' ') {
+          if (
+            event_.target instanceof HTMLElement &&
+            event_.target.closest('[data-checkbox]')
+          ) {
+            return;
+          }
           event_.preventDefault();
           handleClick(event_);
         }
