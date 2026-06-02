@@ -219,7 +219,7 @@ describe('CardList component', () => {
       loadData: mockLoadData,
     });
 
-    const { rerender } = render(<CardList search="bulbasaur" />);
+    const { rerender } = renderWithProvider(<CardList search="bulbasaur" />);
     expect(mockLoadData).toHaveBeenCalledWith('bulbasaur', 2);
     vi.mocked(useSearch).mockReturnValue({ page: 1 });
     rerender(<CardList search="charmander" />);

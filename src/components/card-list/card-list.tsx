@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import { useSearch } from '@tanstack/react-router';
+import { useSearch, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { useDataList } from '@/hooks/use-data-list';
 import { Card } from '@/components/card/card';
@@ -8,7 +8,6 @@ import { Pagination } from '@/components/pagination/pagination';
 import { ERROR_MESSAGES, ROUTES } from '@/constants/constants';
 import { ErrorState } from '@/components/error-state/error-state';
 import styles from './card-list.module.css';
-import { useNavigate } from '@tanstack/react-router';
 
 const cx = classNames.bind(styles);
 
