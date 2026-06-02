@@ -17,6 +17,7 @@ export function Flyout() {
   );
   const count = selectedItems.length;
   const [isDownloading, setIsDownloading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (count === 0) {
     return null;
@@ -32,13 +33,16 @@ export function Flyout() {
     }
 
     setIsDownloading(true);
+    setError(null);
 
     try {
+      throw new Error('Test error');
       const items = await getItemsById(selectedItems);
       if (items.length > 0) {
         downloadCSV(items);
       }
     } catch (error) {
+      setError('Failed to download. Please try again.');
       console.error('Failed to download CSV:', error);
     } finally {
       setIsDownloading(false);
@@ -54,6 +58,11 @@ export function Flyout() {
           {count} Item{count === 1 ? '' : 's'}
         </span>
       </span>
+      {error && (
+        <p className={cx('download-error')} role="alert">
+          {error}
+        </p>
+      )}
       <div className={cx('buttons')}>
         <Button
           variant="primary"
@@ -65,7 +74,9 @@ export function Flyout() {
           onClick={() => {
             void handleDownload();
           }}
-          text="Download"
+          disabled={isDownloading}
+          aria-busy={isDownloading}
+          text={isDownloading ? 'Downloading...' : 'Download'}
         />
       </div>
     </div>

@@ -18,11 +18,16 @@
   background-color: var(--background);
 }
 
-.count {
+.count,
+.download-error {
   font-size: 0.875rem;
   font-weight: var(--font-weight-bold);
   line-height: 1.25rem;
   color: var(--text-basic);
+}
+
+.download-error {
+  font-size: 1rem;
 }
 
 .count span {
