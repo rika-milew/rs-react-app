@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { Layout } from './layout';
 import { Provider } from 'react-redux';
 import { configureStore, type Store } from '@reduxjs/toolkit';
