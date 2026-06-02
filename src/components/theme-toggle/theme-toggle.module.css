@@ -56,6 +56,12 @@
   animation: pulse var(--transition-default) var(--ease-in-cubic);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .visible {
+    animation: none;
+  }
+}
+
 .theme-toggle[data-theme='dark'] .icon {
   color: var(--accent-background);
 }
