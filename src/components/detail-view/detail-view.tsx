@@ -15,11 +15,7 @@ type DetailViewProps = {
   detailId: string;
 };
 
-type ViewState = { status: typeof API_STATUS.LOADING } | DetailResult;
-
-function renderErrorState(message: string, onReload: () => void) {
-  return <ErrorState message={message} onReload={onReload} />;
-}
+type ViewState = DetailResult;
 
 export function DetailView({ detailId }: DetailViewProps) {
   const [result, setResult] = useState<ViewState>({
@@ -87,7 +83,7 @@ export function DetailView({ detailId }: DetailViewProps) {
   ) {
     return (
       <aside data-detail className={cx('detail-view')}>
-        {renderErrorState(getErrorMessage(result), handleReload)}
+        <ErrorState message={getErrorMessage(result)} onReload={handleReload} />
       </aside>
     );
   }
