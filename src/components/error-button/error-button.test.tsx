@@ -54,7 +54,7 @@ describe('ErrorButton component', () => {
       </ErrorBoundary>,
     );
 
-    await user.click(screen.getByRole('button'));
+    await user.click(screen.getByRole('button', { name: 'Trigger error' }));
 
     await waitFor(() => {
       expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
@@ -64,7 +64,7 @@ describe('ErrorButton component', () => {
   it('has error variant class', () => {
     renderWithProvider(<ErrorButton />);
 
-    const button = screen.getByRole('button');
+    const button = screen.getByRole('button', { name: 'Trigger error' });
     expect(button.className).toMatch(/error/);
   });
 });
