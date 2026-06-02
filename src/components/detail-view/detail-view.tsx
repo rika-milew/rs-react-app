@@ -25,6 +25,7 @@ export function DetailView({ detailId }: DetailViewProps) {
   const [result, setResult] = useState<ViewState>({
     status: API_STATUS.LOADING,
   });
+  const [refetch, setRefetch] = useState(0);
   const navigate = useNavigate();
   const search = useSearch({ from: ROUTES.LAYOUT });
 
@@ -47,7 +48,7 @@ export function DetailView({ detailId }: DetailViewProps) {
     return () => {
       cancelled = true;
     };
-  }, [detailId]);
+  }, [detailId, refetch]);
 
   useEffect(() => {
     const handleKeyDown = (event_: KeyboardEvent) => {
@@ -76,18 +77,20 @@ export function DetailView({ detailId }: DetailViewProps) {
     };
   }, [closeDetailView]);
 
-  if (result.status === API_STATUS.NOT_FOUND) {
-    return renderErrorState(ERROR_MESSAGES.NOTFOUND, () => {
-      globalThis.location.reload();
-    });
-  }
+  const handleReload = useCallback(() => {
+    setRefetch((previous) => previous + 1);
+  }, []);
 
-  if (result.status === API_STATUS.ERROR) {
-    return renderErrorState(result.message, () => {
-      globalThis.location.reload();
-    });
+  if (
+    result.status === API_STATUS.NOT_FOUND ||
+    result.status === API_STATUS.ERROR
+  ) {
+    return (
+      <aside data-detail className={cx('detail-view')}>
+        {renderErrorState(getErrorMessage(result), handleReload)}
+      </aside>
+    );
   }
-
   return (
     <aside data-detail className={cx('detail-view')}>
       <div className={cx('header')}>
@@ -109,4 +112,14 @@ export function DetailView({ detailId }: DetailViewProps) {
       )}
     </aside>
   );
+}
+
+function getErrorMessage(result: ViewState): string {
+  if (result.status === API_STATUS.NOT_FOUND) {
+    return ERROR_MESSAGES.NOTFOUND;
+  }
+  if (result.status === API_STATUS.ERROR) {
+    return result.message;
+  }
+  return ERROR_MESSAGES.DEFAULT;
 }
