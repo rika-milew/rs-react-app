@@ -46,5 +46,5 @@ export function downloadCSV(items: PokemonWithDescription[]): void {
   document.body.append(link);
   link.click();
   link.remove();
-  URL.revokeObjectURL(url);
+  setTimeout(() => URL.revokeObjectURL(url), 100);
 }
