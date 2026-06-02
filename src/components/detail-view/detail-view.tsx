@@ -93,16 +93,7 @@ export function DetailView({ detailId }: DetailViewProps) {
   }
   return (
     <aside data-detail className={cx('detail-view')}>
-      <div className={cx('header')}>
-        <h2 className={cx('title')}>Pokémon Details</h2>
-        <button
-          className={cx('close-button')}
-          onClick={closeDetailView}
-          aria-label="Close details"
-        >
-          ✕
-        </button>
-      </div>
+      <DetailHeader onClose={closeDetailView} />
       {result.status === API_STATUS.LOADING ? (
         <div className={cx('loader-overlay')}>
           <Loader />
@@ -111,6 +102,21 @@ export function DetailView({ detailId }: DetailViewProps) {
         <Card item={result.data} variant="detailed" />
       )}
     </aside>
+  );
+}
+
+function DetailHeader({ onClose }: { onClose: () => void }) {
+  return (
+    <div className={cx('header')}>
+      <h2 className={cx('title')}>Pokémon Details</h2>
+      <button
+        className={cx('close-button')}
+        onClick={onClose}
+        aria-label="Close details"
+      >
+        ✕
+      </button>
+    </div>
   );
 }
 
