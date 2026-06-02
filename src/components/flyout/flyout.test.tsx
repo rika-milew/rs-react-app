@@ -85,7 +85,7 @@ describe('flyout component', () => {
 
     renderWithProvider([1, 2]);
 
-    await user.click(screen.getByText('Download'));
+    await user.click(screen.getByText('Downloading...'));
 
     await waitFor(() => {
       expect(getItemsById).toHaveBeenCalledWith([1, 2]);
@@ -119,7 +119,7 @@ describe('flyout component', () => {
 
     renderWithProvider([1]);
 
-    const downloadButton = screen.getByText('Download');
+    const downloadButton = screen.getByText('Downloading...');
 
     await user.click(downloadButton);
     await user.click(downloadButton);
