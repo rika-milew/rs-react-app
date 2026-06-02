@@ -97,16 +97,17 @@ export const getItemFull = async (
   identifier: string,
 ): Promise<PokemonWithDescription> => {
   const item = await getItemByName(identifier);
+  let description = '';
 
-  const speciesUrl = item.species.url;
-
-  const species = await getItemSpecies(speciesUrl);
-
-  const entries = species.flavor_text_entries;
-
-  const entry = entries.find((item) => item.language.name === 'en');
-
-  const description = entry ? entry.flavor_text.replaceAll(/\f|\n/g, ' ') : '';
+  try {
+    const speciesUrl = item.species.url;
+    const species = await getItemSpecies(speciesUrl);
+    const entries = species.flavor_text_entries;
+    const entry = entries.find((item) => item.language.name === 'en');
+    description = entry ? entry.flavor_text.replaceAll(/\f|\n/g, ' ') : '';
+  } catch (error) {
+    console.error(`Failed to fetch species for ${identifier}:`, error);
+  }
 
   return {
     ...item,
