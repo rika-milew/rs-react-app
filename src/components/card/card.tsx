@@ -143,10 +143,9 @@ type CheckboxProps = {
 
 export function Checkbox({ id, name }: CheckboxProps) {
   const dispatch = useDispatch();
-  const selectedItems = useSelector(
-    (state: RootState) => state.selectedItems.selectedItems,
+  const isSelectedItem = useSelector((state: RootState) =>
+    state.selectedItems.selectedItems.includes(id.toString()),
   );
-  const isSelectedItem = selectedItems.includes(id.toString());
 
   const handleCheckboxClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.stopPropagation();
