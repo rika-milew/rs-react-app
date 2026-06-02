@@ -3,6 +3,7 @@ import { describe, it, expect } from 'vitest';
 import { Layout } from './layout';
 import { Provider } from 'react-redux';
 import { configureStore, type Store } from '@reduxjs/toolkit';
+import type { ReactElement } from 'react';
 import selectedItemsReducer from '@/store/slice';
 
 vi.mock('@/components/theme-toggle/theme-toggle', () => ({
@@ -22,7 +23,7 @@ const createMockStore = (): Store<RootState> => {
 };
 
 describe('layout component', () => {
-  const renderWithProvider = (ui: React.ReactElement) => {
+  const renderWithProvider = (ui: ReactElement) => {
     const store = createMockStore();
     return {
       ...render(<Provider store={store}>{ui}</Provider>),

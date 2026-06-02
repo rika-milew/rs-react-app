@@ -6,6 +6,7 @@ import { ErrorBoundary } from '@/components/error-boundary/error-boundary';
 import { waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { configureStore, type Store } from '@reduxjs/toolkit';
+import type { ReactElement } from 'react';
 import selectedItemsReducer from '@/store/slice';
 
 vi.mock('@/components/theme-toggle/theme-toggle', () => ({
@@ -25,7 +26,7 @@ const createMockStore = (): Store<RootState> => {
 };
 
 describe('ErrorButton component', () => {
-  const renderWithProvider = (ui: React.ReactElement) => {
+  const renderWithProvider = (ui: ReactElement) => {
     const store = createMockStore();
     return {
       ...render(<Provider store={store}>{ui}</Provider>),

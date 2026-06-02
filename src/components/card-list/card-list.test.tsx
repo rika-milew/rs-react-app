@@ -6,6 +6,7 @@ import { mockItemFull, mockItemPartial } from '@/test-utils/api-mock';
 import { useSearch, useNavigate } from '@tanstack/react-router';
 import { useDataList } from '@/hooks/use-data-list';
 import { Provider } from 'react-redux';
+import type { ReactElement } from 'react';
 import { configureStore, type Store } from '@reduxjs/toolkit';
 import selectedItemsReducer from '@/store/slice';
 
@@ -34,7 +35,7 @@ describe('CardList component', () => {
   const mockNavigate = vi.fn();
   const mockLoadData = vi.fn();
 
-  const renderWithProvider = (ui: React.ReactElement) => {
+  const renderWithProvider = (ui: ReactElement) => {
     const store = createMockStore();
     return {
       ...render(<Provider store={store}>{ui}</Provider>),

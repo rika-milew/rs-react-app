@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { Card, ID_LENGTH } from './card';
 import { Provider } from 'react-redux';
+import type { ReactElement } from 'react';
 import { configureStore, type Store } from '@reduxjs/toolkit';
 
 import {
@@ -25,7 +26,7 @@ const createMockStore = (): Store<RootState> => {
 };
 
 describe('card component', () => {
-  const renderWithProvider = (ui: React.ReactElement) => {
+  const renderWithProvider = (ui: ReactElement) => {
     const store = createMockStore();
     return {
       ...render(<Provider store={store}>{ui}</Provider>),
