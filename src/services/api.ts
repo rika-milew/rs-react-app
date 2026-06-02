@@ -100,17 +100,25 @@ export const getItemFull = async (
   let description = '';
 
   try {
-    const speciesUrl = item.species.url;
-    const species = await getItemSpecies(speciesUrl);
-    const entries = species.flavor_text_entries;
-    const entry = entries.find((item) => item.language.name === 'en');
-    description = entry ? entry.flavor_text.replaceAll(/\f|\n/g, ' ') : '';
+    const speciesUrl = item.species?.url;
+    if (speciesUrl) {
+      const species = await getItemSpecies(speciesUrl);
+      const entries = species.flavor_text_entries;
+      const entry = entries.find((item) => item.language.name === 'en');
+      description = entry ? entry.flavor_text.replaceAll(/\f|\n/g, ' ') : '';
+    }
   } catch (error) {
     console.error(`Failed to fetch species for ${identifier}:`, error);
   }
 
   return {
-    ...item,
+    id: item.id,
+    name: item.name,
+    sprites: item.sprites,
+    height: item.height,
+    weight: item.weight,
+    types: item.types,
+    abilities: item.abilities,
     description,
   };
 };
