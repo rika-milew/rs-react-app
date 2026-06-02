@@ -1,4 +1,5 @@
-import { API_BASE_URL } from '@/constants/constants';
+import pLimit from 'p-limit';
+import { API_BASE_URL, API_CONCURRENCY } from '@/constants/constants';
 import type {
   Pokemon,
   PokemonListResponse,
@@ -116,14 +117,18 @@ export const getItemFull = async (
 export const getItemsById = async (
   selectedIds: string[],
 ): Promise<PokemonWithDescription[]> => {
-  const promises = selectedIds.map(async (id) => {
-    try {
-      return await getItemFull(id);
-    } catch (error) {
-      console.error(`Failed to fetch pokemon ${id}:`, error);
-      return null;
-    }
-  });
+  const limit = pLimit(API_CONCURRENCY);
+
+  const promises = selectedIds.map((id) =>
+    limit(async () => {
+      try {
+        return await getItemFull(id);
+      } catch (error) {
+        console.error(`Failed to fetch pokemon ${id}:`, error);
+        return null;
+      }
+    }),
+  );
 
   const results = await Promise.all(promises);
 
