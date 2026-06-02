@@ -17,7 +17,7 @@ type CardListProps = {
 
 export function CardList({ search }: CardListProps) {
   const { data, totalPages, status, error, loadData } = useDataList();
-  const searchParams = useSearch({ from: '/_layout' });
+  const searchParams = useSearch({ from: ROUTES.LAYOUT });
   const { page = 1 } = searchParams;
   const navigate = useNavigate();
 

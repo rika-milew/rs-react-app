@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import { useEffect, useState, useCallback } from 'react';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
-import { API_STATUS, ERROR_MESSAGES } from '@/constants/constants';
+import { API_STATUS, ERROR_MESSAGES, ROUTES } from '@/constants/constants';
 import { ErrorState } from '@/components/error-state/error-state';
 import styles from './detail-view.module.css';
 import type { DetailResult } from '@/services/detail-service';
@@ -26,7 +26,7 @@ export function DetailView({ detailId }: DetailViewProps) {
     status: API_STATUS.LOADING,
   });
   const navigate = useNavigate();
-  const search = useSearch({ from: '/_layout' });
+  const search = useSearch({ from: ROUTES.LAYOUT });
 
   const closeDetailView = useCallback(() => {
     void navigate({
