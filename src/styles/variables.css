@@ -1,0 +1,62 @@
+:root {
+  /* COLORS */
+
+  /* White colors */
+  --color-white: hsl(210deg 40% 98%);
+
+  /* Gray colors */
+  --color-gray-400: hsl(215deg 16% 60%);
+  --color-gray-500: hsl(0deg 0% 50%);
+  --color-gray-700: hsl(220deg 20% 18%);
+  --color-gray-750: hsl(220deg 25% 11%);
+  --color-gray-800: hsl(220deg 30% 7%);
+  --color-gray-900: hsl(240deg 14% 10%);
+  --color-gray-950: hsl(240deg 20% 4%);
+
+  /* Yellow colors */
+  --color-yellow-100: hsl(40deg 27% 81%);
+  --color-yellow-200: hsl(39deg 25% 75%);
+  --color-yellow-600: hsl(38deg 92% 55%);
+  --color-yellow-700: hsl(38deg 100% 65%);
+
+  /* Orange colors */
+  --color-orange-500: hsl(32deg 81% 43%);
+  --color-orange-600: hsl(24deg 90% 45%);
+
+  /* Red colors */
+  --color-red-500: hsl(0deg 84% 60%);
+  --color-red-600: hsl(0deg 59% 44%);
+
+  /* Turquoise colors */
+  --color-turquoise-400: hsl(174deg 70% 55%);
+  --color-turquoise-500: hsl(174deg 80% 45%);
+  --color-turquoise-600: hsl(174deg 85% 38%);
+  --color-turquoise-700: hsl(174deg 90% 30%);
+
+  /* Purple colors */
+  --color-purple-400: hsl(265deg 85% 70%);
+  --color-purple-500: hsl(265deg 75% 60%);
+  --color-purple-600: hsl(265deg 70% 50%);
+  --color-purple-700: hsl(265deg 65% 42%);
+
+  /* OPACITY  */
+  --opacity-80: 0.8;
+  --opacity-70: 0.7;
+  --opacity-60: 0.6;
+  --opacity-50: 0.5;
+  --opacity-40: 0.4;
+  --opacity-30: 0.3;
+  --opacity-10: 0.1;
+
+  /* Font weights */
+  --font-weight-bold: 700;
+  --font-weight-semibold: 600;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+
+  /* Easing functions */
+  --ease-in-cubic: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Transition */
+  --transition-default: 0.3s;
+}
