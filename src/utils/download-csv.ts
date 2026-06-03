@@ -1,31 +1,41 @@
 import type { PokemonWithDescription } from '@/types/api';
 
 function formatCSV(items: PokemonWithDescription[]): string {
-  return items
-    .map((item) => {
-      const capitalizedName =
-        item.name.length > 0
-          ? item.name[0].toUpperCase() + item.name.slice(1)
-          : '';
-      const name = `Name: ${capitalizedName}`;
-      const detailsUrl = `Details URL: ${globalThis.location.origin}/details/${item.id.toString()}`;
-      const types = `Types: ${item.types.map((t) => t.type.name).join(', ') || ''}`;
-      const abilities = `Abilities: ${item.abilities.map((a) => a.ability.name).join(', ') || ''}`;
-      const description = `Description: ${item.description ?? ''}`;
-      const height = `Height: ${String(item.height * 10)} cm`;
-      const weight = `Weight: ${String(item.weight / 10)} kg`;
+  const headers = [
+    'Name',
+    'Details URL',
+    'Types',
+    'Abilities',
+    'Description',
+    'Height',
+    'Weight',
+  ].join(',');
 
-      return [
-        name,
-        detailsUrl,
-        types,
-        abilities,
-        description,
-        height,
-        weight,
-      ].join('\n');
-    })
-    .join('\n\n');
+  const rows = items.map((item) => {
+    const capitalizedName =
+      item.name.length > 0
+        ? item.name[0].toUpperCase() + item.name.slice(1)
+        : '';
+    const name = capitalizedName;
+    const detailsUrl = `${globalThis.location.origin}/details/${item.id.toString()}`;
+    const types = item.types.map((t) => t.type.name).join(' ') || '';
+    const abilities = item.abilities.map((a) => a.ability.name).join(' ') || '';
+    const description = (item.description ?? '').replaceAll(',', ' ');
+    const height = `${String(item.height * 10)} cm`;
+    const weight = `${String(item.weight / 10)} kg`;
+
+    return [
+      name,
+      detailsUrl,
+      types,
+      abilities,
+      description,
+      height,
+      weight,
+    ].join(',');
+  });
+
+  return [headers, ...rows].join('\n');
 }
 
 export function downloadCSV(items: PokemonWithDescription[]): void {
