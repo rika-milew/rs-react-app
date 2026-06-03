@@ -1,0 +1,6 @@
+commit_msg=$(cat "$1")
+
+if ! echo "$commit_msg" | grep -Eq "^(feat|fix|chore|docs|refactor|test|style)(\(.+\))?: .+"; then
+  echo "❌ Invalid commit message"
+  exit 1
+fi
