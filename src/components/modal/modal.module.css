@@ -1,5 +1,6 @@
 .overlay {
   position: fixed;
+  z-index: 1000;
   inset: 0;
 
   display: flex;
@@ -11,6 +12,12 @@
 
 .modal {
   position: relative;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
 
   min-width: 30rem;
   padding: 1.5rem;
