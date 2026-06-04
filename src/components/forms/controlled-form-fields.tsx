@@ -22,12 +22,6 @@ export function ControlledFormFields({ register }: ControlledFormFieldsProps) {
           required
         />
       </div>
-
-      <div>
-        <label htmlFor="email">Email</label>
-        <input id="email" type="email" {...register('email')} required />
-      </div>
-
       <div>
         <label htmlFor="gender">Gender</label>
         <select id="gender" {...register('gender')} required>
@@ -38,7 +32,10 @@ export function ControlledFormFields({ register }: ControlledFormFieldsProps) {
           <option value="male">Male</option>
         </select>
       </div>
-
+      <div>
+        <label htmlFor="email">Email</label>
+        <input id="email" type="email" {...register('email')} required />
+      </div>
       <div>
         <input id="terms" type="checkbox" {...register('terms')} />
         <label htmlFor="terms">Accept Terms & Conditions</label>

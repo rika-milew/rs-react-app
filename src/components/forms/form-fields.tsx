@@ -17,10 +17,6 @@ export function FormFields() {
         />
       </div>
       <div>
-        <label htmlFor="email">Email</label>
-        <input id="email" name="email" type="email" defaultValue="" required />
-      </div>
-      <div>
         <label htmlFor="gender">Gender</label>
         <select id="gender" name="gender" defaultValue="" required>
           <option value="" disabled>
@@ -29,6 +25,10 @@ export function FormFields() {
           <option value="female">Female</option>
           <option value="male">Male</option>
         </select>
+      </div>
+      <div>
+        <label htmlFor="email">Email</label>
+        <input id="email" name="email" type="email" defaultValue="" required />
       </div>
       <div>
         <input id="terms" name="terms" type="checkbox" defaultChecked={false} />

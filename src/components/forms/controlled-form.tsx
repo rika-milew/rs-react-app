@@ -14,7 +14,7 @@ export function ControlledForm({ onSuccess }: ControlledFormProps) {
   const { register, handleSubmit, reset } = useForm<FormValues>({
     defaultValues: {
       name: '',
-      age: 0,
+      age: undefined,
       email: '',
       gender: '',
       terms: false,

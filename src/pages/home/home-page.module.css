@@ -5,5 +5,74 @@
   align-items: center;
   justify-content: center;
 
+  width: 100%;
+  padding: 1.5rem;
+
   font-size: 1.25rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 1.5rem;
+  padding: 0 0.75rem;
+}
+
+.cards-section {
+  min-width: 25rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-white);
+}
+
+.badge {
+  padding: 0.5rem 1rem;
+  border-radius: 1.5rem;
+
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-white);
+
+  background: var(--color-purple-600);
+}
+
+.empty-state {
+  margin: 1.25rem 0;
+  padding: 3rem 1.25rem;
+  border: 1px solid var(--color-gray-700);
+  border-radius: 1rem;
+
+  text-align: center;
+
+  background: var(--color-gray-800);
+}
+
+.empty-state h3 {
+  margin: 0 0 1rem;
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-white);
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--color-gray-500);
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  gap: 1.5rem;
+
+  width: 100%;
+  margin-top: 1.5rem;
 }
