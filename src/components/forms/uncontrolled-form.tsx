@@ -1,25 +1,44 @@
+import { useRef } from 'react';
 import { FormFields } from './form-fields';
 import { Button } from '@/components/button/button';
 import type { SubmitEvent } from 'react';
+import { useFormDataStore } from '@/store/use-form-data-store';
 
-type Props = {
-  onSubmit: (data: Record<string, FormDataEntryValue>) => void;
+type UncontrolledFormProps = {
+  onSuccess: () => void;
 };
 
-export function UncontrolledForm({ onSubmit }: Props) {
+export function UncontrolledForm({ onSuccess }: UncontrolledFormProps) {
+  const saveSubmission = useFormDataStore((state) => state.saveSubmission);
+
+  const formRef = useRef<HTMLFormElement>(null);
+
   const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
-    const data = Object.fromEntries(formData.entries());
 
-    onSubmit(data);
-    event.currentTarget.reset();
+    const name = formData.get('name');
+    const age = formData.get('age');
+    const email = formData.get('email');
+    const gender = formData.get('gender');
+    const terms = formData.get('terms');
+
+    saveSubmission({
+      name: typeof name === 'string' ? name : '',
+      age: typeof age === 'string' ? Number(age) : 0,
+      email: typeof email === 'string' ? email : '',
+      gender: typeof gender === 'string' ? gender : '',
+      terms: terms === 'on',
+    });
+
+    formRef.current?.reset();
+    onSuccess();
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <FormFields mode="uncontrolled" />
+    <form ref={formRef} onSubmit={handleSubmit}>
+      <FormFields />
       <Button text="Submit" type="submit" />
     </form>
   );

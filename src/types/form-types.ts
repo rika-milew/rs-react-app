@@ -1,12 +1,12 @@
-export type FormFields = {
+export type FormFields = FormValues & {
   id: string;
+  createdAt: number;
+};
+
+export type FormValues = {
   name: string;
-  gender: string;
   age: number;
   email: string;
+  gender: string;
   terms: boolean;
-  password: string;
-  country: string;
-  image: string;
-  createdAt: number;
 };

@@ -1,28 +1,36 @@
-export function FormFields() {
+import type { UseFormRegister } from 'react-hook-form';
+import type { FormValues } from '@/types/form-types';
+
+type ControlledFormFieldsProps = {
+  register: UseFormRegister<FormValues>;
+};
+
+export function ControlledFormFields({ register }: ControlledFormFieldsProps) {
   return (
     <>
       <div>
         <label htmlFor="name">Name</label>
-        <input id="name" name="name" type="text" defaultValue="" required />
+        <input id="name" type="text" {...register('name')} required />
       </div>
+
       <div>
         <label htmlFor="age">Age</label>
         <input
           id="age"
-          name="age"
           type="number"
-          defaultValue=""
-          min={0}
+          {...register('age', { valueAsNumber: true })}
           required
         />
       </div>
+
       <div>
         <label htmlFor="email">Email</label>
-        <input id="email" name="email" type="email" defaultValue="" required />
+        <input id="email" type="email" {...register('email')} required />
       </div>
+
       <div>
         <label htmlFor="gender">Gender</label>
-        <select id="gender" name="gender" defaultValue="" required>
+        <select id="gender" {...register('gender')} required>
           <option value="" disabled>
             Select gender
           </option>
@@ -30,8 +38,9 @@ export function FormFields() {
           <option value="male">Male</option>
         </select>
       </div>
+
       <div>
-        <input id="terms" name="terms" type="checkbox" defaultChecked={false} />
+        <input id="terms" type="checkbox" {...register('terms')} />
         <label htmlFor="terms">Accept Terms & Conditions</label>
       </div>
     </>

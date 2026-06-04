@@ -14,6 +14,10 @@ export const HomePage = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [formType, selectFormType] = useState<FormType | null>(null);
 
+  const handleSuccess = () => {
+    setModalVisible(false);
+  };
+
   return (
     <div className={cx('home-page')}>
       <h1>React Forms</h1>
@@ -36,10 +40,10 @@ export const HomePage = () => {
       />
       <Modal isVisible={isModalVisible} onClose={() => setModalVisible(false)}>
         {formType === 'uncontrolled' && (
-          <UncontrolledForm onSubmit={(data) => console.log(data)} />
+          <UncontrolledForm onSuccess={handleSuccess} />
         )}
 
-        {formType === 'controlled' && <ControlledForm />}
+        <ControlledForm onSuccess={handleSuccess} />
       </Modal>
     </div>
   );

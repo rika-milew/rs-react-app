@@ -1,42 +1,42 @@
-import { useState } from 'react';
-import { FormFields } from './form-fields';
 import { Button } from '@/components/button/button';
-import type { SubmitEvent } from 'react';
+import { useForm } from 'react-hook-form';
+import { useFormDataStore } from '@/store/use-form-data-store';
+import type { FormValues } from '@/types/form-types';
+import { ControlledFormFields } from './controlled-form-fields';
 
-export function ControlledForm() {
-  const [values, setValues] = useState({
-    name: '',
-    age: '',
-    email: '',
-    gender: '',
-    terms: false,
+type ControlledFormProps = {
+  onSuccess: () => void;
+};
+
+export function ControlledForm({ onSuccess }: ControlledFormProps) {
+  const saveSubmission = useFormDataStore((state) => state.saveSubmission);
+
+  const { register, handleSubmit, reset } = useForm<FormValues>({
+    defaultValues: {
+      name: '',
+      age: 0,
+      email: '',
+      gender: '',
+      terms: false,
+    },
   });
 
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
-    const target = event.target;
-
-    const name = target.name;
-
-    const value: string | boolean =
-      target instanceof HTMLInputElement && target.type === 'checkbox'
-        ? target.checked
-        : target.value;
-
-    setValues((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
-  };
-  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log(values);
+  const onSubmit = (data: FormValues) => {
+    saveSubmission({
+      ...data,
+    });
+    reset();
+    onSuccess();
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <FormFields mode="controlled" values={values} onChange={handleChange} />
+    <form
+      onSubmit={(event) => {
+        event.preventDefault();
+        void handleSubmit(onSubmit)(event);
+      }}
+    >
+      <ControlledFormFields register={register} />
       <Button text="Submit" type="submit" />
     </form>
   );
