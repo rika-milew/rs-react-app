@@ -43,7 +43,9 @@ export const HomePage = () => {
           <UncontrolledForm onSuccess={handleSuccess} />
         )}
 
-        <ControlledForm onSuccess={handleSuccess} />
+        {formType === 'controlled' && (
+          <ControlledForm onSuccess={handleSuccess} />
+        )}
       </Modal>
     </div>
   );

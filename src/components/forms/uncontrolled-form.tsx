@@ -22,14 +22,14 @@ export function UncontrolledForm({ onSuccess }: UncontrolledFormProps) {
     const age = formData.get('age');
     const email = formData.get('email');
     const gender = formData.get('gender');
-    const terms = formData.get('terms');
+    const terms = formData.get('terms') === 'on';
 
     saveSubmission({
       name: typeof name === 'string' ? name : '',
       age: typeof age === 'string' ? Number(age) : 0,
       email: typeof email === 'string' ? email : '',
       gender: typeof gender === 'string' ? gender : '',
-      terms: terms === 'on',
+      terms,
     });
 
     formRef.current?.reset();
