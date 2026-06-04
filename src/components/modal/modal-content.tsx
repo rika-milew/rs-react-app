@@ -38,6 +38,7 @@ export function ModalContent({ onClose, children }: ModalContentProps) {
         className={cx('modal')}
         role="dialog"
         aria-modal="true"
+        aria-labelledby="modal-title"
         onClick={(event) => event.stopPropagation()}
       >
         <button
@@ -47,7 +48,7 @@ export function ModalContent({ onClose, children }: ModalContentProps) {
         >
           ✕
         </button>
-        <h2>React Form</h2>
+        <h2 id="modal-title">React Form</h2>
         {children}
       </div>
     </div>
