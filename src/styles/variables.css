@@ -13,16 +13,6 @@
   --color-gray-900: hsl(240deg 14% 10%);
   --color-gray-950: hsl(240deg 20% 4%);
 
-  /* Yellow colors */
-  --color-yellow-100: hsl(40deg 27% 81%);
-  --color-yellow-200: hsl(39deg 25% 75%);
-  --color-yellow-600: hsl(38deg 92% 55%);
-  --color-yellow-700: hsl(38deg 100% 65%);
-
-  /* Orange colors */
-  --color-orange-500: hsl(32deg 81% 43%);
-  --color-orange-600: hsl(24deg 90% 45%);
-
   /* Red colors */
   --color-red-500: hsl(0deg 84% 60%);
   --color-red-600: hsl(0deg 59% 44%);
