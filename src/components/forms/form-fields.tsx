@@ -1,11 +1,16 @@
+import classNames from 'classnames/bind';
+import styles from './form.module.css';
+
+const cx = classNames.bind(styles);
+
 export function FormFields() {
   return (
-    <>
-      <div>
+    <div className={cx('form-fields')}>
+      <div className={cx('field')}>
         <label htmlFor="name">Name</label>
         <input id="name" name="name" type="text" defaultValue="" required />
       </div>
-      <div>
+      <div className={cx('field')}>
         <label htmlFor="age">Age</label>
         <input
           id="age"
@@ -16,7 +21,7 @@ export function FormFields() {
           required
         />
       </div>
-      <div>
+      <div className={cx('field')}>
         <label htmlFor="gender">Gender</label>
         <select id="gender" name="gender" defaultValue="" required>
           <option value="" disabled>
@@ -26,14 +31,14 @@ export function FormFields() {
           <option value="male">Male</option>
         </select>
       </div>
-      <div>
+      <div className={cx('field')}>
         <label htmlFor="email">Email</label>
         <input id="email" name="email" type="email" defaultValue="" required />
       </div>
-      <div>
+      <div className={cx('checkbox-field')}>
         <input id="terms" name="terms" type="checkbox" defaultChecked={false} />
         <label htmlFor="terms">Accept Terms & Conditions</label>
       </div>
-    </>
+    </div>
   );
 }
