@@ -9,18 +9,27 @@
   padding: 1.5rem;
 
   font-size: 1.25rem;
+
+  @media (width <= 550px) {
+    padding: 0.5rem;
+  }
 }
 
 .section-header {
   position: relative;
 
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
 
   width: 100%;
   margin-bottom: 1.5rem;
   padding: 0 0.75rem;
+
+  @media (width <= 550px) {
+    flex-direction: column;
+  }
 }
 
 .cards-section {
@@ -28,6 +37,11 @@
   min-width: auto;
   margin: 0 auto;
   padding: 1.5rem;
+
+  @media (width <= 550px) {
+    justify-content: center;
+    padding: 0;
+  }
 }
 
 .section-header h2 {
@@ -51,6 +65,11 @@
   color: var(--color-white);
 
   background: var(--color-purple-600);
+
+  @media (width <= 550px) {
+    margin-top: 0.5rem;
+    margin-left: 0;
+  }
 }
 
 .empty-state {
@@ -93,4 +112,13 @@
 
   width: 100%;
   max-width: 18rem;
+}
+
+.title {
+  color: var(--color-white);
+  text-align: center;
+
+  @media (width <= 550px) {
+    font-size: 2rem;
+  }
 }

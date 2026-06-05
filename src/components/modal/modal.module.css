@@ -25,6 +25,10 @@
   border-radius: 0.75rem;
 
   background: var(--color-gray-700);
+
+  @media (width <= 550px) {
+    width: 90%;
+  }
 }
 
 .modal-header {
