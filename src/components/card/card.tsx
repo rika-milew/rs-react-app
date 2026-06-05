@@ -1,11 +1,11 @@
 import classNames from 'classnames/bind';
-import type { FormFields } from '@/types/form-types';
+import type { StoredFormData } from '@/types/form-types';
 import styles from './card.module.css';
 
 const cx = classNames.bind(styles);
 
 type CardProps = {
-  data: FormFields;
+  data: StoredFormData;
   isRecent?: boolean;
 };
 
