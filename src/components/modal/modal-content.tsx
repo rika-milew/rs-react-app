@@ -41,14 +41,16 @@ export function ModalContent({ onClose, children }: ModalContentProps) {
         aria-labelledby="modal-title"
         onClick={(event) => event.stopPropagation()}
       >
-        <button
-          ref={closeButtonRef}
-          className={cx('close-button')}
-          onClick={onClose}
-        >
-          ✕
-        </button>
-        <h2 id="modal-title">React Form</h2>
+        <div className={cx('modal-header')}>
+          <h2 id="modal-title">React Form</h2>
+          <button
+            ref={closeButtonRef}
+            className={cx('close-button')}
+            onClick={onClose}
+          >
+            ✕
+          </button>
+        </div>
         {children}
       </div>
     </div>

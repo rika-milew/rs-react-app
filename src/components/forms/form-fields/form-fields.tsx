@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import { GENDER_OPTIONS } from '@/constants/constants';
-import styles from './form.module.css';
+import styles from './form-fields.module.css';
 
 const cx = classNames.bind(styles);
 

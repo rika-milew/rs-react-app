@@ -1,0 +1,153 @@
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.field label {
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-gray-400);
+  letter-spacing: 0.025em;
+}
+
+.field label::after {
+  content: '*';
+  margin-left: 0.25rem;
+  color: var(--color-turquoise-500);
+}
+
+.field input,
+.field select {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-gray-700);
+  border-radius: 0.5rem;
+
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--color-white);
+
+  background: var(--color-gray-800);
+
+  transition: all 0.2s ease;
+
+  &:focus {
+    border-color: var(--color-turquoise-500);
+    outline: none;
+    box-shadow: 0 0 0 3px hsl(172deg 66% 50% / var(--opacity-10));
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      border-color: var(--color-gray-600);
+    }
+  }
+
+  @media (hover: none) {
+    &:active {
+      border-color: var(--color-gray-600);
+    }
+  }
+}
+
+.field input::placeholder {
+  color: var(--color-gray-600);
+}
+
+.checkbox-field {
+  cursor: pointer;
+
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+
+  margin-top: 0.25rem;
+  margin-bottom: 1.5rem;
+
+  input[type='checkbox'] {
+    cursor: pointer;
+
+    width: 1.125rem;
+    height: 1.125rem;
+    margin: 0;
+
+    accent-color: var(--color-white);
+
+    transition: color var(--transition-default) var(--ease-in-cubic);
+
+    &:focus-visible {
+      outline: 2px solid var(--color-turquoise-500);
+      outline-offset: 2px;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        accent-color: var(--color-turquoise-500);
+      }
+    }
+
+    @media (hover: none) {
+      &:active {
+        accent-color: var(--color-turquoise-500);
+      }
+    }
+  }
+
+  label {
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: var(--color-gray-400);
+    transition: color 0.2s ease;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        color: var(--color-white);
+      }
+    }
+
+    @media (hover: none) {
+      &:active {
+        color: var(--color-white);
+      }
+    }
+  }
+}
+
+.field input[type='number']::-webkit-inner-spin-button,
+.field input[type='number']::-webkit-outer-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
+.field .error-message {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--color-red-500);
+}
+
+@keyframes fade-in {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.form {
+  animation: fade-in var(--transition-default) ease-out;
+}

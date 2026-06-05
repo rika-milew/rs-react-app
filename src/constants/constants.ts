@@ -1,4 +1,4 @@
-export const ANIMATION_DURATION = 5000;
+export const ANIMATION_DURATION = 3000;
 
 export const DEFAULT_FORM_VALUES = {
   name: '',

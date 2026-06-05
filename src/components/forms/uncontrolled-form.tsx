@@ -1,8 +1,12 @@
+import classNames from 'classnames/bind';
 import { useRef } from 'react';
-import { FormFields } from './form-fields';
+import { FormFields } from './form-fields/form-fields';
 import { Button } from '@/components/button/button';
 import type { SubmitEvent } from 'react';
 import { useFormDataStore } from '@/store/use-form-data-store';
+import styles from './form.module.css';
+
+const cx = classNames.bind(styles);
 
 type UncontrolledFormProps = {
   onSuccess: () => void;
@@ -37,7 +41,7 @@ export function UncontrolledForm({ onSuccess }: UncontrolledFormProps) {
   };
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit}>
+    <form className={cx('form')} ref={formRef} onSubmit={handleSubmit}>
       <FormFields />
       <Button text="Submit" type="submit" />
     </form>

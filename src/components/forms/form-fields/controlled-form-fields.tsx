@@ -3,7 +3,7 @@ import type { UseFormRegister } from 'react-hook-form';
 import { GENDER_OPTIONS } from '@/constants/constants';
 import type { FormValues } from '@/types/form-types';
 
-import styles from './form.module.css';
+import styles from './form-fields.module.css';
 
 const cx = classNames.bind(styles);
 

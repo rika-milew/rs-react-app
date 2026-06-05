@@ -12,28 +12,37 @@
 }
 
 .section-header {
+  position: relative;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
 
+  width: 100%;
   margin-bottom: 1.5rem;
   padding: 0 0.75rem;
 }
 
 .cards-section {
-  min-width: 25rem;
+  width: 100%;
+  min-width: auto;
   margin: 0 auto;
   padding: 1.5rem;
 }
 
 .section-header h2 {
+  flex: 1;
+
   margin: 0;
+
   font-size: 1.5rem;
   font-weight: var(--font-weight-semibold);
   color: var(--color-white);
+  text-align: center;
 }
 
 .badge {
+  margin-left: auto;
   padding: 0.5rem 1rem;
   border-radius: 1.5rem;
 
@@ -75,4 +84,13 @@
 
   width: 100%;
   margin-top: 1.5rem;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  width: 100%;
+  max-width: 18rem;
 }

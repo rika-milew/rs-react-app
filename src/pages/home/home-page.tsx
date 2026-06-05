@@ -57,23 +57,25 @@ export const HomePage = () => {
   return (
     <div className={cx('home-page')}>
       <h1 className={cx('title')}>React Forms</h1>
-      <Button
-        text="Open Uncontrolled Form"
-        onClick={() => {
-          selectFormType('uncontrolled');
-          setModalVisible(true);
-        }}
-        variant="secondary"
-      />
+      <div className={cx('button-container')}>
+        <Button
+          text="Open Uncontrolled Form"
+          onClick={() => {
+            selectFormType('uncontrolled');
+            setModalVisible(true);
+          }}
+          variant="secondary"
+        />
 
-      <Button
-        text="Open Controlled Form"
-        onClick={() => {
-          selectFormType('controlled');
-          setModalVisible(true);
-        }}
-        variant="primary"
-      />
+        <Button
+          text="Open Controlled Form"
+          onClick={() => {
+            selectFormType('controlled');
+            setModalVisible(true);
+          }}
+          variant="primary"
+        />
+      </div>
       <Modal isVisible={isModalVisible} onClose={() => setModalVisible(false)}>
         {formType === 'uncontrolled' && (
           <UncontrolledForm onSuccess={handleSuccess} />
