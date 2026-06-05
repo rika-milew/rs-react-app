@@ -1,5 +1,6 @@
 import classNames from 'classnames/bind';
 import type { UseFormRegister } from 'react-hook-form';
+import { GENDER_OPTIONS } from '@/constants/constants';
 import type { FormValues } from '@/types/form-types';
 
 import styles from './form.module.css';
@@ -33,8 +34,11 @@ export function ControlledFormFields({ register }: ControlledFormFieldsProps) {
           <option value="" disabled>
             Select gender
           </option>
-          <option value="female">Female</option>
-          <option value="male">Male</option>
+          {GENDER_OPTIONS.map(({ value, label }) => (
+            <option key={value} value={value}>
+              {label}
+            </option>
+          ))}
         </select>
       </div>
       <div className={cx('field')}>

@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { useFormDataStore } from '@/store/use-form-data-store';
 import type { FormValues } from '@/types/form-types';
 import { ControlledFormFields } from './controlled-form-fields';
+import { DEFAULT_FORM_VALUES } from '@/constants/constants';
 
 type ControlledFormProps = {
   onSuccess: () => void;
@@ -12,13 +13,7 @@ export function ControlledForm({ onSuccess }: ControlledFormProps) {
   const saveSubmission = useFormDataStore((state) => state.saveSubmission);
 
   const { register, handleSubmit, reset } = useForm<FormValues>({
-    defaultValues: {
-      name: '',
-      age: undefined,
-      email: '',
-      gender: '',
-      terms: false,
-    },
+    defaultValues: DEFAULT_FORM_VALUES,
   });
 
   const onSubmit = (data: FormValues) => {

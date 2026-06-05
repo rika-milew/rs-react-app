@@ -1,4 +1,5 @@
 import classNames from 'classnames/bind';
+import { GENDER_OPTIONS } from '@/constants/constants';
 import styles from './form.module.css';
 
 const cx = classNames.bind(styles);
@@ -27,8 +28,11 @@ export function FormFields() {
           <option value="" disabled>
             Select gender
           </option>
-          <option value="female">Female</option>
-          <option value="male">Male</option>
+          {GENDER_OPTIONS.map(({ value, label }) => (
+            <option key={value} value={value}>
+              {label}
+            </option>
+          ))}
         </select>
       </div>
       <div className={cx('field')}>
