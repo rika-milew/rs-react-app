@@ -17,6 +17,12 @@
   --color-red-500: hsl(0deg 84% 60%);
   --color-red-600: hsl(0deg 59% 44%);
 
+  /* Yellow colors */
+  --color-yellow-500: hsl(38deg 88% 46%);
+
+  /* Green colors */
+  --color-green-500: hsl(160deg 82% 32%);
+
   /* Turquoise colors */
   --color-turquoise-400: hsl(174deg 70% 55%);
   --color-turquoise-500: hsl(174deg 80% 45%);
@@ -36,6 +42,7 @@
   --opacity-50: 0.5;
   --opacity-40: 0.4;
   --opacity-30: 0.3;
+  --opacity-20: 0.2;
   --opacity-10: 0.1;
 
   /* Font weights */

@@ -9,4 +9,8 @@ export type FormValues = {
   email: string;
   gender: string;
   terms: boolean;
+  password: string;
+  confirmPassword?: string;
+  country: string;
+  image: string;
 };

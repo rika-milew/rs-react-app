@@ -151,3 +151,43 @@
 .form {
   animation: fade-in var(--transition-default) ease-out;
 }
+
+.image-preview img {
+  width: 4rem;
+  height: 4rem;
+  margin-top: 0.5rem;
+  border-radius: 0.5rem;
+
+  object-fit: cover;
+}
+
+.password-strength {
+  margin-top: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.password-strength.weak {
+  color: var(--color-red-500);
+  background-color: hsla(from var((--color-red-500)) h s l / var(--opacity-20));
+}
+
+.password-strength.medium {
+  color: var(--color-yellow-500);
+  background-color: hsla(
+    from var((--color-yellow-500)) h s l / var(--opacity-20)
+  );
+}
+
+.password-strength.strong {
+  color: var(--color-green-500);
+  background-color: hsla(
+    from var((--color-green-500)) h s l / var(--opacity-20)
+  );
+}
+
+.password-strength ul {
+  margin: 0.25rem 0 0 1rem;
+  padding: 0;
+}
