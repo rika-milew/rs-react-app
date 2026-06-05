@@ -4,14 +4,28 @@ import styles from './form-fields.module.css';
 
 const cx = classNames.bind(styles);
 
-export function FormFields() {
+type FormFieldsProps = {
+  errors?: {
+    name?: string;
+    age?: string;
+    email?: string;
+    gender?: string;
+    terms?: string;
+    country?: string;
+  };
+};
+
+export function FormFields({ errors = {} }: FormFieldsProps) {
   return (
     <div className={cx('form-fields')}>
-      <div className={cx('field')}>
+      <div className={cx('field', { error: !!errors.name })}>
         <label htmlFor="name">Name</label>
         <input id="name" name="name" type="text" defaultValue="" required />
+        {errors.name && (
+          <span className={cx('error-message')}>{errors.name}</span>
+        )}
       </div>
-      <div className={cx('field')}>
+      <div className={cx('field', { error: !!errors.age })}>
         <label htmlFor="age">Age</label>
         <input
           id="age"
@@ -21,8 +35,11 @@ export function FormFields() {
           min={0}
           required
         />
+        {errors.age && (
+          <span className={cx('error-message')}>{errors.age}</span>
+        )}
       </div>
-      <div className={cx('field')}>
+      <div className={cx('field', { error: !!errors.gender })}>
         <label htmlFor="gender">Gender</label>
         <select id="gender" name="gender" defaultValue="" required>
           <option value="" disabled>
@@ -34,14 +51,23 @@ export function FormFields() {
             </option>
           ))}
         </select>
+        {errors.gender && (
+          <span className={cx('error-message')}>{errors.gender}</span>
+        )}
       </div>
-      <div className={cx('field')}>
+      <div className={cx('field', { error: !!errors.email })}>
         <label htmlFor="email">Email</label>
         <input id="email" name="email" type="email" defaultValue="" required />
+        {errors.email && (
+          <span className={cx('error-message')}>{errors.email}</span>
+        )}
       </div>
-      <div className={cx('checkbox-field')}>
+      <div className={cx('checkbox-field', { error: !!errors.terms })}>
         <input id="terms" name="terms" type="checkbox" defaultChecked={false} />
         <label htmlFor="terms">Accept Terms & Conditions</label>
+        {errors.terms && (
+          <span className={cx('error-message')}>{errors.terms}</span>
+        )}
       </div>
     </div>
   );

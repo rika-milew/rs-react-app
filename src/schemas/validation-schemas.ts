@@ -1,3 +1,4 @@
+import type { InferType } from 'yup';
 import { object, string, number, boolean, ref, mixed } from 'yup';
 import { PASSWORD_VALIDATION, IMAGE_VALIDATION } from '@/constants/constants';
 
@@ -73,3 +74,5 @@ export const validationSchema = object({
     .required('Country is required')
     .test('valid-country', 'Please select a valid country', isValidCountry),
 });
+
+export type FormData = InferType<typeof validationSchema>;

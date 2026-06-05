@@ -10,7 +10,13 @@ export type FormValues = {
   gender: string;
   terms: boolean;
   password: string;
-  confirmPassword?: string;
+  confirmPassword: string;
   country: string;
-  image: string;
+  image: File;
+};
+
+export type StoredFormData = Omit<FormValues, 'image'> & {
+  image: string | null;
+  id: string;
+  createdAt: number;
 };

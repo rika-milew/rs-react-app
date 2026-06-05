@@ -1,17 +1,16 @@
 import { create } from 'zustand';
-import type { FormFields } from '@/types/form-types';
+import type { StoredFormData } from '@/types/form-types';
 
 type FormDataStore = {
-  submissions: FormFields[];
-
-  saveSubmission: (data: Omit<FormFields, 'id' | 'createdAt'>) => void;
+  submissions: StoredFormData[];
+  saveSubmission: (data: Omit<StoredFormData, 'id' | 'createdAt'>) => void;
 };
 
 export const useFormDataStore = create<FormDataStore>((set) => ({
   submissions: [],
 
   saveSubmission: (data): void => {
-    const newSubmission: FormFields = {
+    const newSubmission: StoredFormData = {
       ...data,
       id: crypto.randomUUID(),
       createdAt: Date.now(),

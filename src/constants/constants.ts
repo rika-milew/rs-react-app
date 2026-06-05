@@ -6,6 +6,10 @@ export const DEFAULT_FORM_VALUES = {
   email: '',
   gender: '',
   terms: false,
+  password: '',
+  confirmPassword: '',
+  image: undefined,
+  country: '',
 } as const;
 
 export const GENDER_OPTIONS = [
