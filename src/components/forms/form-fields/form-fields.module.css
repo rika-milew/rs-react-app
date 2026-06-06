@@ -61,6 +61,20 @@
   }
 }
 
+.field input:-webkit-autofill,
+.field input:-webkit-autofill:hover,
+.field input:-webkit-autofill:focus {
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0 1000px var(--color-gray-800) inset;
+  transition: background-color 4000s ease-in-out 0s;
+
+  -webkit-text-fill-color: var(--color-white);
+}
+
+.field input:-webkit-autofill::first-line {
+  color: var(--color-white);
+}
+
 .field input::placeholder {
   color: var(--color-gray-600);
 }

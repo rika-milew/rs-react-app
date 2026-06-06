@@ -5,9 +5,10 @@ import type {
   UseFormSetValue,
   UseFormWatch,
 } from 'react-hook-form';
-import { GENDER_OPTIONS, COUNTRIES } from '@/constants/constants';
+import { GENDER_OPTIONS } from '@/constants/constants';
 import type { FormValues } from '@/types/form-types';
 import { ImageUpload } from './image-upload';
+import { CountryAutocomplete } from '@/components/country-autocomplete/country-autocomplete';
 import { PasswordIndicator } from '@/components/password-indicator/password-indicator';
 import styles from './form-fields.module.css';
 
@@ -104,17 +105,11 @@ export function ControlledFormFields({
       />
       <div className={cx('field', { error: !!errors.country })}>
         <label htmlFor="country">Country</label>
-        <select id="country" {...register('country')}>
-          <option value="">Select country</option>
-          {COUNTRIES.map((country) => (
-            <option key={country} value={country}>
-              {country}
-            </option>
-          ))}
-        </select>
-        {errors.country && (
-          <span className={cx('error-message')}>{errors.country.message}</span>
-        )}
+        <CountryAutocomplete
+          name="country"
+          error={errors.country?.message}
+          onChange={(value) => setValue('country', value)}
+        />
       </div>
       <div className={cx('checkbox-field', { error: !!errors.terms })}>
         <input id="terms" type="checkbox" {...register('terms')} />

@@ -1,6 +1,9 @@
 import classNames from 'classnames/bind';
-import { GENDER_OPTIONS, COUNTRIES } from '@/constants/constants';
+import { GENDER_OPTIONS } from '@/constants/constants';
+import { CountryAutocomplete } from '@/components/country-autocomplete/country-autocomplete';
 import { ImageUpload } from './image-upload';
+import { PasswordIndicator } from '@/components/password-indicator/password-indicator';
+import { useState } from 'react';
 import styles from './form-fields.module.css';
 
 const cx = classNames.bind(styles);
@@ -20,6 +23,7 @@ type FormFieldsProps = {
 };
 
 export function UncontrolledFormFields({ errors = {} }: FormFieldsProps) {
+  const [password, setPassword] = useState('');
   return (
     <div className={cx('form-fields')}>
       <div className={cx('field', { error: !!errors.name })}>
@@ -73,8 +77,10 @@ export function UncontrolledFormFields({ errors = {} }: FormFieldsProps) {
           name="password"
           type="password"
           defaultValue=""
+          onChange={(event) => setPassword(event.target.value)}
           required
         />
+        <PasswordIndicator password={password} />
         {errors.password && (
           <span className={cx('error-message')}>{errors.password}</span>
         )}
@@ -92,24 +98,10 @@ export function UncontrolledFormFields({ errors = {} }: FormFieldsProps) {
           <span className={cx('error-message')}>{errors.confirmPassword}</span>
         )}
       </div>
-
       <ImageUpload name="image" error={errors.image} />
-
       <div className={cx('field', { error: !!errors.country })}>
         <label htmlFor="country">Country</label>
-        <select id="country" name="country" defaultValue="" required>
-          <option value="" disabled>
-            Select country
-          </option>
-          {COUNTRIES.map((country) => (
-            <option key={country} value={country}>
-              {country}
-            </option>
-          ))}
-        </select>
-        {errors.country && (
-          <span className={cx('error-message')}>{errors.country}</span>
-        )}
+        <CountryAutocomplete name="country" error={errors.country} />
       </div>
       <div className={cx('checkbox-field', { error: !!errors.terms })}>
         <div className={cx('checkbox')}>
