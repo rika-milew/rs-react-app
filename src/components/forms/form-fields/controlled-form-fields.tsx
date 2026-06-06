@@ -11,6 +11,7 @@ import type { FormValues } from '@/types/form-types';
 import { ImageUpload } from './image-upload';
 import { CountryAutocomplete } from '@/components/country-autocomplete/country-autocomplete';
 import { PasswordIndicator } from '@/components/password-indicator/password-indicator';
+import type { ReactNode } from 'react';
 import styles from './form-fields.module.css';
 
 const cx = classNames.bind(styles);
@@ -32,29 +33,32 @@ export function ControlledFormFields({
   trigger,
 }: ControlledFormFieldsProps) {
   const password = watch('password');
+
+  const handleCountryChange = (value: string) => {
+    setValue('country', value, {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    });
+    void trigger('image').catch((error: unknown) => {
+      console.error('Validation error for image field:', error);
+    });
+  };
+
   return (
     <div className={cx('form-fields')}>
-      <div className={cx('field', { error: !!errors.name })}>
-        <label htmlFor="name">Name</label>
+      <Field id="name" label="Name" error={errors.name?.message}>
         <input id="name" type="text" {...register('name')} required />
-        {errors.name && (
-          <span className={cx('error-message')}>{errors.name.message}</span>
-        )}
-      </div>
-      <div className={cx('field', { error: !!errors.age })}>
-        <label htmlFor="age">Age</label>
+      </Field>
+      <Field id="age" label="Age" error={errors.age?.message}>
         <input
           id="age"
           type="number"
           {...register('age', { valueAsNumber: true })}
           required
         />
-        {errors.age && (
-          <span className={cx('error-message')}>{errors.age.message}</span>
-        )}
-      </div>
-      <div className={cx('field', { error: !!errors.gender })}>
-        <label htmlFor="gender">Gender</label>
+      </Field>
+      <Field id="gender" label="Gender" error={errors.gender?.message}>
         <select id="gender" {...register('gender')} required>
           <option value="" disabled>
             Select gender
@@ -64,39 +68,26 @@ export function ControlledFormFields({
               {label}
             </option>
           ))}
-          {errors.gender && (
-            <span className={cx('error-message')}>{errors.gender.message}</span>
-          )}
         </select>
-      </div>
-      <div className={cx('field', { error: !!errors.email })}>
-        <label htmlFor="email">Email</label>
+      </Field>
+      <Field id="email" label="Email" error={errors.email?.message}>
         <input id="email" type="email" {...register('email')} required />
-        {errors.email && (
-          <span className={cx('error-message')}>{errors.email.message}</span>
-        )}
-      </div>
-      <div className={cx('field', { error: !!errors.password })}>
-        <label htmlFor="password">Password</label>
+      </Field>
+      <Field id="password" label="Password" error={errors.password?.message}>
         <input id="password" type="password" {...register('password')} />
         <PasswordIndicator password={password} />
-        {errors.password && (
-          <span className={cx('error-message')}>{errors.password.message}</span>
-        )}
-      </div>
-      <div className={cx('field', { error: !!errors.confirmPassword })}>
-        <label htmlFor="confirmPassword">Confirm Password</label>
+      </Field>
+      <Field
+        id="confirmPassword"
+        label="Confirm Password"
+        error={errors.confirmPassword?.message}
+      >
         <input
           id="confirmPassword"
           type="password"
           {...register('confirmPassword')}
         />
-        {errors.confirmPassword && (
-          <span className={cx('error-message')}>
-            {errors.confirmPassword.message}
-          </span>
-        )}
-      </div>
+      </Field>
       <ImageUpload
         name="image"
         error={errors.image?.message}
@@ -106,23 +97,13 @@ export function ControlledFormFields({
           }
         }}
       />
-      <div className={cx('field', { error: !!errors.country })}>
-        <label htmlFor="country">Country</label>
+      <Field id="country" label="Country" error={errors.country?.message}>
         <CountryAutocomplete
           name="country"
           error={errors.country?.message}
-          onChange={(value) => {
-            setValue('country', value, {
-              shouldValidate: true,
-              shouldDirty: true,
-              shouldTouch: true,
-            });
-            void trigger('image').catch((error: unknown) => {
-              console.error('Validation error for image field:', error);
-            });
-          }}
+          onChange={handleCountryChange}
         />
-      </div>
+      </Field>
       <div className={cx('checkbox-field', { error: !!errors.terms })}>
         <input id="terms" type="checkbox" {...register('terms')} />
         <label htmlFor="terms">Accept Terms & Conditions</label>
@@ -130,6 +111,24 @@ export function ControlledFormFields({
           <span className={cx('error-message')}>{errors.terms.message}</span>
         )}
       </div>
+    </div>
+  );
+}
+
+type FieldProps = {
+  id: string;
+  label: string;
+  error?: string;
+  children: ReactNode;
+  className?: string;
+};
+
+export function Field({ id, label, error, children, className }: FieldProps) {
+  return (
+    <div className={cx('field', { error: !!error }, className)}>
+      <label htmlFor={id}>{label}</label>
+      {children}
+      {error && <span className={cx('error-message')}>{error}</span>}
     </div>
   );
 }
