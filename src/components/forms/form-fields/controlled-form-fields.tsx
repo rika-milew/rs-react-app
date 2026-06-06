@@ -11,7 +11,8 @@ import type { FormValues } from '@/types/form-types';
 import { ImageUpload } from './image-upload';
 import { CountryAutocomplete } from '@/components/country-autocomplete/country-autocomplete';
 import { PasswordIndicator } from '@/components/password-indicator/password-indicator';
-import type { ReactNode } from 'react';
+import { Field } from './field';
+
 import styles from './form-fields.module.css';
 
 const cx = classNames.bind(styles);
@@ -111,24 +112,6 @@ export function ControlledFormFields({
           <span className={cx('error-message')}>{errors.terms.message}</span>
         )}
       </div>
-    </div>
-  );
-}
-
-type FieldProps = {
-  id: string;
-  label: string;
-  error?: string;
-  children: ReactNode;
-  className?: string;
-};
-
-export function Field({ id, label, error, children, className }: FieldProps) {
-  return (
-    <div className={cx('field', { error: !!error }, className)}>
-      <label htmlFor={id}>{label}</label>
-      {children}
-      {error && <span className={cx('error-message')}>{error}</span>}
     </div>
   );
 }

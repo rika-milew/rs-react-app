@@ -4,6 +4,7 @@ import { CountryAutocomplete } from '@/components/country-autocomplete/country-a
 import { ImageUpload } from './image-upload';
 import { PasswordIndicator } from '@/components/password-indicator/password-indicator';
 import { useState } from 'react';
+import { Field } from './field';
 import styles from './form-fields.module.css';
 
 const cx = classNames.bind(styles);
@@ -26,15 +27,10 @@ export function UncontrolledFormFields({ errors = {} }: FormFieldsProps) {
   const [password, setPassword] = useState('');
   return (
     <div className={cx('form-fields')}>
-      <div className={cx('field', { error: !!errors.name })}>
-        <label htmlFor="name">Name</label>
+      <Field id="name" label="Name" error={errors.name}>
         <input id="name" name="name" type="text" defaultValue="" required />
-        {errors.name && (
-          <span className={cx('error-message')}>{errors.name}</span>
-        )}
-      </div>
-      <div className={cx('field', { error: !!errors.age })}>
-        <label htmlFor="age">Age</label>
+      </Field>
+      <Field id="age" label="Age" error={errors.age}>
         <input
           id="age"
           name="age"
@@ -43,12 +39,8 @@ export function UncontrolledFormFields({ errors = {} }: FormFieldsProps) {
           min={0}
           required
         />
-        {errors.age && (
-          <span className={cx('error-message')}>{errors.age}</span>
-        )}
-      </div>
-      <div className={cx('field', { error: !!errors.gender })}>
-        <label htmlFor="gender">Gender</label>
+      </Field>
+      <Field id="gender" label="Gender" error={errors.gender}>
         <select id="gender" name="gender" defaultValue="" required>
           <option value="" disabled>
             Select gender
@@ -59,19 +51,11 @@ export function UncontrolledFormFields({ errors = {} }: FormFieldsProps) {
             </option>
           ))}
         </select>
-        {errors.gender && (
-          <span className={cx('error-message')}>{errors.gender}</span>
-        )}
-      </div>
-      <div className={cx('field', { error: !!errors.email })}>
-        <label htmlFor="email">Email</label>
+      </Field>
+      <Field id="email" label="Email" error={errors.email}>
         <input id="email" name="email" type="email" defaultValue="" required />
-        {errors.email && (
-          <span className={cx('error-message')}>{errors.email}</span>
-        )}
-      </div>
-      <div className={cx('field', { error: !!errors.password })}>
-        <label htmlFor="password">Password</label>
+      </Field>
+      <Field id="password" label="Password" error={errors.password}>
         <input
           id="password"
           name="password"
@@ -81,12 +65,12 @@ export function UncontrolledFormFields({ errors = {} }: FormFieldsProps) {
           required
         />
         <PasswordIndicator password={password} />
-        {errors.password && (
-          <span className={cx('error-message')}>{errors.password}</span>
-        )}
-      </div>
-      <div className={cx('field', { error: !!errors.confirmPassword })}>
-        <label htmlFor="confirmPassword">Confirm Password</label>
+      </Field>
+      <Field
+        id="confirmPassword"
+        label="Confirm Password"
+        error={errors.confirmPassword}
+      >
         <input
           id="confirmPassword"
           name="confirmPassword"
@@ -94,15 +78,11 @@ export function UncontrolledFormFields({ errors = {} }: FormFieldsProps) {
           defaultValue=""
           required
         />
-        {errors.confirmPassword && (
-          <span className={cx('error-message')}>{errors.confirmPassword}</span>
-        )}
-      </div>
+      </Field>
       <ImageUpload name="image" error={errors.image} />
-      <div className={cx('field', { error: !!errors.country })}>
-        <label htmlFor="country">Country</label>
+      <Field id="country" label="Country" error={errors.country}>
         <CountryAutocomplete name="country" error={errors.country} />
-      </div>
+      </Field>
       <div className={cx('checkbox-field', { error: !!errors.terms })}>
         <div className={cx('checkbox')}>
           <input

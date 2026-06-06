@@ -1,6 +1,6 @@
 import { useState, useEffect, type ChangeEvent } from 'react';
 import classNames from 'classnames/bind';
-import styles from './form-fields.module.css';
+import styles from './field.module.css';
 
 const cx = classNames.bind(styles);
 
