@@ -6,9 +6,8 @@ import type {
 } from 'react-hook-form';
 import { GENDER_OPTIONS, COUNTRIES } from '@/constants/constants';
 import type { FormValues } from '@/types/form-types';
+import { ImageUpload } from './image-upload';
 import styles from './form-fields.module.css';
-import type { ChangeEvent } from 'react';
-import { useState, useEffect } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -23,7 +22,6 @@ export function ControlledFormFields({
   register,
   errors,
   setValue,
-  imageFile,
 }: ControlledFormFieldsProps) {
   return (
     <div className={cx('form-fields')}>
@@ -90,7 +88,15 @@ export function ControlledFormFields({
           </span>
         )}
       </div>
-      <ImageUpload setValue={setValue} errors={errors} imageFile={imageFile} />
+      <ImageUpload
+        name="image"
+        error={errors.image?.message}
+        onChange={(file) => {
+          if (file) {
+            setValue('image', file);
+          }
+        }}
+      />
       <div className={cx('field', { error: !!errors.country })}>
         <label htmlFor="country">Country</label>
         <select id="country" {...register('country')}>
@@ -112,58 +118,6 @@ export function ControlledFormFields({
           <span className={cx('error-message')}>{errors.terms.message}</span>
         )}
       </div>
-    </div>
-  );
-}
-
-type ImageUploadProps = {
-  setValue: UseFormSetValue<FormValues>;
-  errors: FieldErrors<FormValues>;
-  imageFile?: File;
-};
-
-export function ImageUpload({ setValue, errors }: ImageUploadProps) {
-  const [image, setImage] = useState<string | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (image) {
-        URL.revokeObjectURL(image);
-      }
-    };
-  }, [image]);
-
-  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-
-    if (!file) {
-      setImage(null);
-      return;
-    }
-
-    setValue('image', file);
-
-    const imageUrl = URL.createObjectURL(file);
-    setImage(imageUrl);
-  };
-
-  return (
-    <div className={cx('field', { error: !!errors.image })}>
-      <label htmlFor="image">Profile Image</label>
-      <input
-        id="image"
-        type="file"
-        accept="image/jpeg,image/png"
-        onChange={handleImageChange}
-      />
-      {image && (
-        <div className={cx('image-preview')}>
-          <img src={image} alt="Preview" />
-        </div>
-      )}
-      {errors.image?.message && (
-        <span className={cx('error-message')}>{errors.image.message}</span>
-      )}
     </div>
   );
 }

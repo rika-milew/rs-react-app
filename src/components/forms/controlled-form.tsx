@@ -59,7 +59,7 @@ export function ControlledForm({ onSuccess }: ControlledFormProps) {
   };
 
   return (
-    <form className={cx('form')} onSubmit={handleFormSubmit}>
+    <form className={cx('form')} onSubmit={handleFormSubmit} noValidate>
       <ControlledFormFields
         register={register}
         errors={errors}

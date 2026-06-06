@@ -13,25 +13,30 @@ import { isValidFile, isValidImageType } from '@/utils/validate-image';
 export const validationSchema = object({
   name: string()
     .required('Name is required')
-    .test(
-      'uppercase',
-      'First letter must be uppercase',
-      isFirstLetterUppercase,
-    ),
+    .test('uppercase', 'First letter must be uppercase', (value) => {
+      if (!value) {
+        return true;
+      }
+      return isFirstLetterUppercase(value);
+    }),
 
-  age: number().required('Age is required').min(0, 'Age cannot be negative'),
+  age: number()
+    .required('Age is required')
+    .typeError('Age must be a number')
+    .min(0, 'Age cannot be negative'),
 
   gender: string()
     .required('Gender is required')
-    .oneOf(['male', 'female'], 'Invalid gender'),
+    .oneOf(['male', 'female'], 'Gender is required'),
 
   email: string()
     .required('Email is required')
-    .test(
-      'email',
-      'Invalid email format',
-      (value) => !!value && isValidEmail(value),
-    ),
+    .test('email', 'Invalid email format', (value) => {
+      if (!value) {
+        return true;
+      }
+      return isValidEmail(value);
+    }),
 
   terms: boolean()
     .required('Please accept the Terms and Conditions')
@@ -40,22 +45,22 @@ export const validationSchema = object({
   password: string()
     .required('Password is required')
     .min(PASSWORD_VALIDATION.MIN_LENGTH, 'At least 6 characters')
-    .matches(
-      PASSWORD_VALIDATION.PATTERNS.uppercaseLetters,
-      PASSWORD_VALIDATION.ERROR_MESSAGES.uppercaseLetters,
-    )
-    .matches(
-      PASSWORD_VALIDATION.PATTERNS.lowercaseLetters,
-      PASSWORD_VALIDATION.ERROR_MESSAGES.lowercaseLetters,
-    )
-    .matches(
-      PASSWORD_VALIDATION.PATTERNS.numbers,
-      PASSWORD_VALIDATION.ERROR_MESSAGES.numbers,
-    )
-    .matches(
-      PASSWORD_VALIDATION.PATTERNS.specialCharacters,
-      PASSWORD_VALIDATION.ERROR_MESSAGES.specialCharacters,
-    ),
+    .matches(PASSWORD_VALIDATION.PATTERNS.uppercaseLetters, {
+      message: PASSWORD_VALIDATION.ERROR_MESSAGES.uppercaseLetters,
+      excludeEmptyString: true,
+    })
+    .matches(PASSWORD_VALIDATION.PATTERNS.lowercaseLetters, {
+      message: PASSWORD_VALIDATION.ERROR_MESSAGES.lowercaseLetters,
+      excludeEmptyString: true,
+    })
+    .matches(PASSWORD_VALIDATION.PATTERNS.numbers, {
+      message: PASSWORD_VALIDATION.ERROR_MESSAGES.numbers,
+      excludeEmptyString: true,
+    })
+    .matches(PASSWORD_VALIDATION.PATTERNS.specialCharacters, {
+      message: PASSWORD_VALIDATION.ERROR_MESSAGES.specialCharacters,
+      excludeEmptyString: true,
+    }),
 
   confirmPassword: string()
     .required('Confirm password')
@@ -63,7 +68,7 @@ export const validationSchema = object({
 
   image: mixed<File>()
     .required('Image is required')
-    .test('fileType', 'Only PNG and JPEG images are allowed', (file) => {
+    .test('fileType', 'Upload PNG or JPEG image', (file) => {
       return isValidFile(file) && isValidImageType(file.type);
     })
     .test('fileSize', 'Image size must be less than 2 MB', (file) => {

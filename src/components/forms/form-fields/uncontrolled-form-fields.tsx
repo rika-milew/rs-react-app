@@ -1,5 +1,6 @@
 import classNames from 'classnames/bind';
-import { GENDER_OPTIONS } from '@/constants/constants';
+import { GENDER_OPTIONS, COUNTRIES } from '@/constants/constants';
+import { ImageUpload } from './image-upload';
 import styles from './form-fields.module.css';
 
 const cx = classNames.bind(styles);
@@ -10,12 +11,15 @@ type FormFieldsProps = {
     age?: string;
     email?: string;
     gender?: string;
+    password?: string;
+    confirmPassword?: string;
+    image?: string;
     terms?: string;
     country?: string;
   };
 };
 
-export function FormFields({ errors = {} }: FormFieldsProps) {
+export function UncontrolledFormFields({ errors = {} }: FormFieldsProps) {
   return (
     <div className={cx('form-fields')}>
       <div className={cx('field', { error: !!errors.name })}>
@@ -62,9 +66,61 @@ export function FormFields({ errors = {} }: FormFieldsProps) {
           <span className={cx('error-message')}>{errors.email}</span>
         )}
       </div>
+      <div className={cx('field', { error: !!errors.password })}>
+        <label htmlFor="password">Password</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          defaultValue=""
+          required
+        />
+        {errors.password && (
+          <span className={cx('error-message')}>{errors.password}</span>
+        )}
+      </div>
+      <div className={cx('field', { error: !!errors.confirmPassword })}>
+        <label htmlFor="confirmPassword">Confirm Password</label>
+        <input
+          id="confirmPassword"
+          name="confirmPassword"
+          type="password"
+          defaultValue=""
+          required
+        />
+        {errors.confirmPassword && (
+          <span className={cx('error-message')}>{errors.confirmPassword}</span>
+        )}
+      </div>
+
+      <ImageUpload name="image" error={errors.image} />
+
+      <div className={cx('field', { error: !!errors.country })}>
+        <label htmlFor="country">Country</label>
+        <select id="country" name="country" defaultValue="" required>
+          <option value="" disabled>
+            Select country
+          </option>
+          {COUNTRIES.map((country) => (
+            <option key={country} value={country}>
+              {country}
+            </option>
+          ))}
+        </select>
+        {errors.country && (
+          <span className={cx('error-message')}>{errors.country}</span>
+        )}
+      </div>
       <div className={cx('checkbox-field', { error: !!errors.terms })}>
-        <input id="terms" name="terms" type="checkbox" defaultChecked={false} />
-        <label htmlFor="terms">Accept Terms & Conditions</label>
+        <div className={cx('checkbox')}>
+          <input
+            id="terms"
+            name="terms"
+            type="checkbox"
+            defaultChecked={false}
+          />
+          <label htmlFor="terms">Accept Terms & Conditions</label>
+        </div>
         {errors.terms && (
           <span className={cx('error-message')}>{errors.terms}</span>
         )}
