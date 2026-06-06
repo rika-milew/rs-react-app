@@ -63,5 +63,8 @@ export const isFirstLetterUppercase = (value: string): boolean => {
 };
 
 export const isValidCountry = (value?: string): boolean => {
-  return value ? COUNTRIES.includes(value) : false;
+  if (!value) {
+    return true;
+  }
+  return COUNTRIES.includes(value);
 };

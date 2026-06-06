@@ -75,6 +75,7 @@ export function ControlledForm({ onSuccess }: ControlledFormProps) {
         setValue={setValue}
         imageFile={imageFile}
         watch={watch}
+        trigger={trigger}
       />
       <Button text="Submit" type="submit" disabled={!isValid || isSubmitting} />
     </form>

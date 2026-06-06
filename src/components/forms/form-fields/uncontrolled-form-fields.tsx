@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import { GENDER_OPTIONS } from '@/constants/constants';
 import { CountryAutocomplete } from '@/components/country-autocomplete/country-autocomplete';
-import { ImageUpload } from './image-upload';
+import { UncontrolledImageUpload } from './image-upload';
 import { PasswordIndicator } from '@/components/password-indicator/password-indicator';
 import { useState } from 'react';
 import styles from './form-fields.module.css';
@@ -98,7 +98,7 @@ export function UncontrolledFormFields({ errors = {} }: FormFieldsProps) {
           <span className={cx('error-message')}>{errors.confirmPassword}</span>
         )}
       </div>
-      <ImageUpload name="image" error={errors.image} />
+      <UncontrolledImageUpload name="image" error={errors.image} />
       <div className={cx('field', { error: !!errors.country })}>
         <label htmlFor="country">Country</label>
         <CountryAutocomplete name="country" error={errors.country} />

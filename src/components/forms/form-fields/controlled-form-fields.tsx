@@ -4,6 +4,7 @@ import type {
   FieldErrors,
   UseFormSetValue,
   UseFormWatch,
+  UseFormTrigger,
 } from 'react-hook-form';
 import { GENDER_OPTIONS } from '@/constants/constants';
 import type { FormValues } from '@/types/form-types';
@@ -20,6 +21,7 @@ type ControlledFormFieldsProps = {
   setValue: UseFormSetValue<FormValues>;
   imageFile: File | undefined;
   watch: UseFormWatch<FormValues>;
+  trigger: UseFormTrigger<FormValues>;
 };
 
 export function ControlledFormFields({
@@ -27,6 +29,7 @@ export function ControlledFormFields({
   errors,
   setValue,
   watch,
+  trigger,
 }: ControlledFormFieldsProps) {
   const password = watch('password');
   return (
@@ -99,7 +102,7 @@ export function ControlledFormFields({
         error={errors.image?.message}
         onChange={(file) => {
           if (file) {
-            setValue('image', file);
+            setValue('image', file, { shouldValidate: true });
           }
         }}
       />
@@ -108,7 +111,16 @@ export function ControlledFormFields({
         <CountryAutocomplete
           name="country"
           error={errors.country?.message}
-          onChange={(value) => setValue('country', value)}
+          onChange={(value) => {
+            setValue('country', value, {
+              shouldValidate: true,
+              shouldDirty: true,
+              shouldTouch: true,
+            });
+            void trigger('image').catch((error: unknown) => {
+              console.error('Validation error for image field:', error);
+            });
+          }}
         />
       </div>
       <div className={cx('checkbox-field', { error: !!errors.terms })}>

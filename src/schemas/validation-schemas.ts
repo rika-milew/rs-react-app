@@ -1,14 +1,12 @@
 import type { InferType } from 'yup';
 import { object, string, number, boolean, ref, mixed } from 'yup';
 import { PASSWORD_RULES_CONFIG, IMAGE_VALIDATION } from '@/constants/constants';
-
 import {
   isFirstLetterUppercase,
   isValidEmail,
   isValidCountry,
 } from '@/utils/vaidate-form-fields';
-
-import { isValidFile, isValidImageType } from '@/utils/validate-image';
+import { isValidImageType } from '@/utils/validate-image';
 
 export const validationSchema = object({
   name: string()
@@ -64,10 +62,16 @@ export const validationSchema = object({
   image: mixed<File>()
     .required('Image is required')
     .test('fileType', 'Upload PNG or JPEG image', (file) => {
-      return isValidFile(file) && isValidImageType(file.type);
+      if (!(file instanceof File)) {
+        return true;
+      }
+      return isValidImageType(file.type);
     })
     .test('fileSize', 'Image size must be less than 2 MB', (file) => {
-      return isValidFile(file) && file.size <= IMAGE_VALIDATION.MAX_SIZE_BYTES;
+      if (!(file instanceof File)) {
+        return true;
+      }
+      return file.size <= IMAGE_VALIDATION.MAX_SIZE_BYTES;
     }),
 
   country: string()
