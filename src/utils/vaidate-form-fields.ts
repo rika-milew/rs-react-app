@@ -35,11 +35,31 @@ export const isValidEmail = (email: string): boolean => {
   return true;
 };
 
-export const isFirstLetterUppercase = (value?: string): boolean => {
+export const isFirstLetterUppercase = (value: string): boolean => {
   if (!value) {
+    return true;
+  }
+
+  const firstChar = value[0];
+
+  if (firstChar.toLowerCase() === firstChar.toUpperCase()) {
     return false;
   }
-  return value.startsWith(value[0].toUpperCase());
+
+  if (firstChar !== firstChar.toUpperCase()) {
+    return false;
+  }
+
+  for (const char of value) {
+    if (char === ' ') {
+      continue;
+    }
+    if (char.toLowerCase() === char.toUpperCase()) {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 export const isValidCountry = (value?: string): boolean => {

@@ -8,6 +8,7 @@ import { DEFAULT_FORM_VALUES } from '@/constants/constants';
 import { validationSchema } from '@/schemas/validation-schemas';
 import { convertImage } from '@/utils/validate-image';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useEffect } from 'react';
 import type { SubmitEvent } from 'react';
 import styles from './form.module.css';
 
@@ -26,12 +27,20 @@ export function ControlledForm({ onSuccess }: ControlledFormProps) {
     reset,
     setValue,
     control,
+    watch,
+    trigger,
     formState: { errors, isSubmitting, isValid },
   } = useForm<FormValues>({
     defaultValues: DEFAULT_FORM_VALUES,
     resolver: yupResolver(validationSchema),
     mode: 'onChange',
   });
+
+  const password = useWatch({ control, name: 'password' });
+
+  useEffect(() => {
+    void trigger('confirmPassword');
+  }, [password, trigger]);
 
   const imageFile = useWatch({
     control,
@@ -65,6 +74,7 @@ export function ControlledForm({ onSuccess }: ControlledFormProps) {
         errors={errors}
         setValue={setValue}
         imageFile={imageFile}
+        watch={watch}
       />
       <Button text="Submit" type="submit" disabled={!isValid || isSubmitting} />
     </form>

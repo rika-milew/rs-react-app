@@ -3,10 +3,12 @@ import type {
   UseFormRegister,
   FieldErrors,
   UseFormSetValue,
+  UseFormWatch,
 } from 'react-hook-form';
 import { GENDER_OPTIONS, COUNTRIES } from '@/constants/constants';
 import type { FormValues } from '@/types/form-types';
 import { ImageUpload } from './image-upload';
+import { PasswordIndicator } from '@/components/password-indicator/password-indicator';
 import styles from './form-fields.module.css';
 
 const cx = classNames.bind(styles);
@@ -16,13 +18,16 @@ type ControlledFormFieldsProps = {
   errors: FieldErrors<FormValues>;
   setValue: UseFormSetValue<FormValues>;
   imageFile: File | undefined;
+  watch: UseFormWatch<FormValues>;
 };
 
 export function ControlledFormFields({
   register,
   errors,
   setValue,
+  watch,
 }: ControlledFormFieldsProps) {
+  const password = watch('password');
   return (
     <div className={cx('form-fields')}>
       <div className={cx('field', { error: !!errors.name })}>
@@ -70,7 +75,7 @@ export function ControlledFormFields({
       <div className={cx('field', { error: !!errors.password })}>
         <label htmlFor="password">Password</label>
         <input id="password" type="password" {...register('password')} />
-        {/* <PasswordIndicator password={watch('password')} /> */}
+        <PasswordIndicator password={password} />
         {errors.password && (
           <span className={cx('error-message')}>{errors.password.message}</span>
         )}

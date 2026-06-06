@@ -1,6 +1,6 @@
 import type { InferType } from 'yup';
 import { object, string, number, boolean, ref, mixed } from 'yup';
-import { PASSWORD_VALIDATION, IMAGE_VALIDATION } from '@/constants/constants';
+import { PASSWORD_RULES_CONFIG, IMAGE_VALIDATION } from '@/constants/constants';
 
 import {
   isFirstLetterUppercase,
@@ -13,12 +13,16 @@ import { isValidFile, isValidImageType } from '@/utils/validate-image';
 export const validationSchema = object({
   name: string()
     .required('Name is required')
-    .test('uppercase', 'First letter must be uppercase', (value) => {
-      if (!value) {
-        return true;
-      }
-      return isFirstLetterUppercase(value);
-    }),
+    .test(
+      'uppercase',
+      'Name should contain only letters and start with uppercase',
+      (value) => {
+        if (!value) {
+          return true;
+        }
+        return isFirstLetterUppercase(value);
+      },
+    ),
 
   age: number()
     .required('Age is required')
@@ -44,22 +48,13 @@ export const validationSchema = object({
 
   password: string()
     .required('Password is required')
-    .min(PASSWORD_VALIDATION.MIN_LENGTH, 'At least 6 characters')
-    .matches(PASSWORD_VALIDATION.PATTERNS.uppercaseLetters, {
-      message: PASSWORD_VALIDATION.ERROR_MESSAGES.uppercaseLetters,
-      excludeEmptyString: true,
-    })
-    .matches(PASSWORD_VALIDATION.PATTERNS.lowercaseLetters, {
-      message: PASSWORD_VALIDATION.ERROR_MESSAGES.lowercaseLetters,
-      excludeEmptyString: true,
-    })
-    .matches(PASSWORD_VALIDATION.PATTERNS.numbers, {
-      message: PASSWORD_VALIDATION.ERROR_MESSAGES.numbers,
-      excludeEmptyString: true,
-    })
-    .matches(PASSWORD_VALIDATION.PATTERNS.specialCharacters, {
-      message: PASSWORD_VALIDATION.ERROR_MESSAGES.specialCharacters,
-      excludeEmptyString: true,
+    .test('password-strength', '', function (value) {
+      if (!value) {
+        return true;
+      }
+
+      const allValid = PASSWORD_RULES_CONFIG.every((rule) => rule.check(value));
+      return allValid;
     }),
 
   confirmPassword: string()
