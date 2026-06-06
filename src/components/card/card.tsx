@@ -19,6 +19,11 @@ export function Card({ data, isRecent }: CardProps) {
         </span>
       </div>
       <div className={cx('content')}>
+        {data.image && (
+          <div className={cx('image-wrapper')}>
+            <img src={data.image} alt={data.name} className={cx('image')} />
+          </div>
+        )}
         <p>
           <strong>Age</strong>
           <span className={cx('accent')}>{data.age}</span>
@@ -30,6 +35,10 @@ export function Card({ data, isRecent }: CardProps) {
         <p>
           <strong>Email</strong>
           <span className={cx('accent')}>{data.email}</span>
+        </p>
+        <p>
+          <strong>Country</strong>
+          <span className={cx('accent')}>{data.country}</span>
         </p>
         <p>
           <strong>Terms accepted</strong>

@@ -128,3 +128,21 @@
   font-weight: var(--font-weight-semibold);
   color: var(--color-red-500);
 }
+
+.image-wrapper {
+  overflow: hidden;
+  width: 100%;
+  margin-bottom: 0.75rem;
+  border-radius: 1rem;
+}
+
+.image {
+  display: block;
+
+  width: 90%;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 1rem;
+
+  object-fit: cover;
+}
