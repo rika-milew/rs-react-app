@@ -13,6 +13,7 @@ type ModalContentProps = {
 
 export function ModalContent({ onClose, children }: ModalContentProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     closeButtonRef.current?.focus();
@@ -32,8 +33,18 @@ export function ModalContent({ onClose, children }: ModalContentProps) {
     };
   }, [onClose]);
 
+  const handleOverlayMouseDown = (event: React.MouseEvent) => {
+    if (event.target === overlayRef.current) {
+      onClose();
+    }
+  };
+
   return (
-    <div className={cx('overlay')} onClick={onClose}>
+    <div
+      ref={overlayRef}
+      className={cx('overlay')}
+      onMouseDown={handleOverlayMouseDown}
+    >
       <div
         className={cx('modal')}
         role="dialog"
