@@ -75,7 +75,6 @@ export function CountryAutocomplete({
           ))}
         </div>
       )}
-      {error && <span className={cx('error-message')}>{error}</span>}
     </div>
   );
 }
