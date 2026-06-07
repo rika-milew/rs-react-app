@@ -86,20 +86,14 @@ export function DetailView({ detailId }: DetailViewProps) {
     );
   }
 
-  if (error || !result || result.status === API_STATUS.ERROR) {
-    return (
-      <DetailLayout closeDetailView={closeDetailView}>
-        <ErrorState message={getErrorMessage(error)} onReload={handleRefresh} />
-      </DetailLayout>
-    );
-  }
+  const isSuccess = result?.status === API_STATUS.SUCCESS && result.data;
 
-  if (result.status === API_STATUS.NOT_FOUND) {
+  if (!isSuccess) {
     return (
       <DetailLayout closeDetailView={closeDetailView}>
         <ErrorState
-          message={ERROR_MESSAGES.NOTFOUND}
-          onReload={() => handleRefresh()}
+          message={getErrorMessage(error, result?.status)}
+          onReload={handleRefresh}
         />
       </DetailLayout>
     );
@@ -107,9 +101,7 @@ export function DetailView({ detailId }: DetailViewProps) {
 
   return (
     <DetailLayout closeDetailView={closeDetailView}>
-      {result.status === API_STATUS.SUCCESS && (
-        <Card item={result.data} variant="detailed" />
-      )}
+      {<Card item={result.data} variant="detailed" />}
       <Button
         onClick={handleRefresh}
         text={isFetching ? 'Updating...' : 'Refresh'}
@@ -144,7 +136,11 @@ function DetailLayout({
   );
 }
 
-const getErrorMessage = (error: unknown): string => {
+function getErrorMessage(error: unknown, status?: string): string {
+  if (status === API_STATUS.NOT_FOUND) {
+    return ERROR_MESSAGES.NOTFOUND;
+  }
+
   if (!error) {
     return ERROR_MESSAGES.DEFAULT;
   }
@@ -161,4 +157,4 @@ const getErrorMessage = (error: unknown): string => {
   }
 
   return ERROR_MESSAGES.DEFAULT;
-};
+}
