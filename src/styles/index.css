@@ -1,6 +1,6 @@
-@import url('./variables.css');
-@import url('./reset.css');
-@import url('./theme.css');
+@import './variables.css';
+@import './reset.css';
+@import './theme.css';
 
 body {
   font-family: Inter, sans-serif;
