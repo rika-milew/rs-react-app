@@ -54,7 +54,12 @@ export function CountryAutocomplete({
 
   return (
     <div ref={containerRef} className={cx('autocomplete', { error: !!error })}>
-      <input type="hidden" name={name} value={inputValue} />
+      <input
+        type="hidden"
+        name={name}
+        value={inputValue}
+        data-testid="hidden-input"
+      />
       <input
         type="text"
         value={inputValue}
