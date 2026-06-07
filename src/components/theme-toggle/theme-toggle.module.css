@@ -1,0 +1,79 @@
+.theme-toggle {
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0.5rem;
+}
+
+.icon-container {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.icon {
+  position: absolute;
+  transform: scale(0.3) rotate(-90deg);
+
+  width: 1.25rem;
+  height: 1.25rem;
+
+  opacity: 0;
+
+  transition:
+    transform var(--transition-default) var(--ease-in-cubic),
+    opacity var(--transition-default) var(--ease-in-cubic),
+    filter var(--transition-default) var(--ease-in-cubic);
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.visible {
+  transform: scale(1) rotate(0deg);
+  opacity: 1;
+  animation: pulse var(--transition-default) var(--ease-in-cubic);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .visible {
+    animation: none;
+  }
+}
+
+.theme-toggle[data-theme='dark'] .icon {
+  color: var(--accent-background);
+}
+
+.theme-toggle[data-theme='dark']:hover .visible {
+  filter: drop-shadow(0 0 10px var(--accent-background));
+}
+
+.theme-toggle[data-theme='light'] .icon {
+  color: var(--text-muted);
+}
+
+.theme-toggle[data-theme='light']:hover .visible {
+  filter: drop-shadow(0 0 10px var(--text-muted));
+}

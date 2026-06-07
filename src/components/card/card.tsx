@@ -2,6 +2,10 @@ import classNames from 'classnames/bind';
 import { useState } from 'react';
 import type { PokemonWithDescription } from '@/types/api';
 import { cardConfig } from './card.config';
+import { useSelector, useDispatch } from 'react-redux';
+import type { RootState } from '@/store';
+import { toggleItem } from '@/store/slice';
+import type { MouseEvent, KeyboardEvent, ChangeEvent } from 'react';
 import styles from './card.module.css';
 
 const cx = classNames.bind(styles);
@@ -46,7 +50,13 @@ export function Card({ item, variant = 'detailed', onClick }: CardProps) {
       (option.visible === 'always' || isDetailed) && option.condition !== false,
   );
 
-  const handleClick = () => {
+  const handleClick = (event: MouseEvent | KeyboardEvent) => {
+    if (
+      event.target instanceof HTMLElement &&
+      event.target.closest('[data-checkbox]')
+    ) {
+      return;
+    }
     onClick?.();
   };
 
@@ -55,7 +65,25 @@ export function Card({ item, variant = 'detailed', onClick }: CardProps) {
       data-card
       className={cx('card', { detailed: variant === 'detailed' })}
       onClick={handleClick}
+      onKeyDown={(event_) => {
+        if (event_.key === 'Enter' || event_.key === ' ') {
+          if (
+            event_.target instanceof HTMLElement &&
+            event_.target.closest('[data-checkbox]')
+          ) {
+            return;
+          }
+          event_.preventDefault();
+          handleClick(event_);
+        }
+      }}
+      tabIndex={0}
+      role="button"
+      aria-label={`View details for ${name}`}
     >
+      <div className={cx('checkbox-container')}>
+        <Checkbox id={id} name={name} />
+      </div>
       <div className={cx('image-container')}>
         <span className={cx('card-id')}>
           #{id.toString().padStart(ID_LENGTH, '0')}
@@ -88,11 +116,7 @@ type CardOptionProps = {
   variant?: 'inline' | 'block';
 };
 
-export function CardOption({
-  label,
-  value,
-  variant = 'block',
-}: CardOptionProps) {
+function CardOption({ label, value, variant = 'block' }: CardOptionProps) {
   if (variant === 'inline') {
     return (
       <p className={cx('card-option', 'inline')}>
@@ -106,5 +130,36 @@ export function CardOption({
       <p className={cx('params-label')}>{label}</p>
       <div className={cx('params-list')}>{value}</div>
     </div>
+  );
+}
+
+type CheckboxProps = {
+  id: number;
+  name: string;
+};
+
+function Checkbox({ id, name }: CheckboxProps) {
+  const dispatch = useDispatch();
+  const isSelectedItem = useSelector((state: RootState) =>
+    state.selectedItems.selectedItems.includes(id.toString()),
+  );
+
+  const handleCheckboxClick = (event: ChangeEvent<HTMLInputElement>) => {
+    event.stopPropagation();
+    dispatch(toggleItem(id.toString()));
+  };
+
+  return (
+    <input
+      type="checkbox"
+      data-checkbox
+      className={cx('checkbox')}
+      checked={isSelectedItem}
+      onChange={handleCheckboxClick}
+      onClick={(event) => {
+        event.stopPropagation();
+      }}
+      aria-label={`Select ${name}`}
+    />
   );
 }

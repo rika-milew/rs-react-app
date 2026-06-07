@@ -1,19 +1,22 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { DetailView } from './detail-view';
-import { useDetailData } from '@/hooks/use-detail-data';
-import { useDetailNavigation } from '@/hooks/use-detail-navigation';
+import { getDetailData } from '@/services/detail-service';
 import { API_STATUS, ERROR_MESSAGES } from '@/constants/constants';
 import type { PokemonWithDescription } from '@/types/api';
 import { mockItemFull } from '@/test-utils/api-mock';
 import userEvent from '@testing-library/user-event';
 
-vi.mock('@/hooks/use-detail-data', () => ({
-  useDetailData: vi.fn(),
+vi.mock('@/services/detail-service', () => ({
+  getDetailData: vi.fn(),
 }));
 
-vi.mock('@/hooks/use-detail-navigation', () => ({
-  useDetailNavigation: vi.fn(),
+const mockNavigate = vi.fn();
+const mockSearch = { search: 'pikachu', page: 1 };
+
+vi.mock('@tanstack/react-router', () => ({
+  useNavigate: () => mockNavigate,
+  useSearch: () => mockSearch,
 }));
 
 vi.mock('@/components/card/card', () => ({
@@ -44,32 +47,26 @@ vi.mock('@/components/error-state/error-state', () => ({
 }));
 
 describe('DetailView', () => {
-  const mockCloseDetailView = vi.fn();
-
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(useDetailNavigation).mockReturnValue({
-      openDetailView: vi.fn(),
-      closeDetailView: mockCloseDetailView,
-    });
   });
 
-  it('renders card with data when correctly', () => {
-    vi.mocked(useDetailData).mockReturnValue({
+  it('renders card with data when correctly', async () => {
+    vi.mocked(getDetailData).mockResolvedValue({
       status: API_STATUS.SUCCESS,
       data: mockItemFull,
     });
 
     render(<DetailView detailId="1" />);
 
-    expect(screen.getByTestId('card')).toBeInTheDocument();
+    expect(await screen.findByTestId('card')).toBeInTheDocument();
     expect(screen.getByText(mockItemFull.name)).toBeInTheDocument();
     expect(screen.queryByTestId('loader')).not.toBeInTheDocument();
     expect(screen.queryByTestId('error-state')).not.toBeInTheDocument();
   });
 
   it('renders loader when the content is loading', () => {
-    vi.mocked(useDetailData).mockReturnValue({ status: API_STATUS.LOADING });
+    vi.mocked(getDetailData).mockReturnValue(new Promise(vi.fn()));
 
     render(<DetailView detailId="1" />);
 
@@ -78,29 +75,29 @@ describe('DetailView', () => {
     expect(screen.queryByTestId('error-state')).not.toBeInTheDocument();
   });
 
-  it('renders error message when status is error', () => {
+  it('renders error message when status is error', async () => {
     const errorMessage = 'Failed to get data';
-    vi.mocked(useDetailData).mockReturnValue({
+    vi.mocked(getDetailData).mockResolvedValue({
       status: API_STATUS.ERROR,
       message: errorMessage,
     });
 
     render(<DetailView detailId="1" />);
 
-    expect(screen.getByTestId('error-state')).toBeInTheDocument();
+    expect(await screen.findByTestId('error-state')).toBeInTheDocument();
     expect(screen.getByText(errorMessage)).toBeInTheDocument();
     expect(screen.queryByTestId('card')).not.toBeInTheDocument();
     expect(screen.queryByTestId('loader')).not.toBeInTheDocument();
   });
 
-  it('renders not-found message when status is not found', () => {
-    vi.mocked(useDetailData).mockReturnValue({
+  it('renders not found message when status is not found error', async () => {
+    vi.mocked(getDetailData).mockResolvedValue({
       status: API_STATUS.NOT_FOUND,
     });
 
     render(<DetailView detailId="1" />);
 
-    expect(screen.getByTestId('error-state')).toBeInTheDocument();
+    expect(await screen.findByTestId('error-state')).toBeInTheDocument();
     expect(screen.getByText(ERROR_MESSAGES.NOTFOUND)).toBeInTheDocument();
     expect(screen.queryByTestId('card')).not.toBeInTheDocument();
     expect(screen.queryByTestId('loader')).not.toBeInTheDocument();
@@ -109,7 +106,7 @@ describe('DetailView', () => {
   it('close the card when close button is clicked', async () => {
     const user = userEvent.setup();
 
-    vi.mocked(useDetailData).mockReturnValue({
+    vi.mocked(getDetailData).mockResolvedValue({
       status: API_STATUS.SUCCESS,
       data: mockItemFull,
     });
@@ -119,13 +116,14 @@ describe('DetailView', () => {
     const closeButton = screen.getByText('✕');
     await user.click(closeButton);
 
-    expect(mockCloseDetailView).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledWith({ to: '/', search: mockSearch });
   });
 
   it('does not close the card when clicking on the detail card', async () => {
     const user = userEvent.setup();
 
-    vi.mocked(useDetailData).mockReturnValue({
+    vi.mocked(getDetailData).mockResolvedValue({
       status: API_STATUS.SUCCESS,
       data: mockItemFull,
     });
@@ -136,13 +134,13 @@ describe('DetailView', () => {
 
     await user.click(detailElement);
 
-    expect(mockCloseDetailView).not.toHaveBeenCalled();
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
   it('closes the card when clicking outside detail and card elements', async () => {
     const user = userEvent.setup();
 
-    vi.mocked(useDetailData).mockReturnValue({
+    vi.mocked(getDetailData).mockResolvedValue({
       status: API_STATUS.SUCCESS,
       data: mockItemFull,
     });
@@ -151,6 +149,6 @@ describe('DetailView', () => {
 
     await user.click(document.body);
 
-    expect(mockCloseDetailView).toHaveBeenCalledTimes(1);
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
   });
 });

@@ -9,6 +9,8 @@ describe('ErrorBoundaryAdapter integration', () => {
 
     render(<ErrorBoundaryAdapter error={mockError} reset={mockReset} />);
 
-    expect(screen.queryByText('Test error')).toBeDefined();
+    expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
+    expect(screen.getByRole('button')).toBeInTheDocument();
+    expect(screen.getByText('Try again')).toBeInTheDocument();
   });
 });

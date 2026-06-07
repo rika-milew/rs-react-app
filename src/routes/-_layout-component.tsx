@@ -7,10 +7,12 @@ import styles from '@/pages/search/search-page.module.css';
 const cx = classNames.bind(styles);
 
 export function LayoutRoute() {
-  const pathname = useRouterState({
-    select: (state) => state.location.pathname,
+  const matches = useRouterState({
+    select: (state) => state.matches,
   });
-  const isDetailViewOpen = pathname.includes(ROUTES.DETAILS);
+  const isDetailViewOpen = matches.some(
+    (match) => match.routeId === `${ROUTES.LAYOUT}${ROUTES.DETAIL}`,
+  );
 
   return (
     <div className={cx('home-page-layout')}>

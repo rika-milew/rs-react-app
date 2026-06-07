@@ -1,6 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { Card, ID_LENGTH } from './card';
+import { Provider } from 'react-redux';
+import type { ReactElement } from 'react';
+import { configureStore, type Store } from '@reduxjs/toolkit';
 
 import {
   mockItemFull,
@@ -8,10 +11,32 @@ import {
   artworkMockImage,
 } from '@/test-utils/api-mock';
 
+import selectedItemsReducer from '@/store/slice';
+
+type RootState = {
+  selectedItems: ReturnType<typeof selectedItemsReducer>;
+};
+
+const createMockStore = (): Store<RootState> => {
+  return configureStore<RootState>({
+    reducer: {
+      selectedItems: selectedItemsReducer,
+    },
+  });
+};
+
 describe('card component', () => {
+  const renderWithProvider = (ui: ReactElement) => {
+    const store = createMockStore();
+    return {
+      ...render(<Provider store={store}>{ui}</Provider>),
+      store,
+    };
+  };
+
   describe('with full data', () => {
     it('renders all item information on the card', () => {
-      render(<Card item={mockItemFull} />);
+      renderWithProvider(<Card item={mockItemFull} />);
 
       const expectedName =
         mockItemFull.name.charAt(0).toUpperCase() + mockItemFull.name.slice(1);
@@ -46,7 +71,7 @@ describe('card component', () => {
     });
 
     it('renders artwork image with correct attributes', () => {
-      render(<Card item={mockItemFull} />);
+      renderWithProvider(<Card item={mockItemFull} />);
 
       const image = screen.getByRole('img', {
         name: mockItemFull.name,
@@ -56,13 +81,13 @@ describe('card component', () => {
     });
 
     it('renders item name with capital letter', () => {
-      render(<Card item={mockItemFull} />);
+      renderWithProvider(<Card item={mockItemFull} />);
 
       expect(screen.getByText('Bulbasaur')).toBeInTheDocument();
     });
 
     it('renders card container element', () => {
-      const { container } = render(<Card item={mockItemFull} />);
+      const { container } = renderWithProvider(<Card item={mockItemFull} />);
       const cardElement = container.firstChild;
 
       expect(cardElement).toBeInTheDocument();
@@ -71,7 +96,7 @@ describe('card component', () => {
 
   describe('with partial item data', () => {
     it('renders single type without trailing comma', () => {
-      render(<Card item={mockItemPartial} />);
+      renderWithProvider(<Card item={mockItemPartial} />);
 
       const expectedType = mockItemPartial.types
         .map((index) => index.type.name)
@@ -85,7 +110,7 @@ describe('card component', () => {
     });
 
     it('uses front_default image when artwork image is missing', () => {
-      render(<Card item={mockItemPartial} />);
+      renderWithProvider(<Card item={mockItemPartial} />);
 
       const image = screen.getByRole('img', {
         name: mockItemPartial.name,
@@ -98,7 +123,7 @@ describe('card component', () => {
     });
 
     it('does not render description section when description is undefined', () => {
-      render(<Card item={mockItemPartial} />);
+      renderWithProvider(<Card item={mockItemPartial} />);
 
       expect(mockItemPartial.description).toBeUndefined();
       expect(screen.queryByText('Description:')).not.toBeInTheDocument();
@@ -109,7 +134,7 @@ describe('card component', () => {
     it('handles empty name without crashing', () => {
       const itemWithEmptyName = { ...mockItemFull, name: '' };
 
-      render(<Card item={itemWithEmptyName} />);
+      renderWithProvider(<Card item={itemWithEmptyName} />);
 
       expect(screen.getByRole('heading')).toBeInTheDocument();
     });

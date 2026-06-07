@@ -10,7 +10,7 @@
   padding-top: 6rem;
   border-radius: 1rem;
 
-  background-color: var(--color-gray-750);
+  background-color: var(--container-background);
 }
 
 .loader {
@@ -23,8 +23,8 @@
 .spinner {
   width: 4rem;
   height: 4rem;
-  border: 3px solid var(--color-gray-500);
-  border-top-color: var(--color-yellow-600);
+  border: 3px solid var(--border-light);
+  border-top-color: var(--accent-background);
   border-radius: 50%;
 
   animation: spin 1s linear infinite;
@@ -32,8 +32,8 @@
   @media (prefers-reduced-motion: reduce) {
     border: none;
     background: conic-gradient(
-      var(--color-yellow-600) 0deg 90deg,
-      var(--color-gray-500) 90deg 360deg
+      var(--accent-background) 0deg 90deg,
+      var(--border-light) 90deg 360deg
     );
     animation: none;
   }
@@ -41,7 +41,7 @@
 
 .text {
   font-size: 1.25rem;
-  color: var(--color-gray-400);
+  color: var(--text-muted);
 }
 
 @keyframes spin {

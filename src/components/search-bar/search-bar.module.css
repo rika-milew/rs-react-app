@@ -7,10 +7,10 @@
   height: 6rem;
   margin-bottom: 2rem;
   padding: 1.25rem;
-  border: 1px solid var(--color-gray-700);
+  border: 1px solid var(--card-background);
   border-radius: 1rem;
 
-  background-color: var(--color-gray-750);
+  background-color: var(--container-background);
   box-shadow: 0 8px 24px -12px hsl(220deg 60% 2% / 60%);
 
   @media (width <= 500px) {
@@ -28,21 +28,21 @@
   flex: 1 1 0%;
 
   padding: 1rem 0.75rem;
-  border: 1px solid var(--color-gray-700);
+  border: 1px solid var(--card-background);
   border-radius: 0.75rem;
 
   font-size: 1rem;
   line-height: 1.5rem;
-  color: var(--color-white);
+  color: var(--text-basic);
 
-  background-color: hsl(from var(--color-gray-700) h s l / var(--opacity-40));
+  background-color: hsl(from var(--card-background) h s l / var(--opacity-40));
   outline: 2px solid transparent;
   outline-offset: 2px;
 
   transition: outline-color var(--transition-default) var(--ease-in-cubic);
 
   &:focus {
-    outline: 2px solid var(--color-yellow-600);
+    outline: 2px solid var(--accent-background);
   }
 
   @media (width <= 500px) {

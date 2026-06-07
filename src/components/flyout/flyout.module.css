@@ -1,0 +1,41 @@
+.flyout {
+  position: sticky;
+  z-index: 50;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid var(--card-background);
+
+  background-color: var(--background);
+}
+
+.count,
+.download-error {
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-bold);
+  line-height: 1.25rem;
+  color: var(--text-basic);
+}
+
+.download-error {
+  font-size: 1rem;
+}
+
+.count span {
+  color: var(--accent-background);
+}
+
+.buttons {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+}

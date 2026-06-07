@@ -1,13 +1,14 @@
 import pLimit from 'p-limit';
-import { API_CONCURRENCY, ERROR_MESSAGES } from '@/constants/constants';
-import { getItems, getItemFull } from '@/services/api';
-import { ApiError } from '@/services/api-error';
 import {
+  API_CONCURRENCY,
+  ERROR_MESSAGES,
+  MAX_ITEMS,
   CARD_LIMIT,
   HTTP_STATUS,
   API_STATUS,
-  MAX_ITEMS,
 } from '@/constants/constants';
+import { getItems, getItemFull } from '@/services/api';
+import { ApiError } from '@/services/api-error';
 
 import type { PokemonWithDescription, ApiResult } from '@/types/api';
 

@@ -2,6 +2,7 @@ import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { tanstackRouter } from '@tanstack/router-plugin/vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import svgr from 'vite-plugin-svgr';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -12,6 +13,11 @@ export default defineConfig({
     }),
     tsconfigPaths(),
     react(),
+    svgr({
+      svgrOptions: {
+        icon: true,
+      },
+    }),
   ],
   base: '/',
   test: {

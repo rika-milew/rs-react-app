@@ -27,6 +27,7 @@ export type ApiStatus = (typeof API_STATUS)[keyof typeof API_STATUS];
 export const ROUTES = {
   HOME: '/',
   ABOUT: '/about',
+  LAYOUT: '/_layout',
   DETAILS: '/details',
   DETAIL: '/details/$detailId',
 } as const;

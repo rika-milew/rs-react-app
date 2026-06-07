@@ -1,22 +1,23 @@
 .card {
   cursor: pointer;
 
+  position: relative;
+
   overflow: hidden;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 
   padding: 1rem;
-  border: 1px solid var(--color-gray-700);
+  border: 1px solid var(--card-background);
   border-radius: 1rem;
 
   font-size: 0.875rem;
   font-weight: var(--font-weight-normal);
-  font-weight: 500;
   line-height: 1.25rem;
-  color: var(--color-gray-400);
+  color: var(--text-muted);
 
-  background-color: var(--color-gray-750);
+  background-color: var(--container-background);
   box-shadow: 0 8px 24px -12px hsl(220deg 60% 2% / 60%);
 
   transition: all var(--transition-default) var(--ease-in-cubic);
@@ -25,7 +26,7 @@
     &:hover {
       transform: scale(1.025);
       border: 1px solid
-        hsl(from var(--color-yellow-600) h s l / var(--opacity-50));
+        hsl(from var(--accent-background) h s l / var(--opacity-50));
     }
   }
 
@@ -33,7 +34,7 @@
     &:active {
       transform: scale(1.025);
       border: 1px solid
-        hsl(from var(--color-yellow-600) h s l / var(--opacity-50));
+        hsl(from var(--accent-background) h s l / var(--opacity-50));
     }
   }
 }
@@ -44,14 +45,14 @@
   @media (hover: hover) and (pointer: fine) {
     &:hover {
       transform: none;
-      border: 1px solid var(--color-gray-700);
+      border: 1px solid var(--card-background);
     }
   }
 
   @media (hover: none) {
     &:active {
       transform: none;
-      border: 1px solid var(--color-gray-700);
+      border: 1px solid var(--card-background);
     }
   }
 }
@@ -66,7 +67,7 @@
   font-size: 1rem;
   font-weight: 600;
   line-height: 1.5rem;
-  color: var(--color-white);
+  color: var(--text-basic);
   letter-spacing: -0.025em;
 }
 
@@ -99,7 +100,7 @@
   padding: 1rem;
   border-radius: 0.75rem;
 
-  background-color: hsl(from var(--color-gray-700) h s l / var(--opacity-40));
+  background-color: hsl(from var(--card-background) h s l / var(--opacity-40));
 }
 
 .image {
@@ -120,4 +121,56 @@
 
 .params-label {
   font-weight: var(--font-weight-bold);
+}
+
+.checkbox-container {
+  position: absolute;
+  z-index: 2;
+  top: 1.5rem;
+  right: 1.5rem;
+}
+
+.checkbox {
+  cursor: pointer;
+
+  position: relative;
+
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid var(--border-basic);
+  border-radius: 0.375rem;
+
+  appearance: none;
+  background-color: var(--card-background);
+
+  transition: all var(--transition-default) var(--ease-in-cubic);
+
+  &:checked {
+    border-color: var(--accent-background);
+    background-color: var(--accent-background);
+  }
+
+  &:checked::after {
+    content: '';
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -60%) rotate(45deg);
+
+    width: 0.4375rem;
+    height: 0.75rem;
+    border: solid var(--card-background);
+    border-width: 0 2px 2px 0;
+  }
+
+  &:hover {
+    border-color: var(--accent-background);
+    box-shadow: 0 0 0 2px hsl(from var(--accent-background) h s l / 20%);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--accent-background);
+    outline-offset: 2px;
+  }
 }

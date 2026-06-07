@@ -60,10 +60,23 @@
   background: none;
 
   transition: background-color var(--transition-default) var(--ease-in-cubic);
-}
 
-.close-button:hover {
-  color: var(--color-yellow-600);
+  &:hover {
+    color: var(--accent-background);
+  }
+
+  &:active {
+    color: var(--accent-background);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--text-muted);
+    outline-offset: 2px;
+  }
+
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
 }
 
 .loader-overlay {

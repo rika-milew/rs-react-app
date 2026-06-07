@@ -1,10 +1,38 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { Layout } from './layout';
+import { Provider } from 'react-redux';
+import { configureStore, type Store } from '@reduxjs/toolkit';
+import type { ReactElement } from 'react';
+import selectedItemsReducer from '@/store/slice';
+
+vi.mock('@/components/theme-toggle/theme-toggle', () => ({
+  ThemeToggle: () => <button>Toggle theme</button>,
+}));
+
+type RootState = {
+  selectedItems: ReturnType<typeof selectedItemsReducer>;
+};
+
+const createMockStore = (): Store<RootState> => {
+  return configureStore<RootState>({
+    reducer: {
+      selectedItems: selectedItemsReducer,
+    },
+  });
+};
 
 describe('layout component', () => {
+  const renderWithProvider = (ui: ReactElement) => {
+    const store = createMockStore();
+    return {
+      ...render(<Provider store={store}>{ui}</Provider>),
+      store,
+    };
+  };
+
   const renderLayout = () =>
-    render(
+    renderWithProvider(
       <Layout>
         <div>Content</div>
       </Layout>,

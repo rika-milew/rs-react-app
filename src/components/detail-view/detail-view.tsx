@@ -1,12 +1,13 @@
 import classNames from 'classnames/bind';
-import { useEffect } from 'react';
-import { useDetailData } from '@/hooks/use-detail-data';
-import { useDetailNavigation } from '@/hooks/use-detail-navigation';
+import { useEffect, useState, useCallback } from 'react';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
+import { API_STATUS, ERROR_MESSAGES, ROUTES } from '@/constants/constants';
 import { ErrorState } from '@/components/error-state/error-state';
-import { API_STATUS, ERROR_MESSAGES } from '@/constants/constants';
 import styles from './detail-view.module.css';
+import type { DetailResult } from '@/services/detail-service';
+import { getDetailData } from '@/services/detail-service';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 
 const cx = classNames.bind(styles);
 
@@ -14,9 +15,36 @@ type DetailViewProps = {
   detailId: string;
 };
 
+type ViewState = DetailResult;
+
 export function DetailView({ detailId }: DetailViewProps) {
-  const result = useDetailData(detailId);
-  const { closeDetailView } = useDetailNavigation();
+  const [result, setResult] = useState<ViewState>({
+    status: API_STATUS.LOADING,
+  });
+  const [refetch, setRefetch] = useState(0);
+  const navigate = useNavigate();
+  const search = useSearch({ from: ROUTES.LAYOUT });
+
+  const closeDetailView = useCallback(() => {
+    void navigate({
+      to: '/',
+      search,
+    });
+  }, [navigate, search]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    void getDetailData(detailId).then((data) => {
+      if (!cancelled) {
+        setResult(data);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [detailId, refetch]);
 
   useEffect(() => {
     const handleKeyDown = (event_: KeyboardEvent) => {
@@ -45,52 +73,55 @@ export function DetailView({ detailId }: DetailViewProps) {
     };
   }, [closeDetailView]);
 
-  if (!result) {
-    return null;
-  }
+  const handleReload = useCallback(() => {
+    setRefetch((previous) => previous + 1);
+  }, []);
 
-  if (result.status === API_STATUS.NOT_FOUND) {
+  if (
+    result.status === API_STATUS.NOT_FOUND ||
+    result.status === API_STATUS.ERROR
+  ) {
     return (
-      <ErrorState
-        message={ERROR_MESSAGES.NOTFOUND}
-        onReload={() => {
-          globalThis.location.reload();
-        }}
-      />
+      <aside data-detail className={cx('detail-view')}>
+        <ErrorState message={getErrorMessage(result)} onReload={handleReload} />
+      </aside>
     );
   }
-
-  if (result.status === API_STATUS.ERROR) {
-    return (
-      <ErrorState
-        message={result.message}
-        onReload={() => {
-          globalThis.location.reload();
-        }}
-      />
-    );
-  }
-
   return (
     <aside data-detail className={cx('detail-view')}>
-      <div className={cx('header')}>
-        <h2 className={cx('title')}>Pokémon Details</h2>
-        <button
-          className={cx('close-button')}
-          onClick={closeDetailView}
-          aria-label="Close details"
-        >
-          ✕
-        </button>
-      </div>
-      {result.status === API_STATUS.LOADING && (
+      <DetailHeader onClose={closeDetailView} />
+      {result.status === API_STATUS.LOADING ? (
         <div className={cx('loader-overlay')}>
           <Loader />
         </div>
-      )}
-      {result.status === API_STATUS.SUCCESS && (
+      ) : (
         <Card item={result.data} variant="detailed" />
       )}
     </aside>
   );
+}
+
+function DetailHeader({ onClose }: { onClose: () => void }) {
+  return (
+    <div className={cx('header')}>
+      <h2 className={cx('title')}>Pokémon Details</h2>
+      <button
+        className={cx('close-button')}
+        onClick={onClose}
+        aria-label="Close details"
+      >
+        ✕
+      </button>
+    </div>
+  );
+}
+
+function getErrorMessage(result: ViewState): string {
+  if (result.status === API_STATUS.NOT_FOUND) {
+    return ERROR_MESSAGES.NOTFOUND;
+  }
+  if (result.status === API_STATUS.ERROR) {
+    return result.message;
+  }
+  return ERROR_MESSAGES.DEFAULT;
 }

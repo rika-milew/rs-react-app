@@ -5,7 +5,22 @@ import userEvent from '@testing-library/user-event';
 import { mockItemFull, mockItemPartial } from '@/test-utils/api-mock';
 import { useSearch, useNavigate } from '@tanstack/react-router';
 import { useDataList } from '@/hooks/use-data-list';
-import { useDetailNavigation } from '@/hooks/use-detail-navigation';
+import { Provider } from 'react-redux';
+import type { ReactElement } from 'react';
+import { configureStore, type Store } from '@reduxjs/toolkit';
+import selectedItemsReducer from '@/store/slice';
+
+type RootState = {
+  selectedItems: ReturnType<typeof selectedItemsReducer>;
+};
+
+const createMockStore = (): Store<RootState> => {
+  return configureStore<RootState>({
+    reducer: {
+      selectedItems: selectedItemsReducer,
+    },
+  });
+};
 
 vi.mock('@tanstack/react-router', () => ({
   useSearch: vi.fn(),
@@ -16,23 +31,22 @@ vi.mock('@/hooks/use-data-list', () => ({
   useDataList: vi.fn(),
 }));
 
-vi.mock('@/hooks/use-detail-navigation', () => ({
-  useDetailNavigation: vi.fn(),
-}));
-
 describe('CardList component', () => {
   const mockNavigate = vi.fn();
-  const mockOpenDetailView = vi.fn();
   const mockLoadData = vi.fn();
+
+  const renderWithProvider = (ui: ReactElement) => {
+    const store = createMockStore();
+    return {
+      ...render(<Provider store={store}>{ui}</Provider>),
+      store,
+    };
+  };
 
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(useSearch).mockReturnValue({ page: 1 });
     vi.mocked(useNavigate).mockReturnValue(mockNavigate);
-    vi.mocked(useDetailNavigation).mockReturnValue({
-      openDetailView: mockOpenDetailView,
-      closeDetailView: vi.fn(),
-    });
 
     vi.mocked(useDataList).mockReturnValue({
       data: [],
@@ -44,7 +58,7 @@ describe('CardList component', () => {
   });
 
   it('renders loading state initially', () => {
-    render(<CardList search="" />);
+    renderWithProvider(<CardList search="" />);
 
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
   });
@@ -57,7 +71,8 @@ describe('CardList component', () => {
       error: null,
       loadData: mockLoadData,
     });
-    render(<CardList search="" />);
+
+    renderWithProvider(<CardList search="" />);
 
     await waitFor(() => {
       expect(screen.getByRole('button', { name: /next/i })).toBeInTheDocument();
@@ -74,7 +89,7 @@ describe('CardList component', () => {
       loadData: mockLoadData,
     });
 
-    render(<CardList search="venusaur" />);
+    renderWithProvider(<CardList search="venusaur" />);
 
     expect(
       screen.queryByRole('button', { name: /next/i }),
@@ -94,18 +109,12 @@ describe('CardList component', () => {
       loadData: mockLoadData,
     });
 
-    render(<CardList search="" />);
-
-    const image = await screen.findByRole('img', {
-      name: /bulbasaur/i,
-    });
+    renderWithProvider(<CardList search="" />);
 
     expect(await screen.findByText(/bulbasaur/i)).toBeInTheDocument();
     expect(
       screen.getByText(/A strange seed was planted on its back at birth./i),
     ).toBeInTheDocument();
-
-    expect(image).toBeInTheDocument();
   });
 
   it('renders correct number of cards', async () => {
@@ -117,7 +126,7 @@ describe('CardList component', () => {
       loadData: mockLoadData,
     });
 
-    render(<CardList search="" />);
+    renderWithProvider(<CardList search="" />);
 
     expect(await screen.findByText(/bulbasaur/i)).toBeInTheDocument();
     expect(screen.getByText(/ivysaur/i)).toBeInTheDocument();
@@ -135,7 +144,7 @@ describe('CardList component', () => {
       loadData: mockLoadData,
     });
 
-    render(<CardList search="unknown" />);
+    renderWithProvider(<CardList search="unknown" />);
 
     expect(await screen.findByText(/pokemon not found/i)).toBeInTheDocument();
   });
@@ -148,7 +157,8 @@ describe('CardList component', () => {
       error: null,
       loadData: mockLoadData,
     });
-    render(<CardList search="" />);
+
+    renderWithProvider(<CardList search="" />);
 
     const cards = screen.queryAllByRole('img');
 
@@ -164,7 +174,7 @@ describe('CardList component', () => {
       loadData: mockLoadData,
     });
 
-    render(<CardList search="" />);
+    renderWithProvider(<CardList search="" />);
 
     expect(await screen.findByText(/server error/i)).toBeInTheDocument();
   });
@@ -178,7 +188,7 @@ describe('CardList component', () => {
       loadData: mockLoadData,
     });
 
-    render(<CardList search="" />);
+    renderWithProvider(<CardList search="" />);
 
     expect(
       await screen.findByText(/something went wrong/i),
@@ -193,7 +203,8 @@ describe('CardList component', () => {
       error: null,
       loadData: mockLoadData,
     });
-    render(<CardList search="bulbasaur" />);
+
+    renderWithProvider(<CardList search="bulbasaur" />);
 
     expect(mockLoadData).toHaveBeenCalledWith('bulbasaur', 0);
   });
@@ -209,7 +220,7 @@ describe('CardList component', () => {
       loadData: mockLoadData,
     });
 
-    const { rerender } = render(<CardList search="bulbasaur" />);
+    const { rerender } = renderWithProvider(<CardList search="bulbasaur" />);
     expect(mockLoadData).toHaveBeenCalledWith('bulbasaur', 2);
     vi.mocked(useSearch).mockReturnValue({ page: 1 });
     rerender(<CardList search="charmander" />);
@@ -228,7 +239,7 @@ describe('CardList component', () => {
       loadData: mockLoadData,
     });
 
-    render(<CardList search="" />);
+    renderWithProvider(<CardList search="" />);
 
     const nextButton = await screen.findByRole('button', { name: /next/i });
 
@@ -254,7 +265,7 @@ describe('CardList component', () => {
       loadData: mockLoadData,
     });
 
-    render(<CardList search="" />);
+    renderWithProvider(<CardList search="" />);
 
     const nextButton = await screen.findByRole('button', { name: /next/i });
     await user.click(nextButton);
@@ -281,7 +292,7 @@ describe('CardList component', () => {
       loadData: mockLoadData,
     });
 
-    render(<CardList search="" />);
+    renderWithProvider(<CardList search="" />);
 
     const previousButton = await screen.findByRole('button', { name: /prev/i });
     await user.click(previousButton);

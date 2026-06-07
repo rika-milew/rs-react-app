@@ -4,9 +4,9 @@
 
   min-height: 100vh;
 
-  color: var(--color-white);
+  color: var(--text-basic);
 
-  background-color: var(--color-gray-800);
+  background-color: var(--background);
 }
 
 .main {

@@ -1,13 +1,12 @@
 import classNames from 'classnames/bind';
-import { useSearch } from '@tanstack/react-router';
+import { useSearch, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { useDataList } from '@/hooks/use-data-list';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
 import { Pagination } from '@/components/pagination/pagination';
+import { ERROR_MESSAGES, ROUTES } from '@/constants/constants';
 import { ErrorState } from '@/components/error-state/error-state';
-import { useDetailNavigation } from '@/hooks/use-detail-navigation';
-import { ERROR_MESSAGES } from '@/constants/constants';
 import styles from './card-list.module.css';
 
 const cx = classNames.bind(styles);
@@ -18,8 +17,17 @@ type CardListProps = {
 
 export function CardList({ search }: CardListProps) {
   const { data, totalPages, status, error, loadData } = useDataList();
-  const { openDetailView } = useDetailNavigation();
-  const { page = 1 } = useSearch({ from: '/_layout' });
+  const searchParams = useSearch({ from: ROUTES.LAYOUT });
+  const { page = 1 } = searchParams;
+  const navigate = useNavigate();
+
+  const openDetailView = (id: number) => {
+    void navigate({
+      to: ROUTES.DETAIL,
+      params: { detailId: String(id) },
+      search: searchParams,
+    });
+  };
 
   useEffect(() => {
     void loadData(search, page - 1);
@@ -53,7 +61,7 @@ export function CardList({ search }: CardListProps) {
   return (
     <section className={cx('section')}>
       <h2 className={cx('title')}>Results</h2>
-      {status === 'loading' && <Loader />}
+      {isLoading && <Loader />}
       <div className={cx('card-container')}>
         {data.map((card) => (
           <Card

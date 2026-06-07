@@ -2,6 +2,22 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { ErrorBoundary } from './error-boundary';
 import userEvent from '@testing-library/user-event';
+import { Provider } from 'react-redux';
+import { configureStore, type Store } from '@reduxjs/toolkit';
+import type { ReactElement } from 'react';
+import selectedItemsReducer from '@/store/slice';
+
+type RootState = {
+  selectedItems: ReturnType<typeof selectedItemsReducer>;
+};
+
+const createMockStore = (): Store<RootState> => {
+  return configureStore<RootState>({
+    reducer: {
+      selectedItems: selectedItemsReducer,
+    },
+  });
+};
 
 const TestError = ({ isError }: { isError: boolean }) => {
   if (isError) {
@@ -10,7 +26,19 @@ const TestError = ({ isError }: { isError: boolean }) => {
   return <div>Expected content</div>;
 };
 
+vi.mock('@/components/theme-toggle/theme-toggle', () => ({
+  ThemeToggle: () => <div>Toggle theme</div>,
+}));
+
 describe('ErrorBoundary component', () => {
+  const renderWithProvider = (ui: ReactElement) => {
+    const store = createMockStore();
+    return {
+      ...render(<Provider store={store}>{ui}</Provider>),
+      store,
+    };
+  };
+
   beforeEach(() => {
     vi.spyOn(console, 'error').mockReturnValue(undefined);
   });
@@ -20,7 +48,7 @@ describe('ErrorBoundary component', () => {
   });
 
   it('renders children components when no error occurs', () => {
-    render(
+    renderWithProvider(
       <ErrorBoundary>
         <div>App Content</div>
       </ErrorBoundary>,
@@ -30,7 +58,7 @@ describe('ErrorBoundary component', () => {
   });
 
   it('displays error message when child component throws an error', () => {
-    render(
+    renderWithProvider(
       <ErrorBoundary>
         <TestError isError={true} />
       </ErrorBoundary>,
@@ -43,7 +71,7 @@ describe('ErrorBoundary component', () => {
   });
 
   it('renders try again button in error state', () => {
-    render(
+    renderWithProvider(
       <ErrorBoundary>
         <TestError isError={true} />
       </ErrorBoundary>,
@@ -54,7 +82,7 @@ describe('ErrorBoundary component', () => {
   });
 
   it('initial state has hasError: false', () => {
-    render(
+    renderWithProvider(
       <ErrorBoundary>
         <div>App Content</div>
       </ErrorBoundary>,
@@ -67,7 +95,7 @@ describe('ErrorBoundary component', () => {
   it('resets error state after clicking the reset button', async () => {
     const user = userEvent.setup();
 
-    render(
+    renderWithProvider(
       <ErrorBoundary>
         <TestError isError={true} />
       </ErrorBoundary>,
