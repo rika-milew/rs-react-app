@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
-import { useSearch } from '@tanstack/react-router';
 import { useCallback, useMemo } from 'react';
+import { useSearch, useNavigate } from '@tanstack/react-router';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
 import { Pagination } from '@/components/pagination/pagination';
@@ -8,7 +8,6 @@ import { Button } from '@/components/button/button';
 import { ERROR_MESSAGES, ROUTES } from '@/constants/constants';
 import { ErrorState } from '@/components/error-state/error-state';
 import styles from './card-list.module.css';
-import { useNavigate } from '@tanstack/react-router';
 import { apiEndpoints } from '@/store/api/api-endpoints';
 import {
   getCardListState,
@@ -27,7 +26,7 @@ const normalize = (value: string): string => value.trim().toLowerCase();
 export function CardList({ search }: CardListProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const searchParams = useSearch({ from: '/_layout' });
+  const searchParams = useSearch({ from: ROUTES.LAYOUT });
   const { page = 1 } = searchParams;
 
   const normalizedSearch = normalize(search);

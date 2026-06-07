@@ -1,4 +1,5 @@
-import { API_BASE_URL } from '@/constants/constants';
+import pLimit from 'p-limit';
+import { API_BASE_URL, API_CONCURRENCY } from '@/constants/constants';
 import type {
   Pokemon,
   PokemonListResponse,
@@ -96,19 +97,28 @@ export const getItemFull = async (
   identifier: string,
 ): Promise<PokemonWithDescription> => {
   const item = await getItemByName(identifier);
+  let description = '';
 
-  const speciesUrl = item.species.url;
-
-  const species = await getItemSpecies(speciesUrl);
-
-  const entries = species.flavor_text_entries;
-
-  const entry = entries.find((item) => item.language.name === 'en');
-
-  const description = entry ? entry.flavor_text.replaceAll(/\f|\n/g, ' ') : '';
+  try {
+    const speciesUrl = item.species?.url;
+    if (speciesUrl) {
+      const species = await getItemSpecies(speciesUrl);
+      const entries = species.flavor_text_entries;
+      const entry = entries.find((item) => item.language.name === 'en');
+      description = entry ? entry.flavor_text.replaceAll(/\f|\n/g, ' ') : '';
+    }
+  } catch (error) {
+    console.error(`Failed to fetch species for ${identifier}:`, error);
+  }
 
   return {
-    ...item,
+    id: item.id,
+    name: item.name,
+    sprites: item.sprites,
+    height: item.height,
+    weight: item.weight,
+    types: item.types,
+    abilities: item.abilities,
     description,
   };
 };
@@ -116,14 +126,18 @@ export const getItemFull = async (
 export const getItemsById = async (
   selectedIds: string[],
 ): Promise<PokemonWithDescription[]> => {
-  const promises = selectedIds.map(async (id) => {
-    try {
-      return await getItemFull(id);
-    } catch (error) {
-      console.error(`Failed to fetch pokemon ${id}:`, error);
-      return null;
-    }
-  });
+  const limit = pLimit(API_CONCURRENCY);
+
+  const promises = selectedIds.map((id) =>
+    limit(async () => {
+      try {
+        return await getItemFull(id);
+      } catch (error) {
+        console.error(`Failed to fetch pokemon ${id}:`, error);
+        return null;
+      }
+    }),
+  );
 
   const results = await Promise.all(promises);
 

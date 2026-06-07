@@ -8,8 +8,6 @@
   width: 2.5rem;
   height: 2.5rem;
   padding: 0.5rem;
-
-  transition: all var(--transition-default) var(--ease-in-cubic);
 }
 
 .icon-container {
@@ -32,7 +30,10 @@
 
   opacity: 0;
 
-  transition: all var(--transition-default) var(--ease-in-cubic);
+  transition:
+    transform var(--transition-default) var(--ease-in-cubic),
+    opacity var(--transition-default) var(--ease-in-cubic),
+    filter var(--transition-default) var(--ease-in-cubic);
 }
 
 @keyframes pulse {
@@ -53,6 +54,12 @@
   transform: scale(1) rotate(0deg);
   opacity: 1;
   animation: pulse var(--transition-default) var(--ease-in-cubic);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .visible {
+    animation: none;
+  }
 }
 
 .theme-toggle[data-theme='dark'] .icon {

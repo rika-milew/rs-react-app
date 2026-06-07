@@ -3,12 +3,14 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { ThemeToggle } from './theme-toggle';
 
-const toggleThemeMock = vi.fn();
-let currentTheme = 'dark';
+const { toggleThemeMock, currentTheme } = vi.hoisted(() => ({
+  toggleThemeMock: vi.fn(),
+  currentTheme: { value: 'dark' },
+}));
 
 vi.mock('@/theme-context/theme-context', () => ({
   useTheme: () => ({
-    theme: currentTheme,
+    theme: currentTheme.value,
     toggleTheme: toggleThemeMock,
   }),
 }));
@@ -29,7 +31,7 @@ vi.mock('@/assets/icons', () => ({
 describe('ThemeToggle component', () => {
   beforeEach(() => {
     toggleThemeMock.mockClear();
-    currentTheme = 'dark';
+    currentTheme.value = 'dark';
   });
 
   it('renders icon components', () => {
@@ -51,11 +53,20 @@ describe('ThemeToggle component', () => {
     expect(toggleThemeMock).toHaveBeenCalledTimes(1);
   });
 
-  it('shows correct aria label based on chosen theme', () => {
+  it('shows correct aria label for dark theme', () => {
     render(<ThemeToggle />);
 
     expect(
       screen.getByRole('button', { name: /switch to the light mode/i }),
+    ).toBeInTheDocument();
+  });
+
+  it('shows correct aria label for light theme', () => {
+    currentTheme.value = 'light';
+    render(<ThemeToggle />);
+
+    expect(
+      screen.getByRole('button', { name: /switch to the dark mode/i }),
     ).toBeInTheDocument();
   });
 });

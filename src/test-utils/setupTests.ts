@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import { afterEach, beforeEach, vi } from 'vitest';
-import type { ReactElement } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import { createElement } from 'react';
 
 vi.mock('@tanstack/react-router', async () => {
@@ -8,7 +8,7 @@ vi.mock('@tanstack/react-router', async () => {
 
   return {
     ...actual,
-    Link: ({ children }: { children: React.ReactNode }): ReactElement =>
+    Link: ({ children }: { children: ReactNode }): ReactElement =>
       createElement('a', null, children),
   };
 });

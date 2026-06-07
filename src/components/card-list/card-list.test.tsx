@@ -8,6 +8,7 @@ import type { PokemonWithDescription } from '@/types/api';
 import { Provider } from 'react-redux';
 import type { EnhancedStore } from '@reduxjs/toolkit';
 import { configureStore } from '@reduxjs/toolkit';
+import type { ReactElement } from 'react';
 import userEvent from '@testing-library/user-event';
 
 type MockRootState = {
@@ -21,7 +22,7 @@ const createMockStore = () =>
     },
   });
 const renderWithProvider = (
-  ui: React.ReactElement,
+  ui: ReactElement,
 ): ReturnType<typeof render> & { store: EnhancedStore<MockRootState> } => {
   const testStore = createMockStore();
   const utilities = render(<Provider store={testStore}>{ui}</Provider>);

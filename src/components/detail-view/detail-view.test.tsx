@@ -5,6 +5,7 @@ import { API_STATUS, ERROR_MESSAGES } from '@/constants/constants';
 import type { PokemonWithDescription } from '@/types/api';
 import { mockItemFull } from '@/test-utils/api-mock';
 import userEvent from '@testing-library/user-event';
+import type { ReactElement } from 'react';
 import { useGetDetailQuery } from '@/store/api/api-endpoints';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
@@ -21,7 +22,7 @@ const createMockStore = () =>
     },
   });
 const renderWithProvider = (
-  ui: React.ReactElement,
+  ui: ReactElement,
 ): ReturnType<typeof render> & { store: EnhancedStore<MockRootState> } => {
   const testStore = createMockStore();
   const utilities = render(<Provider store={testStore}>{ui}</Provider>);

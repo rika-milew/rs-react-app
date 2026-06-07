@@ -4,6 +4,7 @@ import { ErrorBoundary } from './error-boundary';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
+import type { ReactElement } from 'react';
 import { apiSlice } from '@/store/api/api-slice';
 
 const EMPTY_STORE: string[] = [];
@@ -30,7 +31,7 @@ vi.mock('@/components/theme-toggle/theme-toggle', () => ({
 }));
 
 describe('ErrorBoundary component', () => {
-  const renderWithProvider = (ui: React.ReactElement) => {
+  const renderWithProvider = (ui: ReactElement) => {
     const store = createMockStore();
     return {
       ...render(<Provider store={store}>{ui}</Provider>),

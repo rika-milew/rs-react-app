@@ -7,14 +7,18 @@ describe('downloadCSV', () => {
   let revokeObjectURLSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(() => {
+    vi.useFakeTimers();
+
     vi.spyOn(globalThis, 'Blob').mockImplementation(
       function (content, options) {
         return { content, options };
       },
     );
 
-    globalThis.URL.createObjectURL = vi.fn(() => 'blob:url');
-    globalThis.URL.revokeObjectURL = vi.fn();
+    createObjectURLSpy = vi
+      .spyOn(URL, 'createObjectURL')
+      .mockReturnValue('blob:url');
+    revokeObjectURLSpy = vi.spyOn(URL, 'revokeObjectURL');
 
     const linkClick = vi.fn<() => void>();
     const linkRemove = vi.fn<() => void>();
@@ -26,9 +30,10 @@ describe('downloadCSV', () => {
 
     vi.spyOn(document, 'createElement').mockReturnValue(mockLink);
     vi.spyOn(document.body, 'append').mockImplementation(() => undefined);
+  });
 
-    createObjectURLSpy = vi.spyOn(URL, 'createObjectURL');
-    revokeObjectURLSpy = vi.spyOn(URL, 'revokeObjectURL');
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it('does not download file when array is empty', () => {
@@ -40,6 +45,7 @@ describe('downloadCSV', () => {
     downloadCSV([mockItemFull]);
 
     expect(createObjectURLSpy).toHaveBeenCalled();
+    vi.advanceTimersByTime(100);
     expect(revokeObjectURLSpy).toHaveBeenCalledWith('blob:url');
   });
 
@@ -47,6 +53,8 @@ describe('downloadCSV', () => {
     downloadCSV([mockItemFull, mockItemPartial]);
 
     expect(createObjectURLSpy).toHaveBeenCalled();
+
+    vi.advanceTimersByTime(100);
     expect(revokeObjectURLSpy).toHaveBeenCalledWith('blob:url');
   });
 });

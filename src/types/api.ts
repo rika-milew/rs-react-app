@@ -40,7 +40,7 @@ export type Pokemon = {
     };
   }[];
 
-  species: {
+  species?: {
     name: string;
     url: string;
   };

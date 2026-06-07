@@ -1,5 +1,6 @@
 import classNames from 'classnames/bind';
 import { useState } from 'react';
+import type { KeyboardEvent, ChangeEvent } from 'react';
 import { Button } from '@/components/button/button';
 import styles from './search-bar.module.css';
 
@@ -13,7 +14,7 @@ type SearchBarProps = {
 export const SearchBar = ({ value = '', onSearch }: SearchBarProps) => {
   const [query, setQuery] = useState(value);
 
-  const handleChange = (event_: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event_: ChangeEvent<HTMLInputElement>) => {
     setQuery(event_.target.value);
   };
 
@@ -24,7 +25,7 @@ export const SearchBar = ({ value = '', onSearch }: SearchBarProps) => {
     onSearch(trimmedQuery);
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
       handleSearch();
     }

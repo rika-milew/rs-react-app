@@ -3,6 +3,7 @@ import { describe, it, expect } from 'vitest';
 import { Card, ID_LENGTH } from './card';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
+import type { ReactElement } from 'react';
 import { apiSlice } from '@/store/api/api-slice';
 import {
   mockItemFull,
@@ -23,7 +24,7 @@ const createMockStore = () => {
 };
 
 describe('card component', () => {
-  const renderWithProvider = (ui: React.ReactElement) => {
+  const renderWithProvider = (ui: ReactElement) => {
     const store = createMockStore();
     return {
       ...render(<Provider store={store}>{ui}</Provider>),

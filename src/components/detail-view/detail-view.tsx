@@ -2,12 +2,18 @@ import classNames from 'classnames/bind';
 import { useEffect, useCallback } from 'react';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
-import { API_STATUS, ERROR_MESSAGES, HTTP_STATUS } from '@/constants/constants';
+import {
+  API_STATUS,
+  ERROR_MESSAGES,
+  HTTP_STATUS,
+  ROUTES,
+} from '@/constants/constants';
 import { ErrorState } from '@/components/error-state/error-state';
 import { Button } from '@/components/button/button';
 import styles from './detail-view.module.css';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { apiEndpoints, useGetDetailQuery } from '@/store/api/api-endpoints';
+import type { ReactNode } from 'react';
 import { useDispatch } from 'react-redux';
 import { isFetchBaseQueryError, isSerializedError } from '@/types/type-guards';
 
@@ -28,7 +34,7 @@ export function DetailView({ detailId }: DetailViewProps) {
     error,
   } = useGetDetailQuery(detailId);
 
-  const search = useSearch({ from: '/_layout' });
+  const search = useSearch({ from: ROUTES.LAYOUT });
 
   const handleRefresh = useCallback(() => {
     dispatch(
@@ -119,7 +125,7 @@ function DetailLayout({
   children,
 }: {
   closeDetailView: () => void;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <aside data-detail className={cx('detail-view')}>

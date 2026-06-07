@@ -5,6 +5,7 @@ import { cardConfig } from './card.config';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '@/store';
 import { toggleItem } from '@/store/slice';
+import type { MouseEvent, KeyboardEvent, ChangeEvent } from 'react';
 import styles from './card.module.css';
 
 const cx = classNames.bind(styles);
@@ -49,7 +50,7 @@ export function Card({ item, variant = 'detailed', onClick }: CardProps) {
       (option.visible === 'always' || isDetailed) && option.condition !== false,
   );
 
-  const handleClick = (event: React.MouseEvent | React.KeyboardEvent) => {
+  const handleClick = (event: MouseEvent | KeyboardEvent) => {
     if (
       event.target instanceof HTMLElement &&
       event.target.closest('[data-checkbox]')
@@ -66,6 +67,12 @@ export function Card({ item, variant = 'detailed', onClick }: CardProps) {
       onClick={handleClick}
       onKeyDown={(event_) => {
         if (event_.key === 'Enter' || event_.key === ' ') {
+          if (
+            event_.target instanceof HTMLElement &&
+            event_.target.closest('[data-checkbox]')
+          ) {
+            return;
+          }
           event_.preventDefault();
           handleClick(event_);
         }
@@ -109,11 +116,7 @@ type CardOptionProps = {
   variant?: 'inline' | 'block';
 };
 
-export function CardOption({
-  label,
-  value,
-  variant = 'block',
-}: CardOptionProps) {
+function CardOption({ label, value, variant = 'block' }: CardOptionProps) {
   if (variant === 'inline') {
     return (
       <p className={cx('card-option', 'inline')}>
@@ -135,14 +138,13 @@ type CheckboxProps = {
   name: string;
 };
 
-export function Checkbox({ id, name }: CheckboxProps) {
+function Checkbox({ id, name }: CheckboxProps) {
   const dispatch = useDispatch();
-  const selectedItems = useSelector(
-    (state: RootState) => state.selectedItems.selectedItems,
+  const isSelectedItem = useSelector((state: RootState) =>
+    state.selectedItems.selectedItems.includes(id.toString()),
   );
-  const isSelectedItem = selectedItems.includes(id.toString());
 
-  const handleCheckboxClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCheckboxClick = (event: ChangeEvent<HTMLInputElement>) => {
     event.stopPropagation();
     dispatch(toggleItem(id.toString()));
   };
