@@ -5,8 +5,8 @@ import {
   isFirstLetterUppercase,
   isValidEmail,
   isValidCountry,
-} from '@/utils/vaidate-form-fields';
-import { isValidImageType } from '@/utils/vaidate-form-fields';
+} from '@/utils/validate-form-fields';
+import { isValidImageType } from '@/utils/validate-form-fields';
 
 export const validationSchema = object({
   name: string()
