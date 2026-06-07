@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import type { ReactNode } from 'react';
+import type { ReactNode, MouseEvent } from 'react';
 import styles from './modal.module.css';
 
 import { useEffect, useRef } from 'react';
@@ -33,7 +33,7 @@ export function ModalContent({ onClose, children }: ModalContentProps) {
     };
   }, [onClose]);
 
-  const handleOverlayMouseDown = (event: React.MouseEvent) => {
+  const handleOverlayMouseDown = (event: MouseEvent) => {
     if (event.target === overlayRef.current) {
       onClose();
     }

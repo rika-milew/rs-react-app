@@ -1,5 +1,6 @@
 import classNames from 'classnames/bind';
 import { useState, useRef, useEffect } from 'react';
+import type { ChangeEvent } from 'react';
 import { useCountriesStore } from '@/store/use-countries-store';
 import styles from './country-autocomplete.module.css';
 
@@ -39,7 +40,7 @@ export function CountryAutocomplete({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInput = (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
     setList(true);
     onChange?.(event.target.value);
