@@ -1,5 +1,4 @@
 import classNames from 'classnames/bind';
-import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '@/store';
 import { clearAllItems } from '@/store/slice';
@@ -16,8 +15,7 @@ export function Flyout() {
     (state: RootState) => state.selectedItems.selectedItems,
   );
   const count = selectedItems.length;
-  const [downloadItems, { isLoading }] = useDownloadMutation();
-  const [downloadError, setDownloadError] = useState<string | null>(null);
+  const [downloadItems, { isLoading, error }] = useDownloadMutation();
 
   if (count === 0) {
     return null;
@@ -25,15 +23,12 @@ export function Flyout() {
 
   const handleClearAll = () => {
     dispatch(clearAllItems());
-    setDownloadError(null);
   };
 
   const handleDownload = () => {
     if (isLoading) {
       return;
     }
-
-    setDownloadError(null);
 
     void downloadItems(selectedItems)
       .unwrap()
@@ -43,7 +38,7 @@ export function Flyout() {
         }
       })
       .catch(() => {
-        setDownloadError('Failed to download CSV');
+        console.error('Failed to download CSV:', error);
       });
   };
 
@@ -56,9 +51,9 @@ export function Flyout() {
           {count} Item{count === 1 ? '' : 's'}
         </span>
       </span>
-      {downloadError && (
+      {error && (
         <p className={cx('download-error')} role="alert">
-          {downloadError}
+          Failed to download CSV
         </p>
       )}
       <div className={cx('buttons')}>
