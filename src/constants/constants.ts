@@ -71,15 +71,6 @@ export const COUNTRIES: string[] = [
 export const PASSWORD_VALIDATION = {
   MIN_LENGTH: 6,
   TOTAL_RULES: 5,
-  STRENGTH_RULES: {
-    STRONG: 4,
-    MEDIUM: 3,
-  },
-  STRENGTH: {
-    WEAK: 'weak' as const,
-    MEDIUM: 'medium' as const,
-    STRONG: 'strong' as const,
-  },
   PATTERNS: {
     uppercaseLetters: /[A-Z]/,
     lowercaseLetters: /[a-z]/,

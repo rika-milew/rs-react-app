@@ -6,7 +6,7 @@ import type { FormValues } from '@/types/form-types';
 import { ControlledFormFields } from './form-fields/controlled-form-fields';
 import { DEFAULT_FORM_VALUES } from '@/constants/constants';
 import { validationSchema } from '@/schemas/validation-schemas';
-import { convertImage } from '@/utils/validate-image';
+import { convertImage } from '@/utils/convert-image';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect } from 'react';
 import type { SubmitEvent } from 'react';

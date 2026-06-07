@@ -1,5 +1,11 @@
 import { COUNTRIES } from '@/constants/constants';
 
+type AllowedImageType = 'image/jpeg' | 'image/png';
+
+export const isValidImageType = (type: string): type is AllowedImageType => {
+  return type === 'image/jpeg' || type === 'image/png';
+};
+
 export const isValidEmail = (email: string): boolean => {
   if (!email) {
     return false;

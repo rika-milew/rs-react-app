@@ -1,6 +1,6 @@
-import './styles/index.css';
 import { Layout } from '@/components/layout/layout';
 import { HomePage } from '@/pages/home/home-page';
+import './styles/index.css';
 
 function App() {
   return (

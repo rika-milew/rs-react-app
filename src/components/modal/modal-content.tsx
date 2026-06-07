@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
-import styles from './modal.module.css';
 import type { ReactNode } from 'react';
+import styles from './modal.module.css';
 
 import { useEffect, useRef } from 'react';
 

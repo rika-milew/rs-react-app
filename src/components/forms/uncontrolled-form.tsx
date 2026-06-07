@@ -4,8 +4,9 @@ import { UncontrolledFormFields } from './form-fields/uncontrolled-form-fields';
 import { Button } from '@/components/button/button';
 import type { SubmitEvent } from 'react';
 import { useFormDataStore } from '@/store/use-form-data-store';
-import { convertImage } from '@/utils/validate-image';
+import { convertImage } from '@/utils/convert-image';
 import { validationSchema } from '@/schemas/validation-schemas';
+import { getNumber, getString } from '@/utils/form-data-helpers';
 import { ValidationError } from 'yup';
 import styles from './form.module.css';
 
@@ -14,20 +15,6 @@ const cx = classNames.bind(styles);
 type UncontrolledFormProps = {
   onSuccess: () => void;
 };
-
-function getString(formData: FormData, key: string): string {
-  const value = formData.get(key);
-  return typeof value === 'string' ? value : '';
-}
-
-function getNumber(formData: FormData, key: string): number | undefined {
-  const value = formData.get(key);
-  if (typeof value !== 'string' || value.trim() === '') {
-    return undefined;
-  }
-  const number_ = Number(value);
-  return Number.isNaN(number_) ? undefined : number_;
-}
 
 export function UncontrolledForm({ onSuccess }: UncontrolledFormProps) {
   const saveSubmission = useFormDataStore((state) => state.saveSubmission);

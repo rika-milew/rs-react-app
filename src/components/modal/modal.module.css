@@ -7,7 +7,7 @@
   align-items: center;
   justify-content: center;
 
-  background: rgb(0 0 0 / 50%);
+  background: rgb(0 0 0 / var(--opacity-50));
 }
 
 .modal {
