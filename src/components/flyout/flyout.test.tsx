@@ -14,9 +14,13 @@ const mockDownloadItems = vi.fn(() => ({
 }));
 
 let mockIsLoading = false;
+const mockError = new Error('Network error');
 
 vi.mock('@/store/api/api-endpoints', () => ({
-  useDownloadMutation: () => [mockDownloadItems, { isLoading: mockIsLoading }],
+  useDownloadMutation: () => [
+    mockDownloadItems,
+    { isLoading: mockIsLoading, error: mockError },
+  ],
 }));
 
 vi.mock('@/utils/download-csv', () => ({
@@ -129,9 +133,8 @@ describe('flyout component', () => {
     });
   });
 
-  it('handles download error correcyly', async () => {
+  it('handles download error correctly', async () => {
     const user = userEvent.setup();
-    const consoleSpy = vi.spyOn(console, 'error').mockReturnValue();
 
     mockUnwrap.mockRejectedValue(new Error('Network error'));
 
@@ -140,13 +143,8 @@ describe('flyout component', () => {
     await user.click(screen.getByText('Download'));
 
     await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Failed to download CSV:',
-        expect.any(Error),
-      );
+      expect(screen.getByText('Failed to download CSV')).toBeInTheDocument();
     });
-
-    consoleSpy.mockRestore();
   });
 
   it('shows downloading text on button when download is in progress', () => {
