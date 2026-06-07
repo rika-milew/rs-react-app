@@ -61,6 +61,7 @@ export function CountryAutocomplete({
         data-testid="hidden-input"
       />
       <input
+        id={name}
         type="text"
         value={inputValue}
         onChange={handleInput}
