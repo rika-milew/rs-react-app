@@ -19,7 +19,7 @@ export default defineConfig({
     environment: 'jsdom',
     root: process.cwd(),
     globals: true,
-    setupFiles: './src/test-utils/setupTests.ts',
+    setupFiles: './src/test-utils/setup-tests.ts',
 
     coverage: {
       reporter: ['text', 'html'],
