@@ -7,13 +7,15 @@ import { Pagination } from '@/components/pagination/pagination';
 import { Button } from '@/components/button/button';
 import { ERROR_MESSAGES, ROUTES } from '@/constants/constants';
 import { ErrorState } from '@/components/error-state/error-state';
-import styles from './card-list.module.css';
+import { useGetListQuery, useSearchQuery } from '@/store/api/api-endpoints';
 import { apiEndpoints } from '@/store/api/api-endpoints';
+import type { PokemonWithDescription } from '@/types/api';
 import {
-  getCardListState,
-  useCardListQueries,
-} from './helpers/card-list-queries';
+  isNotFoundError,
+  isSuccessListPayload,
+} from './helpers/card-list-helpers';
 import { useDispatch } from 'react-redux';
+import styles from './card-list.module.css';
 
 const cx = classNames.bind(styles);
 
@@ -34,14 +36,45 @@ export function CardList({ search }: CardListProps) {
 
   const currentPage = page - 1;
 
-  const { listResult, searchResult, loading, queryError, isFetching } =
-    useCardListQueries(isSearch, normalizedSearch, currentPage);
-
-  const { data, totalPages, status } = useMemo(
-    () =>
-      getCardListState(loading, queryError, isSearch, searchResult, listResult),
-    [loading, queryError, isSearch, searchResult, listResult],
+  const listQuery = useGetListQuery(
+    { search: '', page: currentPage },
+    { skip: isSearch },
   );
+
+  const searchQuery = useSearchQuery(normalizedSearch, { skip: !isSearch });
+
+  const isLoading = isSearch ? searchQuery.isLoading : listQuery.isLoading;
+  const isError = isSearch ? searchQuery.isError : listQuery.isError;
+  const isFetching = isSearch ? searchQuery.isFetching : listQuery.isFetching;
+
+  const listData = listQuery.data;
+
+  const data: PokemonWithDescription[] = useMemo(() => {
+    if (isSearch) {
+      if (
+        searchQuery.data &&
+        typeof searchQuery.data === 'object' &&
+        'name' in searchQuery.data
+      ) {
+        return [searchQuery.data];
+      }
+      return [];
+    }
+    if (isSuccessListPayload(listData)) {
+      return listData.data;
+    }
+    return [];
+  }, [isSearch, searchQuery.data, listQuery.data]);
+
+  const totalPages: number = useMemo(() => {
+    if (isSearch) {
+      return 1;
+    }
+    if (isSuccessListPayload(listData)) {
+      return listData.totalPages;
+    }
+    return 0;
+  }, [isSearch, listData]);
 
   const refreshData = useCallback(() => {
     if (search) {
@@ -59,24 +92,40 @@ export function CardList({ search }: CardListProps) {
     });
   };
 
-  if (status === 'error' || status === 'not-found') {
+  if (isLoading) {
+    return (
+      <section className={cx('section')}>
+        <h2 className={cx('title')}>Results</h2>
+        <Loader />
+      </section>
+    );
+  }
+
+  if (isError) {
+    const activeQuery = isSearch ? searchQuery : listQuery;
+
     return (
       <ErrorState
         message={
-          status === 'error' ? ERROR_MESSAGES.DEFAULT : ERROR_MESSAGES.NOTFOUND
+          isNotFoundError(activeQuery.error)
+            ? ERROR_MESSAGES.NOTFOUND
+            : ERROR_MESSAGES.DEFAULT
         }
         onReload={refreshData}
       />
     );
   }
 
-  const isListLoaded = status === 'success';
-  const showLoader = status === 'loading' || isFetching;
+  if (data.length === 0) {
+    return (
+      <ErrorState message={ERROR_MESSAGES.NOTFOUND} onReload={refreshData} />
+    );
+  }
 
   return (
     <section className={cx('section')}>
       <h2 className={cx('title')}>Results</h2>
-      {showLoader && <Loader />}
+      {isFetching && <Loader />}
       <div className={cx('card-container')}>
         {data.map((card) => (
           <Card
@@ -89,7 +138,7 @@ export function CardList({ search }: CardListProps) {
           />
         ))}
       </div>
-      {isListLoaded && !showLoader && <Pagination totalPages={totalPages} />}
+      {!isFetching && <Pagination totalPages={totalPages} />}
       <Button
         onClick={refreshData}
         text={isFetching ? 'Updating...' : 'Refresh'}
