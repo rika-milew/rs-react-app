@@ -17,7 +17,7 @@ import styles from './form-fields.module.css';
 
 const cx = classNames.bind(styles);
 
-type ControlledFormFieldsProps = {
+export type ControlledFormFieldsProps = {
   register: UseFormRegister<FormValues>;
   errors: FieldErrors<FormValues>;
   setValue: UseFormSetValue<FormValues>;
