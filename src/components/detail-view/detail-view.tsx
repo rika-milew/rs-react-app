@@ -129,7 +129,7 @@ function DetailLayout({
           aria-label="Close details"
         >
           ✕
-        </button>{' '}
+        </button>
       </div>
       {children}
     </aside>
