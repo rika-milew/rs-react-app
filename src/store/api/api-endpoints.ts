@@ -39,7 +39,18 @@ export const apiEndpoints = apiSlice.injectEndpoints({
         }
         return handleErrorResult(result);
       },
-      providesTags: ['List'],
+      providesTags: (result) => {
+        if (result?.status === API_STATUS.SUCCESS) {
+          return [
+            'List',
+            ...result.data.map((item) => ({
+              type: 'Detail' as const,
+              id: String(item.id),
+            })),
+          ];
+        }
+        return ['List'];
+      },
     }),
     search: builder.query<PokemonWithDescription | null, string>({
       queryFn: async (name: string) => {

@@ -64,7 +64,7 @@ export function CardList({ search }: CardListProps) {
       return listData.data;
     }
     return [];
-  }, [isSearch, searchQuery.data, listQuery.data]);
+  }, [isSearch, searchQuery.data, listData]);
 
   const totalPages: number = useMemo(() => {
     if (isSearch) {
