@@ -52,7 +52,7 @@ export function ImageUpload({ name, error, onChange }: ImageUploadProps) {
           <img src={image} alt="Preview" />
         </div>
       )}
-      {error && <span className={cx('error-message')}>{error}</span>}
+      <span className={cx('error-message')}>{error ?? ''}</span>
     </div>
   );
 }

@@ -90,7 +90,11 @@
 }
 
 .error-message {
+  display: block;
+
+  min-height: 1.25rem;
   margin-top: 0.25rem;
+
   font-size: 0.75rem;
   color: var(--color-red-500);
 }

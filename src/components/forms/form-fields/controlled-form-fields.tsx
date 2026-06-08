@@ -108,9 +108,9 @@ export function ControlledFormFields({
       <div className={cx('checkbox-field', { error: !!errors.terms })}>
         <input id="terms" type="checkbox" {...register('terms')} />
         <label htmlFor="terms">Accept Terms & Conditions</label>
-        {errors.terms && (
-          <span className={cx('error-message')}>{errors.terms.message}</span>
-        )}
+        <span className={cx('error-message')}>
+          {errors.terms?.message ?? ''}
+        </span>
       </div>
     </div>
   );

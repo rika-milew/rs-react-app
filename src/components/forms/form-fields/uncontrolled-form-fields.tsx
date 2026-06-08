@@ -93,9 +93,7 @@ export function UncontrolledFormFields({ errors = {} }: FormFieldsProps) {
           />
           <label htmlFor="terms">Accept Terms & Conditions</label>
         </div>
-        {errors.terms && (
-          <span className={cx('error-message')}>{errors.terms}</span>
-        )}
+        <span className={cx('error-message')}>{errors.terms ?? ''}</span>
       </div>
     </div>
   );

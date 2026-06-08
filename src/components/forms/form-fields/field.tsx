@@ -28,7 +28,7 @@ export function Field({
     <div className={cx('field', { error: !!error }, className)}>
       {reverse ? children : labelElement}
       {reverse ? labelElement : children}
-      {error && <span className={cx('error-message')}>{error}</span>}
+      <span className={cx('error-message')}>{error ?? ''}</span>
     </div>
   );
 }
