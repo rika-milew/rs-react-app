@@ -72,7 +72,7 @@ describe('handleQueryError', () => {
   it('handles ApiError and returns its status and message', () => {
     const error = new ApiError(HTTP_STATUS.BAD_REQUEST, 'Bad request');
     expect(handleQueryError(error)).toEqual({
-      error: { status: 400, data: 'Bad request' },
+      error: { status: HTTP_STATUS.BAD_REQUEST, data: 'Bad request' },
     });
   });
 

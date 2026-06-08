@@ -19,17 +19,13 @@ vi.mock('@/components/card-list/card-list', () => ({
 
 vi.mock('@/components/search-bar/search-bar', () => ({
   SearchBar: ({
-    value = '',
     onSearch,
+    placeholder,
   }: {
-    value?: string;
     onSearch: (value: string) => void;
+    placeholder?: string;
   }) => {
-    const [localValue, setLocalValue] = React.useState(value);
-
-    React.useEffect(() => {
-      setLocalValue(value);
-    }, [value]);
+    const [localValue, setLocalValue] = React.useState('');
 
     return (
       <div data-testid="search-bar">
@@ -40,7 +36,7 @@ vi.mock('@/components/search-bar/search-bar', () => ({
           onChange={(event) => {
             setLocalValue(event.target.value);
           }}
-          placeholder="Search Pokémon..."
+          placeholder={placeholder ?? 'Search Pokémon...'}
         />
         <button
           onClick={() => {
@@ -113,7 +109,9 @@ describe('SearchPage', () => {
 
     render(<SearchPage />);
 
-    expect(screen.getByDisplayValue('venusaur')).toBeInTheDocument();
+    expect(screen.getByTestId('card-list')).toHaveTextContent(
+      'Search: venusaur',
+    );
   });
 
   it('saves search term to localStorage when search button is clicked', async () => {
