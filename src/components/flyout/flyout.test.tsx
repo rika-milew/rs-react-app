@@ -76,6 +76,7 @@ const renderWithProvider = (selectedItems: number[] = []) => {
 describe('flyout component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockIsLoading = false;
     mockDownloadItems.mockReturnValue({
       unwrap: mockUnwrap,
     });
