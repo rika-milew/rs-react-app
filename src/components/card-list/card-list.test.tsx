@@ -235,7 +235,7 @@ describe('CardList component', () => {
     mockUseGetListQuery.mockReturnValue({
       data: {
         status: API_STATUS.SUCCESS,
-        data: [],
+        data: [mockItemFull],
         totalPages: 67,
       },
       isLoading: false,
