@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import type { ReactNode } from 'react';
-import { Header } from '@/components//layout/header/header';
+import { Header } from '@/components/layout/header/header';
 import { Footer } from '@/components/layout/footer/footer';
 import styles from './layout.module.css';
 
