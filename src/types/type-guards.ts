@@ -173,5 +173,10 @@ export function isFetchBaseQueryError(
 }
 
 export function isSerializedError(error: unknown): error is SerializedError {
-  return typeof error === 'object' && error !== null && 'message' in error;
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'message' in error &&
+    (typeof error.message === 'string' || error.message === undefined)
+  );
 }
