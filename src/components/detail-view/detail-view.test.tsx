@@ -85,7 +85,7 @@ describe('DetailView', () => {
     vi.clearAllMocks();
   });
 
-  it('renders card with data when correctly', () => {
+  it('renders card with data correctly', () => {
     vi.mocked(useGetDetailQuery).mockReturnValue({
       data: {
         status: API_STATUS.SUCCESS,
