@@ -316,7 +316,7 @@ describe('CardList component', () => {
     expect(screen.getByText(/ivysaur/i)).toBeInTheDocument();
   });
 
-  it('displays not found message when when api returns not-found state', async () => {
+  it('displays not found message when api returns not-found state', async () => {
     mockUseGetListQuery.mockReturnValue({
       data: undefined,
       isLoading: false,
@@ -372,7 +372,7 @@ describe('CardList component', () => {
     expect(cards).toHaveLength(0);
   });
 
-  it('renders api error message when when api returns error state', async () => {
+  it('renders api error message when api returns error state', async () => {
     mockUseGetListQuery.mockReturnValue({
       data: {
         status: API_STATUS.ERROR,
