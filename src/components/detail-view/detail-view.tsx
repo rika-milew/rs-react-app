@@ -12,7 +12,11 @@ import { ErrorState } from '@/components/error-state/error-state';
 import { Button } from '@/components/button/button';
 import styles from './detail-view.module.css';
 import { useNavigate, useSearch } from '@tanstack/react-router';
-import { apiEndpoints, useGetDetailQuery } from '@/store/api/api-endpoints';
+import {
+  apiEndpoints,
+  useGetDetailQuery,
+  useGetListQuery,
+} from '@/store/api/api-endpoints';
 import type { ReactNode } from 'react';
 import { useDispatch } from 'react-redux';
 import { isFetchBaseQueryError, isSerializedError } from '@/types/type-guards';
@@ -27,20 +31,38 @@ export function DetailView({ detailId }: DetailViewProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const search = useSearch({ from: ROUTES.LAYOUT });
+  const currentPage = search.page ?? 1;
+
+  const { data: cachedItem } = useGetListQuery(
+    { search: '', page: currentPage - 1 },
+    {
+      skip: false,
+      selectFromResult: (result) => ({
+        data:
+          result.data?.status === API_STATUS.SUCCESS
+            ? result.data.data.find((item) => String(item.id) === detailId)
+            : null,
+      }),
+    },
+  );
+
   const {
     data: result,
     isLoading,
     isFetching,
     error,
-  } = useGetDetailQuery(detailId);
-
-  const search = useSearch({ from: ROUTES.LAYOUT });
+  } = useGetDetailQuery(detailId, { skip: !!cachedItem });
 
   const handleRefresh = useCallback(() => {
-    dispatch(
-      apiEndpoints.util.invalidateTags([{ type: 'Detail', id: detailId }]),
-    );
-  }, [detailId, dispatch]);
+    if (cachedItem) {
+      dispatch(apiEndpoints.util.invalidateTags(['List']));
+    } else {
+      dispatch(
+        apiEndpoints.util.invalidateTags([{ type: 'Detail', id: detailId }]),
+      );
+    }
+  }, [detailId, dispatch, cachedItem]);
 
   const closeDetailView = useCallback(() => {
     void navigate({
@@ -76,7 +98,11 @@ export function DetailView({ detailId }: DetailViewProps) {
     };
   }, [closeDetailView]);
 
-  if (isLoading) {
+  const item =
+    cachedItem ?? (result?.status === API_STATUS.SUCCESS ? result.data : null);
+  const showLoader = !cachedItem && isLoading;
+
+  if (showLoader) {
     return (
       <DetailLayout closeDetailView={closeDetailView}>
         <div className={cx('loader-overlay')}>
@@ -86,9 +112,7 @@ export function DetailView({ detailId }: DetailViewProps) {
     );
   }
 
-  const isSuccess = result?.status === API_STATUS.SUCCESS && result.data;
-
-  if (!isSuccess) {
+  if (!item) {
     return (
       <DetailLayout closeDetailView={closeDetailView}>
         <ErrorState
@@ -101,7 +125,7 @@ export function DetailView({ detailId }: DetailViewProps) {
 
   return (
     <DetailLayout closeDetailView={closeDetailView}>
-      {<Card item={result.data} variant="detailed" />}
+      <Card item={item} variant="detailed" />
       <Button
         onClick={handleRefresh}
         text={isFetching ? 'Updating...' : 'Refresh'}
