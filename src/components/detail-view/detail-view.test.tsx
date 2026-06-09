@@ -6,7 +6,7 @@ import type { PokemonWithDescription } from '@/types/api';
 import { mockItemFull } from '@/test-utils/api-mock';
 import userEvent from '@testing-library/user-event';
 import type { ReactElement } from 'react';
-import { useGetDetailQuery } from '@/store/api/api-endpoints';
+import { useGetDetailQuery, useGetListQuery } from '@/store/api/api-endpoints';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import type { EnhancedStore } from '@reduxjs/toolkit';
@@ -38,6 +38,7 @@ const { mockInvalidateTags } = vi.hoisted(() => ({
 
 vi.mock('@/store/api/api-endpoints', () => ({
   useGetDetailQuery: vi.fn(),
+  useGetListQuery: vi.fn(),
   apiEndpoints: {
     util: {
       invalidateTags: mockInvalidateTags,
@@ -80,12 +81,24 @@ vi.mock('@/components/error-state/error-state', () => ({
   ),
 }));
 
+const mockListQueryEmpty = () => {
+  vi.mocked(useGetListQuery).mockReturnValue({
+    data: null,
+    isLoading: false,
+    isFetching: false,
+    refetch: vi.fn(),
+  });
+};
+
 describe('DetailView', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockListQueryEmpty();
   });
 
   it('renders card with data correctly', () => {
+    mockListQueryEmpty();
+
     vi.mocked(useGetDetailQuery).mockReturnValue({
       data: {
         status: API_STATUS.SUCCESS,
@@ -99,12 +112,13 @@ describe('DetailView', () => {
     renderWithProvider(<DetailView detailId="1" />);
 
     expect(screen.getByTestId('card')).toBeInTheDocument();
-    expect(screen.getByText(mockItemFull.name)).toBeInTheDocument();
+    expect(screen.getByTestId('card')).toHaveTextContent('bulbasaur');
     expect(screen.queryByTestId('loader')).not.toBeInTheDocument();
     expect(screen.queryByTestId('error-state')).not.toBeInTheDocument();
   });
 
   it('renders loader when the content is loading', () => {
+    mockListQueryEmpty();
     vi.mocked(useGetDetailQuery).mockReturnValue({
       data: undefined,
       isLoading: true,
@@ -120,6 +134,7 @@ describe('DetailView', () => {
   });
 
   it('renders error message when status is error', async () => {
+    mockListQueryEmpty();
     const errorMessage = ERROR_MESSAGES.DEFAULT;
 
     vi.mocked(useGetDetailQuery).mockReturnValue({
@@ -141,6 +156,7 @@ describe('DetailView', () => {
   });
 
   it('renders not found message when status is not found error', async () => {
+    mockListQueryEmpty();
     vi.mocked(useGetDetailQuery).mockReturnValue({
       data: {
         status: API_STATUS.NOT_FOUND,
@@ -163,7 +179,7 @@ describe('DetailView', () => {
 
     vi.mocked(useGetDetailQuery).mockReturnValue({
       data: {
-        type: API_STATUS.SUCCESS,
+        status: API_STATUS.SUCCESS,
         data: mockItemFull,
       },
       isLoading: false,
@@ -292,6 +308,7 @@ describe('DetailView', () => {
 
   it('invalidates cache when refresh button is clicked', async () => {
     const user = userEvent.setup();
+    mockListQueryEmpty();
 
     vi.mocked(useGetDetailQuery).mockReturnValue({
       data: {
