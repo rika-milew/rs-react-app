@@ -18,10 +18,12 @@ type CountryCardProps = {
 
 export const CountryCard = memo(({ country, selectedYear, selectedColumns }: CountryCardProps) => {
   const yearDataMap = useMemo(() => createYearDataMap(country.data), [country.data]);
+
   const population = useMemo(
     () => getPopulationForYear(yearDataMap, selectedYear),
     [yearDataMap, selectedYear]
   );
+
   const co2 = useMemo(() => getCo2ForYear(yearDataMap, selectedYear), [yearDataMap, selectedYear]);
 
   return (
