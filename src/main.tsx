@@ -5,7 +5,8 @@ import './index.css';
 import { App } from './components/app/app';
 
 scan({
-  enabled: false,
+  enabled: true,
+  showToolbar: true,
 });
 
 createRoot(document.getElementById('root')!).render(
