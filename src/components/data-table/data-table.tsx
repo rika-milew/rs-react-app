@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import type { YearData } from '../../types';
 import { formatNumber } from '../../utils/format-utils';
 
@@ -9,7 +10,7 @@ type DataTableProps = {
   columns: string[];
 };
 
-export const DataTable = ({ data, year, columns }: DataTableProps) => {
+export const DataTable = memo(({ data, year, columns }: DataTableProps) => {
   const yearData = data.filter((d) => d.year === year);
 
   if (yearData.length === 0) {
@@ -21,8 +22,8 @@ export const DataTable = ({ data, year, columns }: DataTableProps) => {
   return (
     <table className={styles.table}>
       <tbody>
-        {columns.map((column, index) => (
-          <tr key={index} className={styles.row}>
+        {columns.map((column) => (
+          <tr key={column} className={styles.row}>
             <td className={styles.labelCell}>{column.replace(/_/g, ' ').toUpperCase()}</td>
             <td className={styles.valueCell}>
               {formatNumber(record[column as keyof YearData] as number | undefined, {
@@ -34,4 +35,6 @@ export const DataTable = ({ data, year, columns }: DataTableProps) => {
       </tbody>
     </table>
   );
-};
+});
+
+DataTable.displayName = 'DataTable';
