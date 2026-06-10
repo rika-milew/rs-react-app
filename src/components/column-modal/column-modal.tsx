@@ -44,3 +44,5 @@ export const ColumnModal = memo(
     );
   }
 );
+
+ColumnModal.displayName = 'ColumnModal';
