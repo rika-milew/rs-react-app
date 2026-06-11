@@ -29,7 +29,7 @@ export default defineConfig({
         'src/**/*.test.{js,jsx,ts,tsx}',
         'src/**/*.spec.{js,jsx,ts,tsx}',
         'src/index.{js,jsx,ts,tsx}',
-        'src/test-utils/setupTests.{js,ts}',
+        'src/test-utils/setup-tests.{js,ts}',
         'src/**/*.d.ts',
         'src/main.{js,jsx,ts,tsx}',
       ],
