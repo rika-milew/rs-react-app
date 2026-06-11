@@ -9,7 +9,7 @@
 - **Screenshot**: 
 
 ![Screenshot](performance-starter/screenshots/baseline/image.png)
-![Flame chart](image-1.png)
+![Flame chart](performance-starter/screenshots/baseline/image-1.png)
 
 ---
 
