@@ -1,77 +1,43 @@
-# Performance
+# Performance Optimization Report
 
-## Initial Profiling
+## Baseline Measurements
 
-### 1. Sorting Countries
+### Interaction A: Sort countries
 
-**Sorting by name ascending:**
-![Screenshot](src/assets/image-2.png)
+- **Commit duration**: 549.4 ms
+- **Render duration**: 549.3 ms
+- **Screenshot**: 
 
-- Commit duration: 1.1 s
-- Render duration: 443.9 ms
-- Flame chart:
-  ![Flame chart](src/assets/image-3.png)
-
----
-
-**Sorting by name descending:**
-
-![Screenshot](src/assets/image.png)
-
-- Commit duration: 1.5 s
-- Render duration: 477.8 ms
-- Flame chart:
-  ![Flame chart](src/assets/image-1.png)
+![Screenshot](performance-starter/screenshots/baseline/image.png)
+![Flame chart](image-1.png)
 
 ---
 
-**Sorting by population ascending:**
-![Screenshot](src/assets/image-4.png)
+### Interaction B: Search countries
 
-- Commit duration: 1.9 s
-- Render duration: 519.8 ms
-- Flame chart:
-  ![Flame chart](src/assets/image-5.png)
-
----
-
-**Sorting by population descending:**
-![Screenshot](src/assets/image-6.png)
-
-- Commit duration: 1 s
-- Render duration: 491.5 ms
-- Flame chart:
-  ![Flame chart](src/assets/image-7.png)
+- **Commit duration**: 204.9 ms
+- **Render duration**: 204.8 ms
+- **Screenshot**: 
+![Screenshot](performance-starter/screenshots/baseline/image-2.png)
+![Flame chart](performance-starter/screenshots/baseline/image-3.png)
 
 ---
 
-### 2. Searching for a country
+### Interaction C: Change year
 
-![Screenshot](src/assets/image-9.png)
-
-- Commit duration: 1.3 s
-- Render duration: 282.4 ms
-- Flame chart:
-  ![Flame chart](src/assets/image-10.png)
-
----
-
-### 3. Selecting a different year
-
-![Screenshot](src/assets/image-11.png)
-
-- Commit duration: 2.8 s
-- Render duration: 546.9 ms
-- Flame chart:
-  ![Flame chart](src/assets/image-12.png)
+- **Commit duration**: 509.5 ms
+- **Render duration**: 509.4 ms
+- **Screenshot**: 
+![Screenshot](performance-starter/screenshots/baseline/image-4.png)
+![Flame chart](performance-starter/screenshots/baseline/image-5.png)
 
 ---
 
-### 4. Toggling columns
+### Interaction D: Toggle column
 
-![Screenshot](src/assets/image-13.png)
+- **Commit duration**: 546.5 s
+- **Render duration**: 546.4 ms
+- **Screenshot**: 
+![Screenshot](performance-starter/screenshots/baseline/image-6.png)
+![Flame chart](performance-starter/screenshots/baseline/image-7.png)
 
-- Commit duration: 1.1 s
-- Render duration: 469.2 ms
-- Flame chart:
-  ![Flame chart](src/assets/image-14.png)
