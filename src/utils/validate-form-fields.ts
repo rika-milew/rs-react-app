@@ -18,6 +18,10 @@ export const isValidEmail = (email: string): boolean => {
     return false;
   }
 
+  if (email.includes('@', atIndex + 1)) {
+    return false;
+  }
+
   const localPart = email.slice(0, atIndex);
   const domainPart = email.slice(atIndex + 1);
 
