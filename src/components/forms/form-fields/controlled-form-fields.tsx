@@ -21,7 +21,6 @@ export type ControlledFormFieldsProps = {
   register: UseFormRegister<FormValues>;
   errors: FieldErrors<FormValues>;
   setValue: UseFormSetValue<FormValues>;
-  imageFile: File | undefined;
   watch: UseFormWatch<FormValues>;
   trigger: UseFormTrigger<FormValues>;
 };
