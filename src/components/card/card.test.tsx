@@ -34,7 +34,7 @@ const createCardData = (overrides = {}) => ({
 });
 
 describe('Card', () => {
-  it('renders card with all data corretcly', () => {
+  it('renders card with all data correctly', () => {
     const cardData = createCardData();
 
     render(<Card data={cardData} />);

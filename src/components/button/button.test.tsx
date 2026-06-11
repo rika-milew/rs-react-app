@@ -39,7 +39,7 @@ describe('button component', () => {
     expect(button.className).toMatch(/primary/);
   });
 
-  it('is disabled when disabled prop is applies', () => {
+  it('is disabled when disabled prop is applied', () => {
     render(<Button text="Click" onClick={vi.fn()} disabled />);
 
     expect(screen.getByRole('button')).toBeDisabled();
