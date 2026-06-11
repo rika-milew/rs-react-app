@@ -45,6 +45,7 @@ export function UncontrolledForm({ onSuccess }: UncontrolledFormProps) {
         setErrors({});
 
         if (!(validData.image instanceof File)) {
+          setErrors({ image: 'Image is required' });
           return;
         }
 
@@ -60,6 +61,7 @@ export function UncontrolledForm({ onSuccess }: UncontrolledFormProps) {
           })
           .catch((error: unknown) => {
             console.error('Failed to convert image:', error);
+            setErrors({ image: 'Failed to convert image' });
           });
       })
       .catch((validationError: unknown) => {
