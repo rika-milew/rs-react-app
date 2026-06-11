@@ -49,7 +49,7 @@ describe('useFormDataStore', () => {
     expect(submissions[1].name).toBe('Svyatoslav');
   });
 
-  it('handles multiple submissions with unique ids', () => {
+  it('applies consistent mocked id to multiple submissions', () => {
     useFormDataStore.getState().saveSubmission(mockFormData2);
     useFormDataStore.getState().saveSubmission(mockFormData3);
 
