@@ -35,7 +35,7 @@
 
 ### Interaction D: Toggle column
 
-- **Commit duration**: 546.5 s
+- **Commit duration**: 546.5 ms
 - **Render duration**: 546.4 ms
 - **Screenshot**: 
 ![Screenshot](performance-starter/screenshots/baseline/image-6.png)
