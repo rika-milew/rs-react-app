@@ -2,7 +2,7 @@ import type { InferType } from 'yup';
 import { object, string, number, boolean, ref, mixed } from 'yup';
 import { PASSWORD_RULES_CONFIG, IMAGE_VALIDATION } from '@/constants/constants';
 import {
-  isFirstLetterUppercase,
+  isValidNameFormat,
   isValidEmail,
   isValidCountry,
 } from '@/utils/validate-form-fields';
@@ -18,7 +18,7 @@ export const validationSchema = object({
         if (!value) {
           return true;
         }
-        return isFirstLetterUppercase(value);
+        return isValidNameFormat(value);
       },
     ),
 

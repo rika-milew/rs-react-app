@@ -3,7 +3,7 @@ import {
   isValidCountry,
   isValidEmail,
   isValidImageType,
-  isFirstLetterUppercase,
+  isValidNameFormat,
 } from './validate-form-fields';
 
 vi.mock('@/constants/constants', () => ({
@@ -59,28 +59,28 @@ describe('isValidEmail', () => {
   });
 });
 
-describe('isFirstLetterUppercase', () => {
+describe('isValidNameFormat', () => {
   it('returns true for empty string', () => {
-    expect(isFirstLetterUppercase('')).toBe(true);
+    expect(isValidNameFormat('')).toBe(true);
   });
 
   it('returns false when first character is not a letter', () => {
-    expect(isFirstLetterUppercase('123Erika')).toBe(false);
-    expect(isFirstLetterUppercase('.test')).toBe(false);
+    expect(isValidNameFormat('123Erika')).toBe(false);
+    expect(isValidNameFormat('.test')).toBe(false);
   });
 
   it('returns false when first letter is lowercase', () => {
-    expect(isFirstLetterUppercase('erika')).toBe(false);
+    expect(isValidNameFormat('erika')).toBe(false);
   });
 
   it('returns false when string contains non-letter characters besides spaces', () => {
-    expect(isFirstLetterUppercase('Erika123')).toBe(false);
-    expect(isFirstLetterUppercase('Erik.a')).toBe(false);
+    expect(isValidNameFormat('Erika123')).toBe(false);
+    expect(isValidNameFormat('Erik.a')).toBe(false);
   });
 
   it('returns true for valid uppercase first letter with only letters and spaces', () => {
-    expect(isFirstLetterUppercase('Erika')).toBe(true);
-    expect(isFirstLetterUppercase('Erika Mileuskaya')).toBe(true);
+    expect(isValidNameFormat('Erika')).toBe(true);
+    expect(isValidNameFormat('Erika Mileuskaya')).toBe(true);
   });
 });
 

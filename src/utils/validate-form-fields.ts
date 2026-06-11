@@ -47,7 +47,7 @@ export const isValidEmail = (email: string): boolean => {
   return true;
 };
 
-export const isFirstLetterUppercase = (value: string): boolean => {
+export const isValidNameFormat = (value: string): boolean => {
   if (!value) {
     return true;
   }
