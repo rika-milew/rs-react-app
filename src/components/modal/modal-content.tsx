@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import type { ReactNode, MouseEvent } from 'react';
-import styles from './modal.module.css';
+import styles from './modal-content.module.css';
 
 import { useEffect, useRef } from 'react';
 
