@@ -11,7 +11,7 @@ type CardProps = {
 
 export function Card({ data, isRecent }: CardProps) {
   return (
-    <div className={cx('card', { recent: isRecent })}>
+    <article className={cx('card', { recent: isRecent })}>
       <div className={cx('header')}>
         <h3 className={cx('name')}>{data.name}</h3>
         <span className={cx('date')}>
@@ -47,6 +47,6 @@ export function Card({ data, isRecent }: CardProps) {
           </span>
         </p>
       </div>
-    </div>
+    </article>
   );
 }
