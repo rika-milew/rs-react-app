@@ -17,7 +17,7 @@ vi.mock('@/components/country-autocomplete/country-autocomplete', () => ({
   )),
 }));
 
-vi.mock('./image-upload', () => ({
+vi.mock('../image-upload/image-upload', () => ({
   ImageUpload: vi.fn(() => <input data-testid="image-upload" type="file" />),
 }));
 

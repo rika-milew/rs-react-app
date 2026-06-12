@@ -45,9 +45,12 @@ vi.mock('@/utils/form-data-helpers', () => ({
   }),
 }));
 
-vi.mock('./form-fields/uncontrolled-form-fields', () => ({
-  UncontrolledFormFields: vi.fn(() => <div data-testid="form-fields" />),
-}));
+vi.mock(
+  '../form-fields/uncontrolled-form-fields/uncontrolled-form-fields',
+  () => ({
+    UncontrolledFormFields: vi.fn(() => <div data-testid="form-fields" />),
+  }),
+);
 
 vi.mock('@/components/button/button', () => ({
   Button: vi.fn(({ text }: { text: string }) => (

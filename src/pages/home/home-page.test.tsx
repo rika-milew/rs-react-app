@@ -79,7 +79,7 @@ vi.mock('@/components/modal/modal', () => ({
   ),
 }));
 
-vi.mock('@/components/forms/uncontrolled-form', () => ({
+vi.mock('@/components/forms/uncontrolled-form/uncontrolled-form', () => ({
   UncontrolledForm: vi.fn(({ onSuccess }: FormProps) => (
     <div data-testid="uncontrolled-form">
       <button onClick={onSuccess}>Submit Uncontrolled Form</button>
@@ -87,7 +87,7 @@ vi.mock('@/components/forms/uncontrolled-form', () => ({
   )),
 }));
 
-vi.mock('@/components/forms/controlled-form', () => ({
+vi.mock('@/components/forms/controlled-form/controlled-form', () => ({
   ControlledForm: vi.fn(({ onSuccess }: FormProps) => (
     <div data-testid="controlled-form">
       <button onClick={onSuccess}>Submit Controlled Form</button>

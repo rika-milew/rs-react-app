@@ -12,7 +12,7 @@ vi.mock('react-dom', async () => {
   };
 });
 
-vi.mock('./modal-content', () => ({
+vi.mock('./modal-content/modal-content', () => ({
   ModalContent: vi.fn(
     ({ onClose, children }: { onClose: () => void; children: ReactNode }) => (
       <div data-testid="modal-content">

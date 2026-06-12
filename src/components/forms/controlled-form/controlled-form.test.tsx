@@ -23,7 +23,7 @@ vi.mock('@/utils/convert-image', () => ({
   convertImage: vi.fn(() => Promise.resolve('converted-image')),
 }));
 
-vi.mock('./form-fields/controlled-form-fields', () => ({
+vi.mock('../form-fields/controlled-form-fields/controlled-form-fields', () => ({
   ControlledFormFields: vi.fn(() => <div data-testid="form-fields" />),
 }));
 
