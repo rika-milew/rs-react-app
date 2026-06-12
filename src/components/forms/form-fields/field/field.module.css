@@ -1,0 +1,100 @@
+.error-message {
+  display: block;
+
+  min-height: 1.25rem;
+  margin-top: 0.25rem;
+
+  font-size: 0.75rem;
+  color: var(--color-red-500);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.field label {
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-gray-400);
+  letter-spacing: 0.025em;
+}
+
+.field label::after {
+  content: '*';
+  margin-left: 0.25rem;
+  color: var(--color-turquoise-500);
+}
+
+.field input,
+.field select {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-gray-700);
+  border-radius: 0.5rem;
+
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: var(--color-white);
+
+  background: var(--color-gray-800);
+
+  transition: all 0.2s ease;
+
+  &:focus {
+    border-color: var(--color-turquoise-500);
+    outline: none;
+    box-shadow: 0 0 0 3px hsl(172deg 66% 50% / var(--opacity-10));
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      border-color: var(--color-gray-600);
+    }
+  }
+
+  @media (hover: none) {
+    &:active {
+      border-color: var(--color-gray-600);
+    }
+  }
+}
+
+.field input:-webkit-autofill,
+.field input:-webkit-autofill:hover,
+.field input:-webkit-autofill:focus {
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0 1000px var(--color-gray-800) inset;
+  transition: background-color 4000s ease-in-out 0s;
+
+  -webkit-text-fill-color: var(--color-white);
+}
+
+.field input:-webkit-autofill::first-line {
+  color: var(--color-white);
+}
+
+.field input::placeholder {
+  color: var(--color-gray-600);
+}
+
+.field input[type='number']::-webkit-inner-spin-button,
+.field input[type='number']::-webkit-outer-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
+.image-preview {
+  display: flex;
+  justify-content: center;
+}
+
+.image-preview img {
+  width: 5rem;
+  height: 5rem;
+  margin: 0.5rem auto 0;
+  border-radius: 0.5rem;
+
+  object-fit: cover;
+}

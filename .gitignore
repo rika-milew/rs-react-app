@@ -1,0 +1,47 @@
+# temp
+*.tmp
+*.temp
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# dependencies
+node_modules/
+
+# compiled output
+dist/
+dist-ssr/
+build/
+out/
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+*.swo
+
+# env
+.env
+.env.local
+.env.*
+!.env.example
+
+# deploy
+.vercel/
+
+# tests
+coverage/

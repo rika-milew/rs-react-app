@@ -1,0 +1,6 @@
+commit_header=$(head -n 1 "$1")
+
+if ! printf '%s\n' "$commit_header" | grep -Eq "^(feat|fix|chore|docs|refactor|test|style)(\([^)]+\))?: .+"; then
+  echo "❌ Invalid commit message"
+  exit 1
+fi
