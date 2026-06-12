@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import { useRef, useState } from 'react';
-import { UncontrolledFormFields } from './form-fields/uncontrolled-form-fields';
+import { UncontrolledFormFields } from '../form-fields/uncontrolled-form-fields';
 import { Button } from '@/components/button/button';
 import type { SubmitEvent } from 'react';
 import { useFormDataStore } from '@/store/use-form-data-store';
@@ -8,7 +8,7 @@ import { convertImage } from '@/utils/convert-image';
 import { validationSchema } from '@/schemas/validation-schemas';
 import { getNumber, getString } from '@/utils/form-data-helpers';
 import { ValidationError } from 'yup';
-import styles from './form.module.css';
+import styles from '../form.module.css';
 
 const cx = classNames.bind(styles);
 
