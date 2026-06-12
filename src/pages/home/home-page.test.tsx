@@ -2,7 +2,8 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ReactNode } from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { HomePage, CardsSection } from './home-page';
+import { HomePage } from './home-page';
+import { CardsSection } from '@/components/cards-section/cards-section';
 import { useFormDataStore } from '@/store/use-form-data-store';
 
 import {
