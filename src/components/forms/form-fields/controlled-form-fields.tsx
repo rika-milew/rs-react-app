@@ -11,7 +11,7 @@ import type { FormValues } from '@/types/form-types';
 import { ImageUpload } from './image-upload';
 import { CountryAutocomplete } from '@/components/country-autocomplete/country-autocomplete';
 import { PasswordIndicator } from '@/components/password-indicator/password-indicator';
-import { Field } from './field';
+import { Field } from './field/field';
 
 import styles from './form-fields.module.css';
 

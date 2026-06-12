@@ -4,7 +4,7 @@ import { CountryAutocomplete } from '@/components/country-autocomplete/country-a
 import { ImageUpload } from './image-upload';
 import { PasswordIndicator } from '@/components/password-indicator/password-indicator';
 import { useState } from 'react';
-import { Field } from './field';
+import { Field } from './field/field';
 import styles from './form-fields.module.css';
 
 const cx = classNames.bind(styles);
