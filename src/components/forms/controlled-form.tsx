@@ -42,11 +42,6 @@ export function ControlledForm({ onSuccess }: ControlledFormProps) {
     void trigger('confirmPassword');
   }, [password, trigger]);
 
-  const imageFile = useWatch({
-    control,
-    name: 'image',
-  });
-
   const onSubmit = async (data: FormValues) => {
     try {
       const convertedImage = await convertImage(data.image);
@@ -73,7 +68,6 @@ export function ControlledForm({ onSuccess }: ControlledFormProps) {
         register={register}
         errors={errors}
         setValue={setValue}
-        imageFile={imageFile}
         watch={watch}
         trigger={trigger}
       />

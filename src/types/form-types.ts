@@ -12,7 +12,7 @@ export type FormValues = {
   password: string;
   confirmPassword: string;
   country: string;
-  image?: File;
+  image: File;
 };
 
 export type StoredFormData = Omit<FormValues, 'image'> & {

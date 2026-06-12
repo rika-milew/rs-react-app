@@ -41,7 +41,6 @@ describe('ControlledFormFields', () => {
         register={register}
         errors={emptyErrors}
         setValue={setValue}
-        imageFile={undefined}
         watch={watch}
         trigger={trigger}
       />,
@@ -65,7 +64,6 @@ describe('ControlledFormFields', () => {
         register={register}
         errors={emptyErrors}
         setValue={setValue}
-        imageFile={undefined}
         watch={watch}
         trigger={trigger}
       />,
@@ -87,7 +85,6 @@ describe('ControlledFormFields', () => {
         register={register}
         errors={errors}
         setValue={setValue}
-        imageFile={undefined}
         watch={watch}
         trigger={trigger}
       />,
@@ -103,7 +100,6 @@ describe('ControlledFormFields', () => {
         register={register}
         errors={emptyErrors}
         setValue={setValue}
-        imageFile={undefined}
         watch={watch}
         trigger={trigger}
       />,
@@ -118,7 +114,6 @@ describe('ControlledFormFields', () => {
         register={register}
         errors={emptyErrors}
         setValue={setValue}
-        imageFile={undefined}
         watch={watch}
         trigger={trigger}
       />,
@@ -133,7 +128,6 @@ describe('ControlledFormFields', () => {
         register={register}
         errors={emptyErrors}
         setValue={setValue}
-        imageFile={undefined}
         watch={watch}
         trigger={trigger}
       />,

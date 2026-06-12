@@ -92,7 +92,9 @@ export function ControlledFormFields({
         name="image"
         error={errors.image?.message}
         onChange={(file) => {
-          setValue('image', file, { shouldValidate: true });
+          if (file) {
+            setValue('image', file, { shouldValidate: true });
+          }
         }}
       />
       <Field id="country" label="Country" error={errors.country?.message}>
