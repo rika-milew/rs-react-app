@@ -8,6 +8,9 @@ import {
 
 vi.mock('@/constants/constants', () => ({
   COUNTRIES: ['Belarus', 'Russia', 'Poland'],
+  IMAGE_VALIDATION: {
+    ALLOWED_TYPES: ['image/jpeg', 'image/png'],
+  },
 }));
 
 describe('isValidImageType', () => {

@@ -24,6 +24,7 @@ vi.mock('@/constants/constants', () => ({
     { check: (value: string): boolean => /[!@#$%^&*(),.?":{}|<>]/.test(value) },
   ],
   IMAGE_VALIDATION: {
+    ALLOWED_TYPES: ['image/jpeg', 'image/png'],
     MAX_SIZE_BYTES: mockedConstants.IMAGE_MAX_SIZE,
   },
   COUNTRIES: ['Belarus', 'Russia', 'Poland'],
