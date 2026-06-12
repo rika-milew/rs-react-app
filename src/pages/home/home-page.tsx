@@ -6,18 +6,15 @@ import { Card } from '@/components/card/card';
 import { UncontrolledForm } from '@/components/forms/uncontrolled-form';
 import { ControlledForm } from '@/components/forms/controlled-form';
 import { useFormDataStore } from '@/store/use-form-data-store';
+import { useModalStore } from '@/store/use-modal-store';
 import styles from './home-page.module.css';
 import { ANIMATION_DURATION } from '@/constants/constants';
 
 const cx = classNames.bind(styles);
 
-type FormType = 'uncontrolled' | 'controlled';
-
 export const HomePage = () => {
-  const [isModalVisible, setModalVisible] = useState(false);
-  const [formType, selectFormType] = useState<FormType | null>(null);
+  const { isModalVisible, formType, openModal, closeModal } = useModalStore();
   const [recentCard, setRecentCard] = useState<string | null>(null);
-
   const cards = useFormDataStore((state) => state.submissions);
   const previousCardsLength = useRef(cards.length);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -33,10 +30,6 @@ export const HomePage = () => {
       setRecentCard(null);
       timerRef.current = null;
     }, ANIMATION_DURATION);
-  };
-
-  const handleSuccess = () => {
-    setModalVisible(false);
   };
 
   useEffect(() => {
@@ -60,30 +53,20 @@ export const HomePage = () => {
       <div className={cx('button-container')}>
         <Button
           text="Open Uncontrolled Form"
-          onClick={() => {
-            selectFormType('uncontrolled');
-            setModalVisible(true);
-          }}
+          onClick={() => openModal('uncontrolled')}
           variant="secondary"
         />
-
         <Button
           text="Open Controlled Form"
-          onClick={() => {
-            selectFormType('controlled');
-            setModalVisible(true);
-          }}
+          onClick={() => openModal('controlled')}
           variant="primary"
         />
       </div>
-      <Modal isVisible={isModalVisible} onClose={() => setModalVisible(false)}>
+      <Modal isVisible={isModalVisible} onClose={closeModal}>
         {formType === 'uncontrolled' && (
-          <UncontrolledForm onSuccess={handleSuccess} />
+          <UncontrolledForm onSuccess={closeModal} />
         )}
-
-        {formType === 'controlled' && (
-          <ControlledForm onSuccess={handleSuccess} />
-        )}
+        {formType === 'controlled' && <ControlledForm onSuccess={closeModal} />}
       </Modal>
       <CardsSection recentCardId={recentCard} />
     </div>
@@ -96,6 +79,7 @@ type CardsSectionProps = {
 
 export function CardsSection({ recentCardId }: CardsSectionProps) {
   const cards = useFormDataStore((state) => state.submissions);
+
   return (
     <section className={cx('cards-section')}>
       <div className={cx('section-header')}>
