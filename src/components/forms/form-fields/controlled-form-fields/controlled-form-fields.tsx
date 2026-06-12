@@ -8,12 +8,12 @@ import type {
 } from 'react-hook-form';
 import { GENDER_OPTIONS } from '@/constants/constants';
 import type { FormValues } from '@/types/form-types';
-import { ImageUpload } from './image-upload';
+import { ImageUpload } from '../image-upload/image-upload';
 import { CountryAutocomplete } from '@/components/country-autocomplete/country-autocomplete';
 import { PasswordIndicator } from '@/components/password-indicator/password-indicator';
-import { Field } from './field/field';
+import { Field } from '../field/field';
 
-import styles from './form-fields.module.css';
+import styles from '../form-fields.module.css';
 
 const cx = classNames.bind(styles);
 

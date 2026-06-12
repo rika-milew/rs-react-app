@@ -1,11 +1,11 @@
 import classNames from 'classnames/bind';
 import { GENDER_OPTIONS } from '@/constants/constants';
 import { CountryAutocomplete } from '@/components/country-autocomplete/country-autocomplete';
-import { ImageUpload } from './image-upload';
+import { ImageUpload } from '../image-upload/image-upload';
 import { PasswordIndicator } from '@/components/password-indicator/password-indicator';
 import { useState } from 'react';
-import { Field } from './field/field';
-import styles from './form-fields.module.css';
+import { Field } from '../field/field';
+import styles from '../form-fields.module.css';
 
 const cx = classNames.bind(styles);
 
