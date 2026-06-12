@@ -40,3 +40,47 @@
 - **Screenshot**: 
 ![Screenshot](performance-starter/screenshots/baseline/image-6.png)
 ![Flame chart](performance-starter/screenshots/baseline/image-7.png)
+
+## Optimized Measurements
+
+### Interaction A: Sort countries
+
+- **Commit duration**: 51.1 ms
+- **Render duration**: 51.1 ms
+- **Screenshot**:
+![Screenshot](performance-starter/screenshots/optimized/image.png)
+![Flame chart](image-1.png)
+
+### Interaction B: Search countries
+
+- **Commit duration**: 24.9 ms
+- **Render duration**: 24.8 ms
+- **Screenshot**:
+![Screenshot](performance-starter/screenshots/optimized/image-2.png)
+![Flame chart](performance-starter/screenshots/optimized/image-3.png)
+
+### Interaction C: Change year
+
+- **Commit duration**: 66.6 ms
+- **Render duration**: 66.5 ms
+- **Screenshot**:
+![Screenshot](performance-starter/screenshots/optimized/image-4.png)
+![Flame chart](performance-starter/screenshots/optimized/image-5.png)
+
+### Interaction D: Toggle column
+
+- **Commit duration**: 51.3 ms
+- **Render duration**: 51.2 ms
+- **Screenshot**: ![screenshot](image.png)
+![Screenshot](performance-starter/screenshots/optimized/image-6.png)
+![Flame chart](performance-starter/screenshots/optimized/image-7.png)
+
+## Summary of Improvements
+
+| Interaction      | Baseline (ms) | Optimized (ms) | Improvement |
+| ---------------- | ------------- | -------------- | ----------- |
+| Sort countries   | \_\_\_        | \_\_\_         | \_\_\_%     |
+| Search countries | \_\_\_        | \_\_\_         | \_\_\_%     |
+| Change year      | \_\_\_        | \_\_\_         | \_\_\_%     |
+| Toggle column    | \_\_\_        | \_\_\_         | \_\_\_%     |
+| **Average**      | **\_\_\_**    | **\_\_\_**     | **\_\_\_%** |
