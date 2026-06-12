@@ -33,6 +33,7 @@ export const validationSchema = object({
 
   email: string()
     .required('Email is required')
+    .email('Invalid email format')
     .test('email', 'Invalid email format', (value) => {
       if (!value) {
         return true;
