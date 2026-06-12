@@ -40,4 +40,3 @@
 - **Screenshot**: 
 ![Screenshot](performance-starter/screenshots/baseline/image-6.png)
 ![Flame chart](performance-starter/screenshots/baseline/image-7.png)
-

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { FixedSizeList as List } from 'react-window';
 import type { Country } from '../../types';
+import { VList } from 'virtua';
 import { CountryCard } from '../country-card/country-card';
 import { getPopulationForYear, createYearDataMap } from '../../utils/data-transformers';
 
@@ -15,33 +15,6 @@ type CountryListProps = {
   sortField: 'name' | 'population';
   sortOrder: 'asc' | 'desc';
   onYearChange: (year: number) => void;
-};
-
-type ItemData = {
-  items: Country[];
-  selectedYear: number;
-  selectedColumns: string[];
-};
-
-type ItemProps = {
-  index: number;
-  style: React.CSSProperties;
-  data: ItemData;
-};
-
-const Item = ({ index, style, data }: ItemProps) => {
-  const item = data.items[index];
-
-  return (
-    <div style={style} className={styles.row}>
-      <CountryCard
-        key={item.id}
-        country={item}
-        selectedYear={data.selectedYear}
-        selectedColumns={data.selectedColumns}
-      />
-    </div>
-  );
 };
 
 export const CountryList = ({
@@ -75,31 +48,16 @@ export const CountryList = ({
       });
   }, [countries, searchQuery, selectedRegion, selectedYear, sortField, sortOrder]);
 
-  const gap = 16;
-
-  const itemSize = useMemo(() => {
-    const baseHeight = 129;
-    const columnHeight = 38;
-    return baseHeight + selectedColumns.length * columnHeight + gap;
-  }, [selectedColumns]);
-
-  const itemData: ItemData = {
-    items: filteredCountries,
-    selectedYear,
-    selectedColumns,
-  };
-
   return (
-    <div className={styles.countryList}>
-      <List
-        height={window.innerHeight - 300}
-        itemCount={filteredCountries.length}
-        itemSize={itemSize}
-        width="100%"
-        itemData={itemData}
-      >
-        {Item}
-      </List>
-    </div>
+    <VList className={styles.countryList}>
+      {filteredCountries.map((country) => (
+        <CountryCard
+          key={country.id}
+          country={country}
+          selectedYear={selectedYear}
+          selectedColumns={selectedColumns}
+        />
+      ))}
+    </VList>
   );
 };
