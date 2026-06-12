@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import { useRef, useState } from 'react';
-import { UncontrolledFormFields } from '../form-fields/uncontrolled-form-fields';
+import { UncontrolledFormFields } from '../form-fields/uncontrolled-form-fields/uncontrolled-form-fields';
 import { Button } from '@/components/button/button';
 import type { SubmitEvent } from 'react';
 import { useFormDataStore } from '@/store/use-form-data-store';
