@@ -1,0 +1,5 @@
+.countryList {
+  padding: 16px;
+  flex: 1;
+  min-height: 0;
+}
