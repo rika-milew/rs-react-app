@@ -45,7 +45,7 @@
 
 ### Interaction A: Sort countries
 
-- **Commit duration**: 51.1 ms
+- **Commit duration**: 51.2 ms
 - **Render duration**: 51.1 ms
 - **Screenshot**:
 ![Screenshot](performance-starter/screenshots/optimized/image.png)
@@ -79,8 +79,8 @@
 
 | Interaction      | Baseline (ms) | Optimized (ms) | Improvement |
 | ---------------- | ------------- | -------------- | ----------- |
-| Sort countries   | \_\_\_        | \_\_\_         | \_\_\_%     |
-| Search countries | \_\_\_        | \_\_\_         | \_\_\_%     |
-| Change year      | \_\_\_        | \_\_\_         | \_\_\_%     |
-| Toggle column    | \_\_\_        | \_\_\_         | \_\_\_%     |
-| **Average**      | **\_\_\_**    | **\_\_\_**     | **\_\_\_%** |
+| Sort countries   | 549.4 ms      | 51.2 ms        | 90.68%      |
+| Search countries | 204.9 ms      | 24.9 ms        | 87.84%      |
+| Change year      | 509.5 ms      | 66.6 ms        | 86.92%      |
+| Toggle column    | 546.5 ms      | 51.3 ms        | 90.61%      |
+| **Average**      | **452.6 ms**  | **48.5 ms**    | **89.28%**  |
