@@ -71,7 +71,7 @@
 
 - **Commit duration**: 51.3 ms
 - **Render duration**: 51.2 ms
-- **Screenshot**: ![screenshot](image.png)
+- **Screenshot**:
 ![Screenshot](performance-starter/screenshots/optimized/image-6.png)
 ![Flame chart](performance-starter/screenshots/optimized/image-7.png)
 
