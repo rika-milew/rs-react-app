@@ -49,7 +49,7 @@
 - **Render duration**: 51.1 ms
 - **Screenshot**:
 ![Screenshot](performance-starter/screenshots/optimized/image.png)
-![Flame chart](image-1.png)
+![Flame chart](performance-starter/screenshots/optimized/image-1.png)
 
 ### Interaction B: Search countries
 
