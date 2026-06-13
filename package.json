@@ -25,6 +25,7 @@
   "dependencies": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "vercel": "^54.13.0",
     "virtua": "^0.49.1"
   },
   "devDependencies": {
