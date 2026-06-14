@@ -107,7 +107,7 @@ export function CardList({ search }: CardListProps) {
     );
   }
 
-  if (data.length === 0) {
+  if (data.length === 0 && !isFetching) {
     return (
       <ErrorState message={ERROR_MESSAGES.NOTFOUND} onReload={refreshData} />
     );

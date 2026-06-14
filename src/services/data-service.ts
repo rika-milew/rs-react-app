@@ -8,7 +8,7 @@ import {
   API_STATUS,
 } from '@/constants/constants';
 import { getItems, getItemFull } from '@/services/api';
-import { isSuccessListPayload } from '@/types/type-guards';
+import { isValidListResponse } from '@/types/type-guards';
 import { ApiError } from '@/services/api-error';
 
 import type { PokemonWithDescription, ApiResult } from '@/types/api';
@@ -47,7 +47,7 @@ export async function getData(
       const offset = page * CARD_LIMIT;
       const searchData = await getItems(offset, CARD_LIMIT);
 
-      if (!isSuccessListPayload(searchData)) {
+      if (!isValidListResponse(searchData)) {
         return { status: API_STATUS.ERROR, message: ERROR_MESSAGES.DEFAULT };
       }
 
