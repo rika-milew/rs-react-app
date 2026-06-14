@@ -6,6 +6,7 @@ import type {
 } from '@/types/api';
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import type { SerializedError } from '@reduxjs/toolkit';
+import { VALID_ERROR_STATUSES } from '@/constants/constants';
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
@@ -174,10 +175,8 @@ export function isFetchBaseQueryError(
     error !== null &&
     'status' in error &&
     (typeof error.status === 'number' ||
-      error.status === 'FETCH_ERROR' ||
-      error.status === 'PARSING_ERROR' ||
-      error.status === 'TIMEOUT_ERROR' ||
-      error.status === 'CUSTOM_ERROR')
+      (typeof error.status === 'string' &&
+        VALID_ERROR_STATUSES.includes(error.status)))
   );
 }
 

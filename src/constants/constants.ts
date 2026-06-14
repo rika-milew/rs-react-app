@@ -46,3 +46,10 @@ export const ERROR_MESSAGES = {
 
 export type ErrorMessageType =
   (typeof ERROR_MESSAGES)[keyof typeof ERROR_MESSAGES];
+
+export const VALID_ERROR_STATUSES = [
+  'FETCH_ERROR',
+  'PARSING_ERROR',
+  'TIMEOUT_ERROR',
+  'CUSTOM_ERROR',
+];
