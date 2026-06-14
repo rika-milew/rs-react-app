@@ -3,10 +3,11 @@ import type {
   PokemonListItem,
   PokemonListResponse,
   PokemonSpecies,
+  PokemonWithDescription,
 } from '@/types/api';
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import type { SerializedError } from '@reduxjs/toolkit';
-import { VALID_ERROR_STATUSES } from '@/constants/constants';
+import { VALID_ERROR_STATUSES, API_STATUS } from '@/constants/constants';
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
@@ -186,5 +187,26 @@ export function isSerializedError(error: unknown): error is SerializedError {
     error !== null &&
     'message' in error &&
     (typeof error.message === 'string' || error.message === undefined)
+  );
+}
+
+type SuccessListPayload = {
+  status: string;
+  data: PokemonWithDescription[];
+  totalPages: number;
+};
+
+export function isSuccessListPayload(
+  value: unknown,
+): value is SuccessListPayload {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'status' in value &&
+    value.status === API_STATUS.SUCCESS &&
+    'data' in value &&
+    Array.isArray(value.data) &&
+    'totalPages' in value &&
+    typeof value.totalPages === 'number'
   );
 }

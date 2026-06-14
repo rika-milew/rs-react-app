@@ -5,15 +5,12 @@ import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
 import { Pagination } from '@/components/pagination/pagination';
 import { Button } from '@/components/button/button';
-import { ERROR_MESSAGES, ROUTES } from '@/constants/constants';
+import { ERROR_MESSAGES, ROUTES, API_STATUS } from '@/constants/constants';
 import { ErrorState } from '@/components/error-state/error-state';
 import { useGetListQuery, useSearchQuery } from '@/store/api/api-endpoints';
 import { apiEndpoints } from '@/store/api/api-endpoints';
 import type { PokemonWithDescription } from '@/types/api';
-import {
-  isNotFoundError,
-  isSuccessListPayload,
-} from './helpers/card-list-helpers';
+import { isNotFoundError } from './helpers/card-list-helpers';
 import { useDispatch } from 'react-redux';
 import styles from './card-list.module.css';
 
@@ -58,29 +55,16 @@ export function CardList({ search }: CardListProps) {
 
   const data: PokemonWithDescription[] = useMemo(() => {
     if (isSearch) {
-      if (
-        searchData &&
-        typeof searchData === 'object' &&
-        'name' in searchData
-      ) {
-        return [searchData];
-      }
-      return [];
+      return searchData ? [searchData] : [];
     }
-    if (isSuccessListPayload(listData)) {
-      return listData.data;
-    }
-    return [];
+    return listData?.status === API_STATUS.SUCCESS ? listData.data : [];
   }, [isSearch, searchData, listData]);
 
   const totalPages: number = useMemo(() => {
     if (isSearch) {
       return 1;
     }
-    if (isSuccessListPayload(listData)) {
-      return listData.totalPages;
-    }
-    return 0;
+    return listData?.status === API_STATUS.SUCCESS ? listData.totalPages : 0;
   }, [isSearch, listData]);
 
   const refreshData = useCallback(() => {

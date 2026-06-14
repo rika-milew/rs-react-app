@@ -8,6 +8,7 @@ import {
   API_STATUS,
 } from '@/constants/constants';
 import { getItems, getItemFull } from '@/services/api';
+import { isSuccessListPayload } from '@/types/type-guards';
 import { ApiError } from '@/services/api-error';
 
 import type { PokemonWithDescription, ApiResult } from '@/types/api';
@@ -45,6 +46,11 @@ export async function getData(
     } else {
       const offset = page * CARD_LIMIT;
       const searchData = await getItems(offset, CARD_LIMIT);
+
+      if (!isSuccessListPayload(searchData)) {
+        return { status: API_STATUS.ERROR, message: ERROR_MESSAGES.DEFAULT };
+      }
+
       totalPages = Math.ceil(
         Math.min(searchData.count, MAX_ITEMS) / CARD_LIMIT,
       );
