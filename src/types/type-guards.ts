@@ -7,7 +7,11 @@ import type {
 } from '@/types/api';
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import type { SerializedError } from '@reduxjs/toolkit';
-import { VALID_ERROR_STATUSES, API_STATUS } from '@/constants/constants';
+import {
+  VALID_ERROR_STATUSES,
+  API_STATUS,
+  HTTP_STATUS,
+} from '@/constants/constants';
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
@@ -209,4 +213,13 @@ export function isSuccessListPayload(
     'totalPages' in value &&
     typeof value.totalPages === 'number'
   );
+}
+
+export function isNotFoundError(
+  error: FetchBaseQueryError | SerializedError | undefined,
+): boolean {
+  if (!error || !('status' in error)) {
+    return false;
+  }
+  return error.status === HTTP_STATUS.NOT_FOUND;
 }

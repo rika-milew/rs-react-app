@@ -10,7 +10,7 @@ import { ErrorState } from '@/components/error-state/error-state';
 import { useGetListQuery, useSearchQuery } from '@/store/api/api-endpoints';
 import { apiEndpoints } from '@/store/api/api-endpoints';
 import type { PokemonWithDescription } from '@/types/api';
-import { isNotFoundError } from './helpers/card-list-helpers';
+import { isNotFoundError } from '@/types/type-guards';
 import { useDispatch } from 'react-redux';
 import styles from './card-list.module.css';
 
