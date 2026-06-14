@@ -10,7 +10,7 @@ import { ErrorState } from '@/components/error-state/error-state';
 import { useGetListQuery, useSearchQuery } from '@/store/api/api-endpoints';
 import { apiEndpoints } from '@/store/api/api-endpoints';
 import type { PokemonWithDescription } from '@/types/api';
-import { isNotFoundError } from '@/types/type-guards';
+import { getErrorMessage } from '@/utils/error-handlers';
 import { useDispatch } from 'react-redux';
 import styles from './card-list.module.css';
 
@@ -97,11 +97,7 @@ export function CardList({ search }: CardListProps) {
 
     return (
       <ErrorState
-        message={
-          isNotFoundError(activeError)
-            ? ERROR_MESSAGES.NOTFOUND
-            : ERROR_MESSAGES.DEFAULT
-        }
+        message={getErrorMessage(activeError)}
         onReload={refreshData}
       />
     );

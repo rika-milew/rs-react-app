@@ -2,12 +2,7 @@ import classNames from 'classnames/bind';
 import { useEffect, useCallback } from 'react';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
-import {
-  API_STATUS,
-  ERROR_MESSAGES,
-  HTTP_STATUS,
-  ROUTES,
-} from '@/constants/constants';
+import { API_STATUS, ROUTES } from '@/constants/constants';
 import { ErrorState } from '@/components/error-state/error-state';
 import { Button } from '@/components/button/button';
 import styles from './detail-view.module.css';
@@ -19,7 +14,7 @@ import {
 } from '@/store/api/api-endpoints';
 import type { ReactNode } from 'react';
 import { useDispatch } from 'react-redux';
-import { isFetchBaseQueryError, isSerializedError } from '@/types/type-guards';
+import { getErrorMessage } from '@/utils/error-handlers';
 
 const cx = classNames.bind(styles);
 
@@ -158,27 +153,4 @@ function DetailLayout({
       {children}
     </aside>
   );
-}
-
-function getErrorMessage(error: unknown, status?: string): string {
-  if (status === API_STATUS.NOT_FOUND) {
-    return ERROR_MESSAGES.NOTFOUND;
-  }
-
-  if (!error) {
-    return ERROR_MESSAGES.DEFAULT;
-  }
-
-  if (isFetchBaseQueryError(error)) {
-    if (error.status === HTTP_STATUS.NOT_FOUND) {
-      return ERROR_MESSAGES.NOTFOUND;
-    }
-    return ERROR_MESSAGES.DEFAULT;
-  }
-
-  if (isSerializedError(error)) {
-    return ERROR_MESSAGES.DEFAULT;
-  }
-
-  return ERROR_MESSAGES.DEFAULT;
 }
