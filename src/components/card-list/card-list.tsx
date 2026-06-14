@@ -36,27 +36,34 @@ export function CardList({ search }: CardListProps) {
 
   const currentPage = page - 1;
 
-  const listQuery = useGetListQuery(
-    { search: '', page: currentPage },
-    { skip: isSearch },
-  );
+  const {
+    data: listData,
+    isLoading: isListLoading,
+    isError: isListError,
+    isFetching: isListFetching,
+    error: listError,
+  } = useGetListQuery({ search: '', page: currentPage }, { skip: isSearch });
 
-  const searchQuery = useSearchQuery(normalizedSearch, { skip: !isSearch });
+  const {
+    data: searchData,
+    isLoading: isSearchLoading,
+    isError: isSearchError,
+    isFetching: isSearchFetching,
+    error: searchError,
+  } = useSearchQuery(normalizedSearch, { skip: !isSearch });
 
-  const isLoading = isSearch ? searchQuery.isLoading : listQuery.isLoading;
-  const isError = isSearch ? searchQuery.isError : listQuery.isError;
-  const isFetching = isSearch ? searchQuery.isFetching : listQuery.isFetching;
-
-  const listData = listQuery.data;
+  const isLoading = isSearch ? isSearchLoading : isListLoading;
+  const isError = isSearch ? isSearchError : isListError;
+  const isFetching = isSearch ? isSearchFetching : isListFetching;
 
   const data: PokemonWithDescription[] = useMemo(() => {
     if (isSearch) {
       if (
-        searchQuery.data &&
-        typeof searchQuery.data === 'object' &&
-        'name' in searchQuery.data
+        searchData &&
+        typeof searchData === 'object' &&
+        'name' in searchData
       ) {
-        return [searchQuery.data];
+        return [searchData];
       }
       return [];
     }
@@ -64,7 +71,7 @@ export function CardList({ search }: CardListProps) {
       return listData.data;
     }
     return [];
-  }, [isSearch, searchQuery.data, listData]);
+  }, [isSearch, searchData, listData]);
 
   const totalPages: number = useMemo(() => {
     if (isSearch) {
@@ -102,12 +109,12 @@ export function CardList({ search }: CardListProps) {
   }
 
   if (isError) {
-    const activeQuery = isSearch ? searchQuery : listQuery;
+    const activeError = isSearch ? searchError : listError;
 
     return (
       <ErrorState
         message={
-          isNotFoundError(activeQuery.error)
+          isNotFoundError(activeError)
             ? ERROR_MESSAGES.NOTFOUND
             : ERROR_MESSAGES.DEFAULT
         }
