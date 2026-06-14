@@ -1,13 +1,15 @@
 import { describe, it, expect } from 'vitest';
 import {
-  handleErrorResult,
-  handleQueryError,
-  handleSearchError,
   useGetListQuery,
   useSearchQuery,
   useGetDetailQuery,
   useDownloadMutation,
 } from './api-endpoints';
+import {
+  handleErrorResult,
+  handleQueryError,
+  handleSearchError,
+} from '@/utils/error-handlers';
 import { ApiError } from '@/services/api-error';
 import { API_STATUS, HTTP_STATUS, ERROR_MESSAGES } from '@/constants/constants';
 

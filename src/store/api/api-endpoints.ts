@@ -1,11 +1,15 @@
 import { apiSlice } from './api-slice';
 import { getData } from '@/services/data-service';
 import { getItemFull, getItemsById } from '@/services/api';
-import { API_STATUS, HTTP_STATUS, ERROR_MESSAGES } from '@/constants/constants';
-import { ApiError } from '@/services/api-error';
+import { API_STATUS } from '@/constants/constants';
 import type { PokemonWithDescription } from '@/types/api';
 import { getDetailData } from '@/services/detail-service';
 import type { DetailResult } from '@/services/detail-service';
+import {
+  handleErrorResult,
+  handleQueryError,
+  handleSearchError,
+} from '@/utils/error-handlers';
 
 type ListData = {
   status: typeof API_STATUS.SUCCESS;
@@ -18,12 +22,6 @@ type NotFoundData = {
 };
 
 type ListResult = ListData | NotFoundData;
-
-type SearchResult =
-  | { data: null }
-  | { error: { status: number; data: string } };
-
-type ErrorResult = { error: { status: number; data: string } };
 
 export const apiEndpoints = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -89,53 +87,6 @@ export const apiEndpoints = apiSlice.injectEndpoints({
     }),
   }),
 });
-
-export const handleErrorResult = (result: {
-  status: string;
-  message?: string;
-}): ErrorResult => {
-  const errorMessage =
-    result.status === API_STATUS.ERROR && result.message
-      ? result.message
-      : ERROR_MESSAGES.SERVER;
-
-  return {
-    error: {
-      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-      data: errorMessage,
-    },
-  };
-};
-
-export const handleQueryError = (error: unknown): ErrorResult => {
-  if (error instanceof ApiError) {
-    return { error: { status: error.status, data: error.message } };
-  }
-  return {
-    error: {
-      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-      data: ERROR_MESSAGES.DEFAULT,
-    },
-  };
-};
-
-export const handleSearchError = (error: unknown): SearchResult => {
-  if (error instanceof ApiError) {
-    if (error.status === HTTP_STATUS.NOT_FOUND) {
-      return { data: null };
-    }
-    if (error.status >= HTTP_STATUS.INTERNAL_SERVER_ERROR) {
-      return { error: { status: error.status, data: ERROR_MESSAGES.SERVER } };
-    }
-    return { error: { status: error.status, data: error.message } };
-  }
-  return {
-    error: {
-      status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-      data: ERROR_MESSAGES.DEFAULT,
-    },
-  };
-};
 
 export const {
   useGetListQuery,
