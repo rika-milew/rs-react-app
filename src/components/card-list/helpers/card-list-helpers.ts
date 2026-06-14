@@ -6,15 +6,10 @@ import type { PokemonWithDescription } from '@/types/api';
 export function isNotFoundError(
   error: FetchBaseQueryError | SerializedError | undefined,
 ): boolean {
-  if (!error) {
+  if (!error || !('status' in error)) {
     return false;
   }
-
-  return (
-    typeof error === 'object' &&
-    'status' in error &&
-    error.status === HTTP_STATUS.NOT_FOUND
-  );
+  return error.status === HTTP_STATUS.NOT_FOUND;
 }
 
 type SuccessListPayload = {
