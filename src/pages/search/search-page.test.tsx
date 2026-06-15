@@ -2,30 +2,79 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { SearchPage } from './search-page';
 import userEvent from '@testing-library/user-event';
+import { configureStore } from '@reduxjs/toolkit';
+import type { EnhancedStore } from '@reduxjs/toolkit';
 import React from 'react';
+import { Provider } from 'react-redux';
+import type { ReactElement } from 'react';
+
+const mockNavigate = vi.fn();
 
 vi.mock('@tanstack/react-router', () => ({
-  useNavigate: () => vi.fn(),
+  useNavigate: () => mockNavigate,
   useSearch: () => ({ page: 1 }),
 }));
 
+type MockRootState = {
+  api: Record<string, never>;
+};
+
+const createMockStore = () =>
+  configureStore<MockRootState>({
+    reducer: {
+      api: (state = {}) => state,
+    },
+  });
+
+const renderWithProvider = (
+  ui: ReactElement,
+): ReturnType<typeof render> & { store: EnhancedStore<MockRootState> } => {
+  const testStore = createMockStore();
+  const utilities = render(<Provider store={testStore}>{ui}</Provider>);
+  return { store: testStore, ...utilities };
+};
+
 vi.mock('@/components/card-list/card-list', () => ({
-  CardList: ({ search }: { search: string }) => (
+  CardList: ({
+    data,
+    isLoading,
+    isError,
+    isFetching,
+    totalPages,
+    onRefresh,
+    onCardClick,
+  }: {
+    data: unknown[];
+    isLoading: boolean;
+    isError: boolean;
+    isFetching: boolean;
+    error: unknown;
+    totalPages: number;
+    onRefresh: () => void;
+    onCardClick: (id: number) => void;
+  }) => (
     <div data-testid="card-list">
-      <p>Search: {search}</p>
+      <p>Items: {data.length}</p>
+      <p>Loading: {String(isLoading)}</p>
+      <p>Error: {String(isError)}</p>
+      <p>Fetching: {String(isFetching)}</p>
+      <p>Total Pages: {totalPages}</p>
+      <button onClick={onRefresh}>Refresh</button>
+      <button onClick={() => onCardClick(1)}>Open Card</button>
     </div>
   ),
 }));
 
 vi.mock('@/components/search-bar/search-bar', () => ({
   SearchBar: ({
+    value,
     onSearch,
-    placeholder,
   }: {
+    value: string;
     onSearch: (value: string) => void;
     placeholder?: string;
   }) => {
-    const [localValue, setLocalValue] = React.useState('');
+    const [localValue, setLocalValue] = React.useState(value);
 
     return (
       <div data-testid="search-bar">
@@ -36,7 +85,7 @@ vi.mock('@/components/search-bar/search-bar', () => ({
           onChange={(event) => {
             setLocalValue(event.target.value);
           }}
-          placeholder={placeholder ?? 'Search Pokémon...'}
+          placeholder="Search Pokémon..."
         />
         <button
           onClick={() => {
@@ -52,6 +101,28 @@ vi.mock('@/components/search-bar/search-bar', () => ({
 
 vi.mock('@/components/error-button/error-button', () => ({
   ErrorButton: () => <button>Trigger Error</button>,
+}));
+
+vi.mock('@/store/api/api-endpoints', () => ({
+  useGetListQuery: () => ({
+    data: undefined,
+    isLoading: true,
+    isError: false,
+    isFetching: false,
+    error: undefined,
+  }),
+  useSearchQuery: () => ({
+    data: undefined,
+    isLoading: false,
+    isError: false,
+    isFetching: false,
+    error: undefined,
+  }),
+  apiEndpoints: {
+    util: {
+      invalidateTags: vi.fn(),
+    },
+  },
 }));
 
 vi.mock('@/hooks/use-local-storage', () => ({
@@ -78,6 +149,7 @@ vi.mock('@/hooks/use-local-storage', () => ({
 describe('SearchPage', () => {
   beforeEach(() => {
     localStorage.clear();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
@@ -85,38 +157,24 @@ describe('SearchPage', () => {
   });
 
   it('renders page components correctly', () => {
-    render(<SearchPage />);
+    renderWithProvider(<SearchPage />);
 
     expect(screen.getByRole('searchbox')).toBeInTheDocument();
     expect(screen.getByText(/trigger error/i)).toBeInTheDocument();
-  });
-
-  it('passes search value to the list component', async () => {
-    const user = userEvent.setup();
-
-    render(<SearchPage />);
-
-    const input = screen.getByRole('searchbox');
-
-    await user.clear(input);
-    await user.type(input, 'bulbasaur', { skipClick: true });
-
-    expect(input).toHaveValue('bulbasaur');
+    expect(screen.getByTestId('card-list')).toBeInTheDocument();
   });
 
   it('loads the saved search term from localStorage after page load', () => {
     localStorage.setItem('search', 'venusaur');
 
-    render(<SearchPage />);
+    renderWithProvider(<SearchPage />);
 
-    expect(screen.getByTestId('card-list')).toHaveTextContent(
-      'Search: venusaur',
-    );
+    expect(screen.getByRole('searchbox')).toHaveValue('venusaur');
   });
 
   it('saves search term to localStorage when search button is clicked', async () => {
     const user = userEvent.setup();
-    render(<SearchPage />);
+    renderWithProvider(<SearchPage />);
 
     const input = screen.getByRole('searchbox');
 
@@ -129,7 +187,7 @@ describe('SearchPage', () => {
   it('trims whitespace from search input before saving', async () => {
     const user = userEvent.setup();
 
-    render(<SearchPage />);
+    renderWithProvider(<SearchPage />);
 
     const input = screen.getByRole('searchbox');
     await user.type(input, '   bulbasaur   ');
@@ -144,7 +202,7 @@ describe('SearchPage', () => {
 
     localStorage.setItem('search', 'charmeleon');
 
-    render(<SearchPage />);
+    renderWithProvider(<SearchPage />);
 
     const input = screen.getByRole('searchbox');
 
@@ -160,7 +218,7 @@ describe('SearchPage', () => {
 
     localStorage.setItem('search', 'charmeleon');
 
-    render(<SearchPage />);
+    renderWithProvider(<SearchPage />);
 
     const input = screen.getByRole('searchbox');
 
