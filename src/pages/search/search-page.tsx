@@ -5,16 +5,13 @@ import { useCallback, useMemo } from 'react';
 import { useSearch, useNavigate } from '@tanstack/react-router';
 import { ROUTES, API_STATUS } from '@/constants/constants';
 import { useGetListQuery, useSearchQuery } from '@/store/api/api-endpoints';
-import { apiEndpoints } from '@/store/api/api-endpoints';
 import type { PokemonWithDescription } from '@/types/api';
-import { useDispatch } from 'react-redux';
 import { useLocalStorage } from '@/hooks/use-local-storage';
 
 const normalize = (value: string): string => value.trim().toLowerCase();
 
 export const SearchPage = () => {
   const [searchQuery, setSearchQuery] = useLocalStorage('search', '');
-  const dispatch = useDispatch();
 
   const navigate = useNavigate();
   const searchParams = useSearch({ from: ROUTES.LAYOUT });
@@ -30,6 +27,7 @@ export const SearchPage = () => {
     isError: isListError,
     isFetching: isListFetching,
     error: listError,
+    refetch: refetchList,
   } = useGetListQuery({ search: '', page: currentPage }, { skip: isSearch });
 
   const {
@@ -38,6 +36,7 @@ export const SearchPage = () => {
     isError: isSearchError,
     isFetching: isSearchFetching,
     error: searchError,
+    refetch: refetchSearch,
   } = useSearchQuery(normalizedSearch, { skip: !isSearch });
 
   const isLoading = isSearch ? isSearchLoading : isListLoading;
@@ -61,11 +60,11 @@ export const SearchPage = () => {
 
   const refreshData = useCallback(() => {
     if (isSearch) {
-      dispatch(apiEndpoints.util.invalidateTags(['Search']));
+      void refetchSearch();
     } else {
-      dispatch(apiEndpoints.util.invalidateTags(['List']));
+      void refetchList();
     }
-  }, [isSearch, dispatch]);
+  }, [isSearch, refetchSearch, refetchList]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);

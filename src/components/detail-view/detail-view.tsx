@@ -7,13 +7,8 @@ import { ErrorState } from '@/components/error-state/error-state';
 import { Button } from '@/components/button/button';
 import styles from './detail-view.module.css';
 import { useNavigate, useSearch } from '@tanstack/react-router';
-import {
-  apiEndpoints,
-  useGetDetailQuery,
-  useGetListQuery,
-} from '@/store/api/api-endpoints';
+import { useGetDetailQuery, useGetListQuery } from '@/store/api/api-endpoints';
 import type { ReactNode } from 'react';
-import { useDispatch } from 'react-redux';
 import { getErrorMessage } from '@/utils/error-handlers';
 
 const cx = classNames.bind(styles);
@@ -23,13 +18,12 @@ type DetailViewProps = {
 };
 
 export function DetailView({ detailId }: DetailViewProps) {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const search = useSearch({ from: ROUTES.LAYOUT });
   const currentPage = search.page ?? 1;
 
-  const { data: cachedItem } = useGetListQuery(
+  const { data: cachedItem, refetch: refetchList } = useGetListQuery(
     { search: '', page: currentPage - 1 },
     {
       skip: false,
@@ -47,17 +41,16 @@ export function DetailView({ detailId }: DetailViewProps) {
     isLoading,
     isFetching,
     error,
+    refetch: refetchDetail,
   } = useGetDetailQuery(detailId, { skip: !!cachedItem });
 
   const handleRefresh = useCallback(() => {
     if (cachedItem) {
-      dispatch(apiEndpoints.util.invalidateTags(['List']));
+      void refetchList();
     } else {
-      dispatch(
-        apiEndpoints.util.invalidateTags([{ type: 'Detail', id: detailId }]),
-      );
+      void refetchDetail();
     }
-  }, [detailId, dispatch, cachedItem]);
+  }, [cachedItem, refetchList, refetchDetail]);
 
   const closeDetailView = useCallback(() => {
     void navigate({
