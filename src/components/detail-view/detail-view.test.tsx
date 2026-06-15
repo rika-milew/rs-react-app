@@ -29,21 +29,9 @@ const renderWithProvider = (
   return { store: testStore, ...utilities };
 };
 
-const { mockInvalidateTags } = vi.hoisted(() => ({
-  mockInvalidateTags: vi.fn(() => ({
-    type: 'api/invalidateTags',
-    payload: [],
-  })),
-}));
-
 vi.mock('@/store/api/api-endpoints', () => ({
   useGetDetailQuery: vi.fn(),
   useGetListQuery: vi.fn(),
-  apiEndpoints: {
-    util: {
-      invalidateTags: mockInvalidateTags,
-    },
-  },
 }));
 
 const mockNavigate = vi.fn();
@@ -310,6 +298,8 @@ describe('DetailView', () => {
     const user = userEvent.setup();
     mockListQueryEmpty();
 
+    const refetchMock = vi.fn();
+
     vi.mocked(useGetDetailQuery).mockReturnValue({
       data: {
         status: API_STATUS.SUCCESS,
@@ -317,7 +307,7 @@ describe('DetailView', () => {
       },
       isLoading: false,
       isFetching: false,
-      refetch: vi.fn(),
+      refetch: refetchMock,
     });
 
     renderWithProvider(<DetailView detailId="1" />);
@@ -325,9 +315,7 @@ describe('DetailView', () => {
     const refreshButton = screen.getByRole('button', { name: /refresh/i });
     await user.click(refreshButton);
 
-    expect(mockInvalidateTags).toHaveBeenCalledWith([
-      { type: 'Detail', id: '1' },
-    ]);
+    expect(refetchMock).toHaveBeenCalledTimes(1);
   });
 
   it('shows updating text on refresh button during refetch', () => {
