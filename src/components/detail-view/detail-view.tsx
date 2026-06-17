@@ -4,7 +4,6 @@ import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
 import { API_STATUS, ROUTES } from '@/constants/constants';
 import { ErrorState } from '@/components/error-state/error-state';
-import { Button } from '@/components/button/button';
 import styles from './detail-view.module.css';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useGetDetailQuery, useGetListQuery } from '@/store/api/api-endpoints';
@@ -39,7 +38,6 @@ export function DetailView({ detailId }: DetailViewProps) {
   const {
     data: result,
     isLoading,
-    isFetching,
     error,
     refetch: refetchDetail,
   } = useGetDetailQuery(detailId, { skip: !!cachedItem });
@@ -114,12 +112,6 @@ export function DetailView({ detailId }: DetailViewProps) {
   return (
     <DetailLayout closeDetailView={closeDetailView}>
       <Card item={item} variant="detailed" />
-      <Button
-        onClick={handleRefresh}
-        text={isFetching ? 'Updating...' : 'Refresh'}
-        disabled={isFetching}
-        className="refresh-button"
-      />
     </DetailLayout>
   );
 }
