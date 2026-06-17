@@ -6,6 +6,14 @@ import { mockItemFull, mockItemPartial } from '@/test-utils/api-mock';
 import type { PokemonWithDescription } from '@/types/api';
 import userEvent from '@testing-library/user-event';
 
+const { mockUseSelector } = vi.hoisted(() => ({
+  mockUseSelector: vi.fn(),
+}));
+
+vi.mock('react-redux', () => ({
+  useSelector: mockUseSelector,
+}));
+
 vi.mock('@/components/loader/loader', () => ({
   Loader: () => <div data-testid="loader">Loading...</div>,
 }));
@@ -56,13 +64,23 @@ vi.mock('@/components/pagination/pagination', () => ({
   ),
 }));
 
+const mockUiState = (overrides = {}) => {
+  const defaultState = {
+    isLoading: false,
+    isFetching: false,
+    isError: false,
+    error: null,
+    totalPages: 0,
+  };
+
+  mockUseSelector.mockReturnValue({
+    ...defaultState,
+    ...overrides,
+  });
+};
+
 const defaultProps = {
   data: [],
-  isLoading: false,
-  isError: false,
-  isFetching: false,
-  error: undefined,
-  totalPages: 0,
   onRefresh: vi.fn(),
   onCardClick: vi.fn(),
 };
@@ -70,30 +88,27 @@ const defaultProps = {
 describe('CardList component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockUiState();
   });
 
   it('renders loading state correctly', () => {
-    render(<CardList {...defaultProps} isLoading={true} />);
+    mockUiState({ isLoading: true });
+    render(<CardList {...defaultProps} />);
 
     expect(screen.getByTestId('loader')).toBeInTheDocument();
   });
 
   it('shows loader when fetching data', () => {
-    render(
-      <CardList
-        {...defaultProps}
-        data={[mockItemFull]}
-        isFetching={true}
-        totalPages={1}
-      />,
-    );
+    mockUiState({ isFetching: true, totalPages: 1 });
+    render(<CardList {...defaultProps} data={[mockItemFull]} />);
 
     expect(screen.getByTestId('loader')).toBeInTheDocument();
     expect(screen.getByText(/bulbasaur/i)).toBeInTheDocument();
   });
 
   it('renders item cards after successful search', () => {
-    render(<CardList {...defaultProps} data={[mockItemFull]} totalPages={1} />);
+    mockUiState({ totalPages: 1 });
+    render(<CardList {...defaultProps} data={[mockItemFull]} />);
 
     expect(screen.getByText(/bulbasaur/i)).toBeInTheDocument();
     expect(
@@ -102,12 +117,9 @@ describe('CardList component', () => {
   });
 
   it('renders correct number of cards', () => {
+    mockUiState({ totalPages: 1 });
     render(
-      <CardList
-        {...defaultProps}
-        data={[mockItemFull, mockItemPartial]}
-        totalPages={1}
-      />,
+      <CardList {...defaultProps} data={[mockItemFull, mockItemPartial]} />,
     );
 
     expect(screen.getByText(/bulbasaur/i)).toBeInTheDocument();
@@ -115,39 +127,28 @@ describe('CardList component', () => {
   });
 
   it('displays not found message when api returns not-found state', () => {
-    render(
-      <CardList
-        {...defaultProps}
-        data={[]}
-        isFetching={false}
-        totalPages={0}
-      />,
-    );
+    mockUiState({ isFetching: false, totalPages: 0 });
+    render(<CardList {...defaultProps} data={[]} />);
 
     expect(screen.getByText(ERROR_MESSAGES.NOTFOUND)).toBeInTheDocument();
   });
 
   it('shows error state when isError is true', () => {
-    render(
-      <CardList
-        {...defaultProps}
-        isError={true}
-        error={{ status: 500, data: 'Server error' }}
-      />,
-    );
+    mockUiState({ isError: true, error: 'Server error' });
+    render(<CardList {...defaultProps} />);
 
-    expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
+    expect(screen.getByText(/server error/i)).toBeInTheDocument();
   });
 
   it('calls onCardClick when card is clicked', async () => {
     const user = userEvent.setup();
     const onCardClick = vi.fn();
 
+    mockUiState({ totalPages: 1 });
     render(
       <CardList
         {...defaultProps}
         data={[mockItemFull]}
-        totalPages={1}
         onCardClick={onCardClick}
       />,
     );
@@ -161,11 +162,11 @@ describe('CardList component', () => {
     const user = userEvent.setup();
     const onRefresh = vi.fn();
 
+    mockUiState({ totalPages: 1 });
     render(
       <CardList
         {...defaultProps}
         data={[mockItemFull]}
-        totalPages={1}
         onRefresh={onRefresh}
       />,
     );
@@ -176,31 +177,23 @@ describe('CardList component', () => {
   });
 
   it('shows pagination when not fetching', () => {
-    render(
-      <CardList {...defaultProps} data={[mockItemFull]} totalPages={67} />,
-    );
+    mockUiState({ totalPages: 67 });
+    render(<CardList {...defaultProps} data={[mockItemFull]} />);
 
     expect(screen.getByTestId('pagination')).toBeInTheDocument();
     expect(screen.getByText(/Total: 67/)).toBeInTheDocument();
   });
 
   it('hides pagination when fetching', () => {
-    render(
-      <CardList
-        {...defaultProps}
-        data={[mockItemFull]}
-        isFetching={true}
-        totalPages={67}
-      />,
-    );
+    mockUiState({ isFetching: true, totalPages: 67 });
+    render(<CardList {...defaultProps} data={[mockItemFull]} />);
 
     expect(screen.queryByTestId('pagination')).not.toBeInTheDocument();
   });
 
   it('does not show error state when data is empty but fetching', () => {
-    render(
-      <CardList {...defaultProps} data={[]} isFetching={true} totalPages={0} />,
-    );
+    mockUiState({ isFetching: true, totalPages: 0 });
+    render(<CardList {...defaultProps} data={[]} />);
 
     expect(screen.queryByText(ERROR_MESSAGES.NOTFOUND)).not.toBeInTheDocument();
   });

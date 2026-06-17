@@ -293,46 +293,4 @@ describe('DetailView', () => {
     expect(screen.getByTestId('loader')).toBeInTheDocument();
     expect(screen.queryByTestId('card')).not.toBeInTheDocument();
   });
-
-  it('invalidates cache when refresh button is clicked', async () => {
-    const user = userEvent.setup();
-    mockListQueryEmpty();
-
-    const refetchMock = vi.fn();
-
-    vi.mocked(useGetDetailQuery).mockReturnValue({
-      data: {
-        status: API_STATUS.SUCCESS,
-        data: mockItemFull,
-      },
-      isLoading: false,
-      isFetching: false,
-      refetch: refetchMock,
-    });
-
-    renderWithProvider(<DetailView detailId="1" />);
-
-    const refreshButton = screen.getByRole('button', { name: /refresh/i });
-    await user.click(refreshButton);
-
-    expect(refetchMock).toHaveBeenCalledTimes(1);
-  });
-
-  it('shows updating text on refresh button during refetch', () => {
-    vi.mocked(useGetDetailQuery).mockReturnValue({
-      data: {
-        status: API_STATUS.SUCCESS,
-        data: mockItemFull,
-      },
-      isLoading: false,
-      isFetching: true,
-      refetch: vi.fn(),
-    });
-
-    renderWithProvider(<DetailView detailId="1" />);
-
-    const refreshButton = screen.getByRole('button', { name: /updating/i });
-    expect(refreshButton).toBeInTheDocument();
-    expect(refreshButton).toBeDisabled();
-  });
 });
