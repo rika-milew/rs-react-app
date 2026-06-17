@@ -6,7 +6,8 @@ import { Button } from '@/components/button/button';
 import { ERROR_MESSAGES } from '@/constants/constants';
 import type { PokemonWithDescription } from '@/types/api';
 import { ErrorState } from '@/components/error-state/error-state';
-import { getErrorMessage } from '@/utils/error-handlers';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/store';
 
 import styles from './card-list.module.css';
 
@@ -14,25 +15,15 @@ const cx = classNames.bind(styles);
 
 type CardListProps = {
   data: PokemonWithDescription[];
-  isLoading: boolean;
-  isError: boolean;
-  isFetching: boolean;
-  error: unknown;
-  totalPages: number;
   onRefresh: () => void;
   onCardClick: (id: number) => void;
 };
 
-export function CardList({
-  data,
-  isLoading,
-  isError,
-  isFetching,
-  error,
-  totalPages,
-  onRefresh,
-  onCardClick,
-}: CardListProps) {
+export function CardList({ data, onRefresh, onCardClick }: CardListProps) {
+  const { isLoading, isError, isFetching, error, totalPages } = useSelector(
+    (state: RootState) => state.uiState,
+  );
+
   if (isLoading) {
     return (
       <section className={cx('section')}>
@@ -43,7 +34,12 @@ export function CardList({
   }
 
   if (isError) {
-    return <ErrorState message={getErrorMessage(error)} onReload={onRefresh} />;
+    return (
+      <ErrorState
+        message={error ?? ERROR_MESSAGES.DEFAULT}
+        onReload={onRefresh}
+      />
+    );
   }
 
   if (data.length === 0 && !isFetching) {
