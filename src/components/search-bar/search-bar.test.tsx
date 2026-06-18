@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { SearchBar } from './search-bar';
@@ -56,9 +57,29 @@ vi.mock('@/components/button/button', () => ({
   ),
 }));
 
+vi.mock('@/hooks/use-local-storage', () => ({
+  useLocalStorage: (key: string, initialValue: string) => {
+    const [value, setValue] = React.useState(() => {
+      const stored = localStorage.getItem(key);
+      return stored ?? initialValue;
+    });
+
+    const setStoredValue = (newValue: string) => {
+      const processedValue = newValue.trim() || initialValue;
+      if (processedValue) {
+        localStorage.setItem(key, processedValue);
+      } else {
+        localStorage.removeItem(key);
+      }
+      setValue(processedValue);
+    };
+
+    return [value, setStoredValue];
+  },
+}));
+
 describe('SearchBar component', () => {
-  const onSearch = vi.fn();
-  const onDataChange = vi.fn();
+  const onSearchResult = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -71,23 +92,24 @@ describe('SearchBar component', () => {
   });
 
   it('renders search input and search button', () => {
-    render(<SearchBar onSearch={onSearch} onDataChange={onDataChange} />);
+    render(<SearchBar onSearchResult={onSearchResult} />);
 
     expect(screen.getByPlaceholderText(/search pokémon/i)).toBeInTheDocument();
 
     expect(screen.getByRole('button', { name: /search/i })).toBeInTheDocument();
   });
 
-  it('displays initial search term value from props', () => {
-    render(
-      <SearchBar value="bulbasaur" onSearch={vi.fn()} onDataChange={vi.fn()} />,
-    );
+  it('displays saved search term from localStorage on initial render', () => {
+    localStorage.setItem('search', 'bulbasaur');
 
-    expect(screen.getByRole('searchbox')).toHaveValue('bulbasaur');
+    render(<SearchBar onSearchResult={onSearchResult} />);
+
+    const input = screen.getByRole('searchbox');
+    expect(input).toHaveValue('bulbasaur');
   });
 
   it('shows empty input when no saved term exists', () => {
-    render(<SearchBar onSearch={onSearch} onDataChange={onDataChange} />);
+    render(<SearchBar onSearchResult={onSearchResult} />);
 
     const input = screen.getByRole('searchbox');
     expect(input).toHaveValue('');
@@ -96,7 +118,7 @@ describe('SearchBar component', () => {
   it('updates input value when user types', async () => {
     const user = userEvent.setup();
 
-    render(<SearchBar onSearch={vi.fn()} onDataChange={vi.fn()} />);
+    render(<SearchBar onSearchResult={onSearchResult} />);
 
     const input = screen.getByRole('searchbox');
     await user.type(input, 'bulbasaur');
@@ -106,39 +128,40 @@ describe('SearchBar component', () => {
 
   it('triggers search callback with correct parameters', async () => {
     const user = userEvent.setup();
-    const onSearch = vi.fn();
 
-    render(<SearchBar onSearch={onSearch} onDataChange={vi.fn()} />);
+    render(<SearchBar onSearchResult={onSearchResult} />);
 
     const input = screen.getByRole('searchbox');
 
     await user.type(input, '  bulbasaur   ');
     await user.click(screen.getByRole('button', { name: /search/i }));
 
-    expect(onSearch).toHaveBeenCalledWith('bulbasaur');
+    expect(input).toHaveValue('bulbasaur');
+
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'uiState/resetError',
+    });
   });
 
   it('calls search callback with empty string when input is empty', async () => {
     const user = userEvent.setup();
 
-    render(<SearchBar onSearch={onSearch} onDataChange={onDataChange} />);
+    render(<SearchBar onSearchResult={onSearchResult} />);
 
     const button = screen.getByRole('button', { name: /search/i });
     await user.click(button);
-
-    expect(onSearch).toHaveBeenCalledWith('');
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'uiState/resetError',
+    });
+    expect(onSearchResult).toHaveBeenCalledWith(false, []);
   });
 
   it('dispatches loading state when search is loading', async () => {
     mockIsLoading = true;
 
-    render(
-      <SearchBar
-        value="bulbasaur"
-        onSearch={vi.fn()}
-        onDataChange={onDataChange}
-      />,
-    );
+    localStorage.setItem('search', JSON.stringify('bulbasaur'));
+
+    render(<SearchBar onSearchResult={onSearchResult} />);
 
     await waitFor(() => {
       expect(mockDispatch).toHaveBeenCalledWith({
@@ -159,16 +182,12 @@ describe('SearchBar component', () => {
       description: 'A strange seed was planted on its back at birth.',
     };
 
-    render(
-      <SearchBar
-        value="bulbasaur"
-        onSearch={vi.fn()}
-        onDataChange={onDataChange}
-      />,
-    );
+    localStorage.setItem('search', JSON.stringify('bulbasaur'));
+
+    render(<SearchBar onSearchResult={onSearchResult} />);
 
     await waitFor(() => {
-      expect(onDataChange).toHaveBeenCalledWith([mockSearchData]);
+      expect(onSearchResult).toHaveBeenCalledWith(true, [mockSearchData]);
       expect(mockDispatch).toHaveBeenCalledWith({
         type: 'uiState/setTotalPages',
         payload: 1,
@@ -179,16 +198,12 @@ describe('SearchBar component', () => {
   it('dispatches not found when search returns null', async () => {
     mockSearchData = null;
 
-    render(
-      <SearchBar
-        value="unknown"
-        onSearch={vi.fn()}
-        onDataChange={onDataChange}
-      />,
-    );
+    localStorage.setItem('search', JSON.stringify('unknown'));
+
+    render(<SearchBar onSearchResult={onSearchResult} />);
 
     await waitFor(() => {
-      expect(onDataChange).toHaveBeenCalledWith([]);
+      expect(onSearchResult).toHaveBeenCalledWith(true, []);
       expect(mockDispatch).toHaveBeenCalledWith({
         type: 'uiState/setError',
         payload: ERROR_MESSAGES.NOTFOUND,
@@ -200,16 +215,16 @@ describe('SearchBar component', () => {
     mockIsError = true;
     mockError = { data: 'Server error' };
 
-    render(
-      <SearchBar value="test" onSearch={vi.fn()} onDataChange={onDataChange} />,
-    );
+    localStorage.setItem('search', JSON.stringify('test'));
+
+    render(<SearchBar onSearchResult={onSearchResult} />);
 
     await waitFor(() => {
       expect(mockDispatch).toHaveBeenCalledWith({
         type: 'uiState/setError',
         payload: 'Server error',
       });
-      expect(onDataChange).toHaveBeenCalledWith([]);
+      expect(onSearchResult).toHaveBeenCalledWith(true, []);
     });
   });
 });
