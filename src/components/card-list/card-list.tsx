@@ -1,67 +1,57 @@
 import classNames from 'classnames/bind';
-import { useSearch, useNavigate } from '@tanstack/react-router';
-import { useEffect } from 'react';
-import { useDataList } from '@/hooks/use-data-list';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
 import { Pagination } from '@/components/pagination/pagination';
-import { ERROR_MESSAGES, ROUTES } from '@/constants/constants';
+import { Button } from '@/components/button/button';
+import { ERROR_MESSAGES } from '@/constants/constants';
+import type { PokemonWithDescription } from '@/types/api';
 import { ErrorState } from '@/components/error-state/error-state';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/store';
+
 import styles from './card-list.module.css';
 
 const cx = classNames.bind(styles);
 
 type CardListProps = {
-  search: string;
+  data: PokemonWithDescription[];
+  onRefresh: () => void;
+  onCardClick: (id: number) => void;
 };
 
-export function CardList({ search }: CardListProps) {
-  const { data, totalPages, status, error, loadData } = useDataList();
-  const searchParams = useSearch({ from: ROUTES.LAYOUT });
-  const { page = 1 } = searchParams;
-  const navigate = useNavigate();
+export function CardList({ data, onRefresh, onCardClick }: CardListProps) {
+  const { isLoading, isError, isFetching, error, totalPages } = useSelector(
+    (state: RootState) => state.uiState,
+  );
 
-  const openDetailView = (id: number) => {
-    void navigate({
-      to: ROUTES.DETAIL,
-      params: { detailId: String(id) },
-      search: searchParams,
-    });
-  };
+  if (isLoading) {
+    return (
+      <section className={cx('section')}>
+        <h2 className={cx('title')}>Results</h2>
+        <Loader />
+      </section>
+    );
+  }
 
-  useEffect(() => {
-    void loadData(search, page - 1);
-  }, [search, page, loadData]);
-
-  if (status === 'error') {
+  if (isError) {
     return (
       <ErrorState
         message={error ?? ERROR_MESSAGES.DEFAULT}
-        onReload={() => {
-          void loadData(search, page - 1);
-        }}
+        onReload={onRefresh}
       />
     );
   }
 
-  if (status === 'not-found') {
+  if (data.length === 0 && !isFetching) {
     return (
-      <ErrorState
-        message={ERROR_MESSAGES.NOTFOUND}
-        onReload={() => {
-          void loadData(search, page - 1);
-        }}
-      />
+      <ErrorState message={ERROR_MESSAGES.NOTFOUND} onReload={onRefresh} />
     );
   }
-
-  const isListLoaded = status === 'success';
-  const isLoading = status === 'loading';
 
   return (
     <section className={cx('section')}>
       <h2 className={cx('title')}>Results</h2>
-      {isLoading && <Loader />}
+      {isFetching && <Loader />}
       <div className={cx('card-container')}>
         {data.map((card) => (
           <Card
@@ -69,12 +59,18 @@ export function CardList({ search }: CardListProps) {
             item={card}
             variant="short"
             onClick={() => {
-              openDetailView(card.id);
+              onCardClick(card.id);
             }}
           />
         ))}
       </div>
-      {isListLoaded && !isLoading && <Pagination totalPages={totalPages} />}
+      {!isFetching && <Pagination totalPages={totalPages} />}
+      <Button
+        onClick={onRefresh}
+        text={isFetching ? 'Updating...' : 'Refresh'}
+        disabled={isFetching}
+        className="refresh-button"
+      />
     </section>
   );
 }

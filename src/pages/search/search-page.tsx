@@ -1,30 +1,123 @@
-import { useNavigate } from '@tanstack/react-router';
 import { CardList } from '@/components/card-list/card-list';
 import { SearchBar } from '@/components/search-bar/search-bar';
 import { ErrorButton } from '@/components/error-button/error-button';
-import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useCallback, useEffect, useState } from 'react';
+import { useSearch, useNavigate } from '@tanstack/react-router';
+import { ROUTES, API_STATUS } from '@/constants/constants';
+import { useGetListQuery } from '@/store/api/api-endpoints';
+import { getErrorMessage } from '@/utils/error-handlers';
+import { useDispatch } from 'react-redux';
+import {
+  setLoading,
+  setFetching,
+  setError,
+  setTotalPages,
+} from '@/store/ui-state-slice';
+import type { PokemonWithDescription } from '@/types/api';
 
 export const SearchPage = () => {
-  const [searchQuery, setSearchQuery] = useLocalStorage('search', '');
-  const navigate = useNavigate();
+  const [searchData, setSearchData] = useState<PokemonWithDescription[]>([]);
+  const [isSearchActive, setIsSearchActive] = useState(false);
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    void navigate({
-      to: '.',
-      search: { page: 1 },
-      replace: true,
-    });
-  };
+  const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+  const searchParams = useSearch({ from: ROUTES.LAYOUT });
+  const { page = 1 } = searchParams;
+  const currentPage = page - 1;
+
+  const {
+    data: listData,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    refetch: refetchList,
+  } = useGetListQuery(
+    { search: '', page: currentPage },
+    { skip: isSearchActive },
+  );
+
+  useEffect(() => {
+    if (isSearchActive) {
+      return;
+    }
+
+    dispatch(setLoading(isLoading));
+    dispatch(setFetching(isFetching));
+
+    if (isError) {
+      dispatch(setError(getErrorMessage(error)));
+      return;
+    }
+
+    if (listData) {
+      if (listData.status === API_STATUS.SUCCESS) {
+        dispatch(setTotalPages(listData.totalPages));
+      } else {
+        dispatch(setTotalPages(0));
+      }
+    }
+  }, [
+    listData,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    isSearchActive,
+    dispatch,
+  ]);
+
+  const handleSearchResult = useCallback(
+    (isActive: boolean, data: PokemonWithDescription[]) => {
+      setIsSearchActive(isActive);
+      setSearchData(data);
+
+      if (isActive) {
+        void navigate({
+          to: '.',
+          search: { page: 1 },
+          replace: true,
+        });
+      }
+    },
+    [navigate],
+  );
+
+  const handleRefresh = useCallback(() => {
+    if (isSearchActive) {
+      setIsSearchActive(false);
+      setSearchData([]);
+    } else {
+      void refetchList();
+    }
+  }, [isSearchActive, refetchList]);
+
+  const openDetailView = useCallback(
+    (id: number) => {
+      void navigate({
+        to: ROUTES.DETAIL,
+        params: { detailId: String(id) },
+        search: searchParams,
+      });
+    },
+    [navigate, searchParams],
+  );
+
+  const data = isSearchActive
+    ? searchData
+    : listData?.status === API_STATUS.SUCCESS
+      ? listData.data
+      : [];
 
   return (
     <>
-      <SearchBar
-        key={searchQuery}
-        value={searchQuery}
-        onSearch={handleSearch}
+      <SearchBar onSearchResult={handleSearchResult} />
+      <CardList
+        data={data}
+        onRefresh={handleRefresh}
+        onCardClick={openDetailView}
       />
-      <CardList search={searchQuery} />
       <ErrorButton />
     </>
   );

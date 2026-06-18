@@ -8,9 +8,12 @@ export const CARD_LIMIT = 18;
 
 export const LOADING_DELAY_MS = 300;
 
+export const DEFAULT_CACHE_TTL = 300;
+
 export const HTTP_STATUS = {
   NETWORK_ERROR: 0,
   OK: 200,
+  BAD_REQUEST: 400,
   NOT_FOUND: 404,
   INTERNAL_SERVER_ERROR: 500,
 } as const;
@@ -43,3 +46,10 @@ export const ERROR_MESSAGES = {
 
 export type ErrorMessageType =
   (typeof ERROR_MESSAGES)[keyof typeof ERROR_MESSAGES];
+
+export const VALID_ERROR_STATUSES = [
+  'FETCH_ERROR',
+  'PARSING_ERROR',
+  'TIMEOUT_ERROR',
+  'CUSTOM_ERROR',
+];

@@ -1,304 +1,200 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { CardList } from './card-list';
-import userEvent from '@testing-library/user-event';
+import { ERROR_MESSAGES } from '@/constants/constants';
 import { mockItemFull, mockItemPartial } from '@/test-utils/api-mock';
-import { useSearch, useNavigate } from '@tanstack/react-router';
-import { useDataList } from '@/hooks/use-data-list';
-import { Provider } from 'react-redux';
-import type { ReactElement } from 'react';
-import { configureStore, type Store } from '@reduxjs/toolkit';
-import selectedItemsReducer from '@/store/slice';
+import type { PokemonWithDescription } from '@/types/api';
+import userEvent from '@testing-library/user-event';
 
-type RootState = {
-  selectedItems: ReturnType<typeof selectedItemsReducer>;
-};
-
-const createMockStore = (): Store<RootState> => {
-  return configureStore<RootState>({
-    reducer: {
-      selectedItems: selectedItemsReducer,
-    },
-  });
-};
-
-vi.mock('@tanstack/react-router', () => ({
-  useSearch: vi.fn(),
-  useNavigate: vi.fn(),
+const { mockUseSelector } = vi.hoisted(() => ({
+  mockUseSelector: vi.fn(),
 }));
 
-vi.mock('@/hooks/use-data-list', () => ({
-  useDataList: vi.fn(),
+vi.mock('react-redux', () => ({
+  useSelector: mockUseSelector,
 }));
 
-describe('CardList component', () => {
-  const mockNavigate = vi.fn();
-  const mockLoadData = vi.fn();
+vi.mock('@/components/loader/loader', () => ({
+  Loader: () => <div data-testid="loader">Loading...</div>,
+}));
 
-  const renderWithProvider = (ui: ReactElement) => {
-    const store = createMockStore();
-    return {
-      ...render(<Provider store={store}>{ui}</Provider>),
-      store,
-    };
+vi.mock('@/components/error-state/error-state', () => ({
+  ErrorState: ({
+    message,
+    onReload,
+  }: {
+    message: string;
+    onReload: () => void;
+  }) => (
+    <div>
+      <p>{message}</p>
+      <button onClick={onReload}>Try again</button>
+    </div>
+  ),
+}));
+
+vi.mock('@/components/card/card', () => ({
+  Card: ({
+    item,
+    onClick,
+  }: {
+    item: PokemonWithDescription;
+    variant?: string;
+    onClick?: () => void;
+  }) => (
+    <div
+      data-testid={`card-${String(item.id)}`}
+      onClick={onClick}
+      role="button"
+    >
+      <h3>{item.name}</h3>
+      <p>{item.description}</p>
+    </div>
+  ),
+}));
+
+vi.mock('@/components/pagination/pagination', () => ({
+  Pagination: ({ totalPages }: { totalPages: number }) => (
+    <div data-testid="pagination">
+      <button>Prev</button>
+      <span>Page</span>
+      <button>Next</button>
+      <span>Total: {totalPages}</span>
+    </div>
+  ),
+}));
+
+const mockUiState = (overrides = {}) => {
+  const defaultState = {
+    isLoading: false,
+    isFetching: false,
+    isError: false,
+    error: null,
+    totalPages: 0,
   };
 
+  mockUseSelector.mockReturnValue({
+    ...defaultState,
+    ...overrides,
+  });
+};
+
+const defaultProps = {
+  data: [],
+  onRefresh: vi.fn(),
+  onCardClick: vi.fn(),
+};
+
+describe('CardList component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(useSearch).mockReturnValue({ page: 1 });
-    vi.mocked(useNavigate).mockReturnValue(mockNavigate);
-
-    vi.mocked(useDataList).mockReturnValue({
-      data: [],
-      totalPages: 0,
-      status: 'loading',
-      error: null,
-      loadData: mockLoadData,
-    });
+    mockUiState();
   });
 
-  it('renders loading state initially', () => {
-    renderWithProvider(<CardList search="" />);
+  it('renders loading state correctly', () => {
+    mockUiState({ isLoading: true });
+    render(<CardList {...defaultProps} />);
 
-    expect(screen.getByText(/loading/i)).toBeInTheDocument();
+    expect(screen.getByTestId('loader')).toBeInTheDocument();
   });
 
-  it('shows pagination component when search input is empty', async () => {
-    vi.mocked(useDataList).mockReturnValue({
-      data: [],
-      totalPages: 85,
-      status: 'success',
-      error: null,
-      loadData: mockLoadData,
-    });
+  it('shows loader when fetching data', () => {
+    mockUiState({ isFetching: true, totalPages: 1 });
+    render(<CardList {...defaultProps} data={[mockItemFull]} />);
 
-    renderWithProvider(<CardList search="" />);
-
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: /next/i })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: /prev/i })).toBeInTheDocument();
-    });
+    expect(screen.getByTestId('loader')).toBeInTheDocument();
+    expect(screen.getByText(/bulbasaur/i)).toBeInTheDocument();
   });
 
-  it('does not render pagination during search', () => {
-    vi.mocked(useDataList).mockReturnValue({
-      data: [],
-      totalPages: 5,
-      status: 'loading',
-      error: null,
-      loadData: mockLoadData,
-    });
+  it('renders item cards after successful search', () => {
+    mockUiState({ totalPages: 1 });
+    render(<CardList {...defaultProps} data={[mockItemFull]} />);
 
-    renderWithProvider(<CardList search="venusaur" />);
-
-    expect(
-      screen.queryByRole('button', { name: /next/i }),
-    ).not.toBeInTheDocument();
-
-    expect(
-      screen.queryByRole('button', { name: /prev/i }),
-    ).not.toBeInTheDocument();
-  });
-
-  it('renders item cards after successful search', async () => {
-    vi.mocked(useDataList).mockReturnValue({
-      data: [mockItemFull],
-      totalPages: 1,
-      status: 'success',
-      error: null,
-      loadData: mockLoadData,
-    });
-
-    renderWithProvider(<CardList search="" />);
-
-    expect(await screen.findByText(/bulbasaur/i)).toBeInTheDocument();
+    expect(screen.getByText(/bulbasaur/i)).toBeInTheDocument();
     expect(
       screen.getByText(/A strange seed was planted on its back at birth./i),
     ).toBeInTheDocument();
   });
 
-  it('renders correct number of cards', async () => {
-    vi.mocked(useDataList).mockReturnValue({
-      data: [mockItemFull, mockItemPartial],
-      totalPages: 1,
-      status: 'success',
-      error: null,
-      loadData: mockLoadData,
-    });
+  it('renders correct number of cards', () => {
+    mockUiState({ totalPages: 1 });
+    render(
+      <CardList {...defaultProps} data={[mockItemFull, mockItemPartial]} />,
+    );
 
-    renderWithProvider(<CardList search="" />);
-
-    expect(await screen.findByText(/bulbasaur/i)).toBeInTheDocument();
+    expect(screen.getByText(/bulbasaur/i)).toBeInTheDocument();
     expect(screen.getByText(/ivysaur/i)).toBeInTheDocument();
-
-    const images = await screen.findAllByRole('img');
-    expect(images).toHaveLength(2);
   });
 
-  it('displays not found message when when api returns not-found state', async () => {
-    vi.mocked(useDataList).mockReturnValue({
-      data: [],
-      totalPages: 0,
-      status: 'not-found',
-      error: null,
-      loadData: mockLoadData,
-    });
+  it('displays not found message when api returns not-found state', () => {
+    mockUiState({ isFetching: false, totalPages: 0 });
+    render(<CardList {...defaultProps} data={[]} />);
 
-    renderWithProvider(<CardList search="unknown" />);
-
-    expect(await screen.findByText(/pokemon not found/i)).toBeInTheDocument();
+    expect(screen.getByText(ERROR_MESSAGES.NOTFOUND)).toBeInTheDocument();
   });
 
-  it('renders no cards when data is empty', () => {
-    vi.mocked(useDataList).mockReturnValue({
-      data: [],
-      totalPages: 1,
-      status: 'success',
-      error: null,
-      loadData: mockLoadData,
-    });
+  it('shows error state when isError is true', () => {
+    mockUiState({ isError: true, error: 'Server error' });
+    render(<CardList {...defaultProps} />);
 
-    renderWithProvider(<CardList search="" />);
-
-    const cards = screen.queryAllByRole('img');
-
-    expect(cards).toHaveLength(0);
+    expect(screen.getByText(/server error/i)).toBeInTheDocument();
   });
 
-  it('renders api error message when when api returns error state', async () => {
-    vi.mocked(useDataList).mockReturnValue({
-      data: [],
-      totalPages: 0,
-      status: 'error',
-      error: 'Server error',
-      loadData: mockLoadData,
-    });
-
-    renderWithProvider(<CardList search="" />);
-
-    expect(await screen.findByText(/server error/i)).toBeInTheDocument();
-  });
-
-  it('shows error state when API request fails', async () => {
-    vi.mocked(useDataList).mockReturnValue({
-      data: [],
-      totalPages: 0,
-      status: 'error',
-      error: null,
-      loadData: mockLoadData,
-    });
-
-    renderWithProvider(<CardList search="" />);
-
-    expect(
-      await screen.findByText(/something went wrong/i),
-    ).toBeInTheDocument();
-  });
-
-  it('calls api with the search query', () => {
-    vi.mocked(useDataList).mockReturnValue({
-      data: [],
-      totalPages: 1,
-      status: 'success',
-      error: null,
-      loadData: mockLoadData,
-    });
-
-    renderWithProvider(<CardList search="bulbasaur" />);
-
-    expect(mockLoadData).toHaveBeenCalledWith('bulbasaur', 0);
-  });
-
-  it('resets page to 0 when search changes', () => {
-    vi.mocked(useSearch).mockReturnValue({ page: 3 });
-
-    vi.mocked(useDataList).mockReturnValue({
-      data: [],
-      totalPages: 10,
-      status: 'success',
-      error: null,
-      loadData: mockLoadData,
-    });
-
-    const { rerender } = renderWithProvider(<CardList search="bulbasaur" />);
-    expect(mockLoadData).toHaveBeenCalledWith('bulbasaur', 2);
-    vi.mocked(useSearch).mockReturnValue({ page: 1 });
-    rerender(<CardList search="charmander" />);
-    expect(mockLoadData).toHaveBeenCalledWith('charmander', 0);
-    expect(mockLoadData).toHaveBeenCalledTimes(2);
-  });
-
-  it('loads next page when next button is clicked', async () => {
+  it('calls onCardClick when card is clicked', async () => {
     const user = userEvent.setup();
+    const onCardClick = vi.fn();
 
-    vi.mocked(useDataList).mockReturnValue({
-      data: [],
-      totalPages: 10,
-      status: 'success',
-      error: null,
-      loadData: mockLoadData,
-    });
+    mockUiState({ totalPages: 1 });
+    render(
+      <CardList
+        {...defaultProps}
+        data={[mockItemFull]}
+        onCardClick={onCardClick}
+      />,
+    );
 
-    renderWithProvider(<CardList search="" />);
+    await user.click(screen.getByTestId('card-1'));
 
-    const nextButton = await screen.findByRole('button', { name: /next/i });
-
-    await user.click(nextButton);
-
-    expect(mockNavigate).toHaveBeenCalledWith({
-      to: '.',
-      search: { page: 2 },
-      replace: true,
-    });
+    expect(onCardClick).toHaveBeenCalledWith(1);
   });
 
-  it('loads previous page when previous button is clicked', async () => {
+  it('calls onRefresh when refresh button is clicked', async () => {
     const user = userEvent.setup();
+    const onRefresh = vi.fn();
 
-    vi.mocked(useSearch).mockReturnValue({ page: 2 });
+    mockUiState({ totalPages: 1 });
+    render(
+      <CardList
+        {...defaultProps}
+        data={[mockItemFull]}
+        onRefresh={onRefresh}
+      />,
+    );
 
-    vi.mocked(useDataList).mockReturnValue({
-      data: [],
-      totalPages: 10,
-      status: 'success',
-      error: null,
-      loadData: mockLoadData,
-    });
+    await user.click(screen.getByRole('button', { name: /refresh/i }));
 
-    renderWithProvider(<CardList search="" />);
-
-    const nextButton = await screen.findByRole('button', { name: /next/i });
-    await user.click(nextButton);
-
-    const previousButton = await screen.findByRole('button', { name: /prev/i });
-    await user.click(previousButton);
-
-    expect(mockNavigate).toHaveBeenCalledWith({
-      to: '.',
-      search: { page: 1 },
-      replace: true,
-    });
+    expect(onRefresh).toHaveBeenCalledTimes(1);
   });
 
-  it('stays on first page when prev is clicked', async () => {
-    const user = userEvent.setup();
+  it('shows pagination when not fetching', () => {
+    mockUiState({ totalPages: 67 });
+    render(<CardList {...defaultProps} data={[mockItemFull]} />);
 
-    vi.mocked(useSearch).mockReturnValue({ page: 1 });
-    vi.mocked(useDataList).mockReturnValue({
-      data: [],
-      totalPages: 3,
-      status: 'success',
-      error: null,
-      loadData: mockLoadData,
-    });
+    expect(screen.getByTestId('pagination')).toBeInTheDocument();
+    expect(screen.getByText(/Total: 67/)).toBeInTheDocument();
+  });
 
-    renderWithProvider(<CardList search="" />);
+  it('hides pagination when fetching', () => {
+    mockUiState({ isFetching: true, totalPages: 67 });
+    render(<CardList {...defaultProps} data={[mockItemFull]} />);
 
-    const previousButton = await screen.findByRole('button', { name: /prev/i });
-    await user.click(previousButton);
+    expect(screen.queryByTestId('pagination')).not.toBeInTheDocument();
+  });
 
-    expect(mockNavigate).not.toHaveBeenCalled();
+  it('does not show error state when data is empty but fetching', () => {
+    mockUiState({ isFetching: true, totalPages: 0 });
+    render(<CardList {...defaultProps} data={[]} />);
 
-    expect(mockLoadData).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText(ERROR_MESSAGES.NOTFOUND)).not.toBeInTheDocument();
   });
 });

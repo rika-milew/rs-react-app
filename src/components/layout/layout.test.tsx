@@ -2,22 +2,22 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { Layout } from './layout';
 import { Provider } from 'react-redux';
-import { configureStore, type Store } from '@reduxjs/toolkit';
 import type { ReactElement } from 'react';
-import selectedItemsReducer from '@/store/slice';
+import { configureStore } from '@reduxjs/toolkit';
+import { apiSlice } from '@/store/api/api-slice';
 
 vi.mock('@/components/theme-toggle/theme-toggle', () => ({
   ThemeToggle: () => <button>Toggle theme</button>,
 }));
 
-type RootState = {
-  selectedItems: ReturnType<typeof selectedItemsReducer>;
-};
+const EMPTY_STORE: string[] = [];
+const INITIAL_SELECTED_ITEMS = { selectedItems: EMPTY_STORE };
 
-const createMockStore = (): Store<RootState> => {
-  return configureStore<RootState>({
+const createMockStore = () => {
+  return configureStore({
     reducer: {
-      selectedItems: selectedItemsReducer,
+      selectedItems: (state = INITIAL_SELECTED_ITEMS) => state,
+      [apiSlice.reducerPath]: apiSlice.reducer,
     },
   });
 };

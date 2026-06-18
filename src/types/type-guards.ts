@@ -4,6 +4,9 @@ import type {
   PokemonListResponse,
   PokemonSpecies,
 } from '@/types/api';
+import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import type { SerializedError } from '@reduxjs/toolkit';
+import { VALID_ERROR_STATUSES, HTTP_STATUS } from '@/constants/constants';
 
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
@@ -162,4 +165,35 @@ export function isValidItemSpecies(data: unknown): data is PokemonSpecies {
   });
 
   return isLanguageEntry;
+}
+
+export function isFetchBaseQueryError(
+  error: unknown,
+): error is FetchBaseQueryError {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'status' in error &&
+    (typeof error.status === 'number' ||
+      (typeof error.status === 'string' &&
+        VALID_ERROR_STATUSES.includes(error.status)))
+  );
+}
+
+export function isSerializedError(error: unknown): error is SerializedError {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'message' in error &&
+    (typeof error.message === 'string' || error.message === undefined)
+  );
+}
+
+export function isNotFoundError(
+  error: FetchBaseQueryError | SerializedError | undefined,
+): boolean {
+  if (!error || !('status' in error)) {
+    return false;
+  }
+  return error.status === HTTP_STATUS.NOT_FOUND;
 }

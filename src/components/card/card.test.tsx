@@ -2,25 +2,23 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { Card, ID_LENGTH } from './card';
 import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
 import type { ReactElement } from 'react';
-import { configureStore, type Store } from '@reduxjs/toolkit';
-
+import { apiSlice } from '@/store/api/api-slice';
 import {
   mockItemFull,
   mockItemPartial,
   artworkMockImage,
 } from '@/test-utils/api-mock';
 
-import selectedItemsReducer from '@/store/slice';
+const EMPTY_STORE: string[] = [];
+const INITIAL_SELECTED_ITEMS = { selectedItems: EMPTY_STORE };
 
-type RootState = {
-  selectedItems: ReturnType<typeof selectedItemsReducer>;
-};
-
-const createMockStore = (): Store<RootState> => {
-  return configureStore<RootState>({
+const createMockStore = () => {
+  return configureStore({
     reducer: {
-      selectedItems: selectedItemsReducer,
+      selectedItems: (state = INITIAL_SELECTED_ITEMS) => state,
+      [apiSlice.reducerPath]: apiSlice.reducer,
     },
   });
 };

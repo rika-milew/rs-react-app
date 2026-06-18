@@ -5,11 +5,22 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import { Flyout } from './flyout';
 import { mockItemFull } from '@/test-utils/api-mock';
-import { getItemsById } from '@/services/api';
 import { downloadCSV } from '@/utils/download-csv';
+import type { EnhancedStore } from '@reduxjs/toolkit';
 
-vi.mock('@/services/api', () => ({
-  getItemsById: vi.fn(),
+const mockUnwrap = vi.fn();
+const mockDownloadItems = vi.fn(() => ({
+  unwrap: mockUnwrap,
+}));
+
+let mockIsLoading = false;
+const mockError = new Error('Network error');
+
+vi.mock('@/store/api/api-endpoints', () => ({
+  useDownloadMutation: () => [
+    mockDownloadItems,
+    { isLoading: mockIsLoading, error: mockError },
+  ],
 }));
 
 vi.mock('@/utils/download-csv', () => ({
@@ -20,14 +31,28 @@ vi.mock('@/components/button/button', () => ({
   Button: ({
     text,
     onClick,
+    disabled,
   }: {
     text: string;
     onClick: () => void;
     variant: string;
-  }) => <button onClick={onClick}>{text}</button>,
+    disabled?: boolean;
+  }) => (
+    <button onClick={onClick} disabled={disabled}>
+      {text}
+    </button>
+  ),
 }));
 
-const createMockStore = (selectedItems: number[] = []) => {
+type MockRootState = {
+  selectedItems: {
+    selectedItems: number[];
+  };
+};
+
+const createMockStore = (
+  selectedItems: number[] = [],
+): EnhancedStore<MockRootState> => {
   return configureStore({
     reducer: {
       selectedItems: () => ({
@@ -48,10 +73,13 @@ const renderWithProvider = (selectedItems: number[] = []) => {
     store,
   };
 };
-
 describe('flyout component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockIsLoading = false;
+    mockDownloadItems.mockReturnValue({
+      unwrap: mockUnwrap,
+    });
   });
 
   it('is not visible when no items are selected', () => {
@@ -81,21 +109,22 @@ describe('flyout component', () => {
   it('downloads CSV file with selected items', async () => {
     const user = userEvent.setup();
 
-    vi.mocked(getItemsById).mockResolvedValue([mockItemFull]);
+    mockUnwrap.mockResolvedValue([mockItemFull]);
 
     renderWithProvider([1, 2]);
 
     await user.click(screen.getByText('Download'));
 
     await waitFor(() => {
-      expect(getItemsById).toHaveBeenCalledWith([1, 2]);
+      expect(mockDownloadItems).toHaveBeenCalledWith([1, 2]);
       expect(downloadCSV).toHaveBeenCalledWith([mockItemFull]);
     });
   });
 
   it('does not download CSV file when API returns empty array', async () => {
     const user = userEvent.setup();
-    vi.mocked(getItemsById).mockResolvedValue([]);
+
+    mockUnwrap.mockResolvedValue([]);
     renderWithProvider([1]);
 
     await user.click(screen.getByText('Download'));
@@ -105,47 +134,39 @@ describe('flyout component', () => {
     });
   });
 
-  it('prevents double download while in progress', async () => {
+  it('handles download error correctly', async () => {
     const user = userEvent.setup();
 
-    vi.mocked(getItemsById).mockImplementation(
-      () =>
-        new Promise((resolve) =>
-          setTimeout(() => {
-            resolve([mockItemFull]);
-          }, 1000),
-        ),
-    );
-
-    renderWithProvider([1]);
-
-    const downloadButton = screen.getByText('Download');
-
-    await user.click(downloadButton);
-    await user.click(downloadButton);
-
-    await waitFor(() => {
-      expect(getItemsById).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  it('handles download error correcyly', async () => {
-    const user = userEvent.setup();
-    const consoleSpy = vi.spyOn(console, 'error').mockReturnValue();
-
-    vi.mocked(getItemsById).mockRejectedValue(new Error('Network error'));
+    mockUnwrap.mockRejectedValue(new Error('Network error'));
 
     renderWithProvider([1]);
 
     await user.click(screen.getByText('Download'));
 
     await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Failed to download CSV:',
-        expect.any(Error),
-      );
+      expect(screen.getByText('Failed to download CSV')).toBeInTheDocument();
     });
+  });
 
-    consoleSpy.mockRestore();
+  it('shows downloading text on button when download is in progress', () => {
+    mockIsLoading = true;
+
+    renderWithProvider([1, 2]);
+
+    const downloadButton = screen.getByText('Downloading...');
+    expect(downloadButton).toBeInTheDocument();
+    expect(downloadButton).toBeDisabled();
+  });
+
+  it('prevents multiple downloads', async () => {
+    const user = userEvent.setup();
+    mockIsLoading = true;
+
+    renderWithProvider([1, 2]);
+
+    const downloadButton = screen.getByText('Downloading...');
+    await user.click(downloadButton);
+
+    expect(mockDownloadItems).not.toHaveBeenCalled();
   });
 });

@@ -3,18 +3,18 @@ import { describe, it, expect, vi } from 'vitest';
 import { ErrorBoundary } from './error-boundary';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
-import { configureStore, type Store } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import type { ReactElement } from 'react';
-import selectedItemsReducer from '@/store/slice';
+import { apiSlice } from '@/store/api/api-slice';
 
-type RootState = {
-  selectedItems: ReturnType<typeof selectedItemsReducer>;
-};
+const EMPTY_STORE: string[] = [];
+const INITIAL_SELECTED_ITEMS = { selectedItems: EMPTY_STORE };
 
-const createMockStore = (): Store<RootState> => {
-  return configureStore<RootState>({
+const createMockStore = () => {
+  return configureStore({
     reducer: {
-      selectedItems: selectedItemsReducer,
+      selectedItems: (state = INITIAL_SELECTED_ITEMS) => state,
+      [apiSlice.reducerPath]: apiSlice.reducer,
     },
   });
 };

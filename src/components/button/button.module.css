@@ -106,10 +106,10 @@
   font-size: 0.875rem;
   font-weight: 500;
   line-height: 1.25rem;
-  color: var(--color-white);
+  color: var(--text-basic);
   text-transform: none;
 
-  background-color: hsl(from var(--color-gray-700) h s l / var(--opacity-40));
+  background-color: hsl(from var(--card-background) h s l / var(--opacity-40));
 
   transition: all var(--transition-default) var(--ease-in-cubic);
 
@@ -133,4 +133,10 @@
       color: var(--color-yellow-600);
     }
   }
+}
+
+.refresh-button {
+  width: 12rem;
+  height: 3rem;
+  margin: 1.5rem 0 auto;
 }

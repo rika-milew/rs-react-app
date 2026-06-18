@@ -1,13 +1,14 @@
 import classNames from 'classnames/bind';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useCallback } from 'react';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
-import { API_STATUS, ERROR_MESSAGES, ROUTES } from '@/constants/constants';
+import { API_STATUS, ROUTES } from '@/constants/constants';
 import { ErrorState } from '@/components/error-state/error-state';
 import styles from './detail-view.module.css';
-import type { DetailResult } from '@/services/detail-service';
-import { getDetailData } from '@/services/detail-service';
 import { useNavigate, useSearch } from '@tanstack/react-router';
+import { useGetDetailQuery, useGetListQuery } from '@/store/api/api-endpoints';
+import type { ReactNode } from 'react';
+import { getErrorMessage } from '@/utils/error-handlers';
 
 const cx = classNames.bind(styles);
 
@@ -15,15 +16,39 @@ type DetailViewProps = {
   detailId: string;
 };
 
-type ViewState = DetailResult;
-
 export function DetailView({ detailId }: DetailViewProps) {
-  const [result, setResult] = useState<ViewState>({
-    status: API_STATUS.LOADING,
-  });
-  const [refetch, setRefetch] = useState(0);
   const navigate = useNavigate();
+
   const search = useSearch({ from: ROUTES.LAYOUT });
+  const currentPage = search.page ?? 1;
+
+  const { data: cachedItem, refetch: refetchList } = useGetListQuery(
+    { search: '', page: currentPage - 1 },
+    {
+      skip: false,
+      selectFromResult: (result) => ({
+        data:
+          result.data?.status === API_STATUS.SUCCESS
+            ? result.data.data.find((item) => String(item.id) === detailId)
+            : null,
+      }),
+    },
+  );
+
+  const {
+    data: result,
+    isLoading,
+    error,
+    refetch: refetchDetail,
+  } = useGetDetailQuery(detailId, { skip: !!cachedItem });
+
+  const handleRefresh = useCallback(() => {
+    if (cachedItem) {
+      void refetchList();
+    } else {
+      void refetchDetail();
+    }
+  }, [cachedItem, refetchList, refetchDetail]);
 
   const closeDetailView = useCallback(() => {
     void navigate({
@@ -31,20 +56,6 @@ export function DetailView({ detailId }: DetailViewProps) {
       search,
     });
   }, [navigate, search]);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    void getDetailData(detailId).then((data) => {
-      if (!cancelled) {
-        setResult(data);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [detailId, refetch]);
 
   useEffect(() => {
     const handleKeyDown = (event_: KeyboardEvent) => {
@@ -73,55 +84,58 @@ export function DetailView({ detailId }: DetailViewProps) {
     };
   }, [closeDetailView]);
 
-  const handleReload = useCallback(() => {
-    setRefetch((previous) => previous + 1);
-  }, []);
+  const item =
+    cachedItem ?? (result?.status === API_STATUS.SUCCESS ? result.data : null);
+  const showLoader = !cachedItem && isLoading;
 
-  if (
-    result.status === API_STATUS.NOT_FOUND ||
-    result.status === API_STATUS.ERROR
-  ) {
+  if (showLoader) {
     return (
-      <aside data-detail className={cx('detail-view')}>
-        <ErrorState message={getErrorMessage(result)} onReload={handleReload} />
-      </aside>
-    );
-  }
-  return (
-    <aside data-detail className={cx('detail-view')}>
-      <DetailHeader onClose={closeDetailView} />
-      {result.status === API_STATUS.LOADING ? (
+      <DetailLayout closeDetailView={closeDetailView}>
         <div className={cx('loader-overlay')}>
           <Loader />
         </div>
-      ) : (
-        <Card item={result.data} variant="detailed" />
-      )}
+      </DetailLayout>
+    );
+  }
+
+  if (!item) {
+    return (
+      <DetailLayout closeDetailView={closeDetailView}>
+        <ErrorState
+          message={getErrorMessage(error, result?.status)}
+          onReload={handleRefresh}
+        />
+      </DetailLayout>
+    );
+  }
+
+  return (
+    <DetailLayout closeDetailView={closeDetailView}>
+      <Card item={item} variant="detailed" />
+    </DetailLayout>
+  );
+}
+
+function DetailLayout({
+  closeDetailView,
+  children,
+}: {
+  closeDetailView: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <aside data-detail className={cx('detail-view')}>
+      <div className={cx('header')}>
+        <h2 className={cx('title')}>Pokémon Details</h2>
+        <button
+          className={cx('close-button')}
+          onClick={closeDetailView}
+          aria-label="Close details"
+        >
+          ✕
+        </button>
+      </div>
+      {children}
     </aside>
   );
-}
-
-function DetailHeader({ onClose }: { onClose: () => void }) {
-  return (
-    <div className={cx('header')}>
-      <h2 className={cx('title')}>Pokémon Details</h2>
-      <button
-        className={cx('close-button')}
-        onClick={onClose}
-        aria-label="Close details"
-      >
-        ✕
-      </button>
-    </div>
-  );
-}
-
-function getErrorMessage(result: ViewState): string {
-  if (result.status === API_STATUS.NOT_FOUND) {
-    return ERROR_MESSAGES.NOTFOUND;
-  }
-  if (result.status === API_STATUS.ERROR) {
-    return result.message;
-  }
-  return ERROR_MESSAGES.DEFAULT;
 }
