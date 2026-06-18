@@ -67,14 +67,19 @@ vi.mock('@/components/card-list/card-list', () => ({
 
 vi.mock('@/components/search-bar/search-bar', () => ({
   SearchBar: ({
-    value,
-    onSearch,
+    onSearchResult,
   }: {
-    value: string;
-    onSearch: (value: string) => void;
-    placeholder?: string;
+    onSearchResult: (isActive: boolean, data: unknown[]) => void;
   }) => {
-    const [localValue, setLocalValue] = React.useState(value);
+    const [localValue, setLocalValue] = React.useState('');
+
+    const handleSearch = () => {
+      if (localValue.trim()) {
+        onSearchResult(true, []);
+      } else {
+        onSearchResult(false, []);
+      }
+    };
 
     return (
       <div data-testid="search-bar">
@@ -87,13 +92,7 @@ vi.mock('@/components/search-bar/search-bar', () => ({
           }}
           placeholder="Search Pokémon..."
         />
-        <button
-          onClick={() => {
-            onSearch(localValue);
-          }}
-        >
-          Search
-        </button>
+        <button onClick={handleSearch}>Search</button>
       </div>
     );
   },
@@ -125,30 +124,8 @@ vi.mock('@/store/api/api-endpoints', () => ({
   },
 }));
 
-vi.mock('@/hooks/use-local-storage', () => ({
-  useLocalStorage: (key: string, initialValue: string) => {
-    const [value, setValue] = React.useState(() => {
-      const stored = localStorage.getItem(key);
-      return stored ?? initialValue;
-    });
-
-    const setStoredValue = (newValue: string) => {
-      const processedValue = newValue.trim() || initialValue;
-      if (processedValue) {
-        localStorage.setItem(key, processedValue);
-      } else {
-        localStorage.removeItem(key);
-      }
-      setValue(processedValue);
-    };
-
-    return [value, setStoredValue];
-  },
-}));
-
 describe('SearchPage', () => {
   beforeEach(() => {
-    localStorage.clear();
     vi.clearAllMocks();
   });
 
@@ -164,67 +141,46 @@ describe('SearchPage', () => {
     expect(screen.getByTestId('card-list')).toBeInTheDocument();
   });
 
-  it('loads the saved search term from localStorage after page load', () => {
-    localStorage.setItem('search', 'venusaur');
-
-    renderWithProvider(<SearchPage />);
-
-    expect(screen.getByRole('searchbox')).toHaveValue('venusaur');
-  });
-
-  it('saves search term to localStorage when search button is clicked', async () => {
+  it('calls navigate with page 1 when search becomes active', async () => {
     const user = userEvent.setup();
     renderWithProvider(<SearchPage />);
 
     const input = screen.getByRole('searchbox');
-
     await user.type(input, 'ivysaur');
     await user.click(screen.getByRole('button', { name: /search/i }));
 
-    expect(localStorage.getItem('search')).toBe('ivysaur');
+    expect(mockNavigate).toHaveBeenCalledWith({
+      to: '.',
+      search: { page: 1 },
+      replace: true,
+    });
   });
 
-  it('trims whitespace from search input before saving', async () => {
+  it('does not navigate when search becomes inactive', async () => {
     const user = userEvent.setup();
-
     renderWithProvider(<SearchPage />);
-
-    const input = screen.getByRole('searchbox');
-    await user.type(input, '   bulbasaur   ');
 
     await user.click(screen.getByRole('button', { name: /search/i }));
 
-    expect(localStorage.getItem('search')).toBe('bulbasaur');
+    expect(mockNavigate).not.toHaveBeenCalled();
   });
 
-  it('overwrites existing localStorage value when new search is performed', async () => {
+  it('navigates to detail page when card is clicked', async () => {
     const user = userEvent.setup();
-
-    localStorage.setItem('search', 'charmeleon');
-
     renderWithProvider(<SearchPage />);
 
-    const input = screen.getByRole('searchbox');
+    await user.click(screen.getByText('Open Card'));
 
-    await user.clear(input);
-    await user.type(input, 'blastoise');
-    await user.click(screen.getByRole('button', { name: /search/i }));
-
-    expect(localStorage.getItem('search')).toBe('blastoise');
+    expect(mockNavigate).toHaveBeenCalledWith({
+      to: '/details/$detailId',
+      params: { detailId: '1' },
+      search: { page: 1 },
+    });
   });
 
-  it('removes localStorage value after submitting empty input', async () => {
-    const user = userEvent.setup();
-
-    localStorage.setItem('search', 'charmeleon');
-
+  it('passes empty data to CardList when no search and no list data', () => {
     renderWithProvider(<SearchPage />);
 
-    const input = screen.getByRole('searchbox');
-
-    await user.clear(input);
-    await user.click(screen.getByRole('button', { name: /search/i }));
-
-    expect(localStorage.getItem('search')).toBeNull();
+    expect(screen.getByText('Items: 0')).toBeInTheDocument();
   });
 });
