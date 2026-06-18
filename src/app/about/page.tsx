@@ -3,7 +3,7 @@ import styles from '../../styles/pages/about-page.module.css';
 
 const cx = classNames.bind(styles);
 
-export const AboutPage = () => {
+export default function AboutPage() {
   return (
     <div className={cx('about')}>
       <h1>About</h1>
@@ -38,4 +38,4 @@ export const AboutPage = () => {
       </p>
     </div>
   );
-};
+}
