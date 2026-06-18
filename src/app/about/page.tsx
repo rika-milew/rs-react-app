@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import styles from '../styles/pages/about-page.module.css';
+import styles from '../../styles/pages/about-page.module.css';
 
 const cx = classNames.bind(styles);
 
