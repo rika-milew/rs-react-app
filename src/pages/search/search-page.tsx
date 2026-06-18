@@ -12,15 +12,12 @@ import {
   setFetching,
   setError,
   setTotalPages,
-  resetError,
 } from '@/store/ui-state-slice';
 import type { PokemonWithDescription } from '@/types/api';
-import { useLocalStorage } from '@/hooks/use-local-storage';
 
 export const SearchPage = () => {
-  const [searchQuery, setSearchQuery] = useLocalStorage('search', '');
   const [searchData, setSearchData] = useState<PokemonWithDescription[]>([]);
-  const [isSearchActive, setIsSearchActive] = useState(() => !!searchQuery);
+  const [isSearchActive, setIsSearchActive] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -71,38 +68,30 @@ export const SearchPage = () => {
     dispatch,
   ]);
 
-  const handleSearch = useCallback(
-    (query: string) => {
-      setSearchQuery(query);
-      setIsSearchActive(!!query);
-
-      if (!query) {
-        dispatch(resetError());
-      }
-
-      void navigate({
-        to: '.',
-        search: { page: 1 },
-        replace: true,
-      });
-    },
-    [setSearchQuery, dispatch, navigate],
-  );
-
-  const handleSearchDataChange = useCallback(
-    (data: PokemonWithDescription[]) => {
+  const handleSearchResult = useCallback(
+    (isActive: boolean, data: PokemonWithDescription[]) => {
+      setIsSearchActive(isActive);
       setSearchData(data);
+
+      if (isActive) {
+        void navigate({
+          to: '.',
+          search: { page: 1 },
+          replace: true,
+        });
+      }
     },
-    [],
+    [navigate],
   );
 
   const handleRefresh = useCallback(() => {
     if (isSearchActive) {
-      handleSearch('');
+      setIsSearchActive(false);
+      setSearchData([]);
     } else {
       void refetchList();
     }
-  }, [isSearchActive, handleSearch, refetchList]);
+  }, [isSearchActive, refetchList]);
 
   const openDetailView = useCallback(
     (id: number) => {
@@ -123,12 +112,7 @@ export const SearchPage = () => {
 
   return (
     <>
-      <SearchBar
-        key={searchQuery}
-        value={searchQuery}
-        onSearch={handleSearch}
-        onDataChange={handleSearchDataChange}
-      />
+      <SearchBar onSearchResult={handleSearchResult} />
       <CardList
         data={data}
         onRefresh={handleRefresh}

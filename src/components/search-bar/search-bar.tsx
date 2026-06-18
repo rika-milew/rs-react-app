@@ -1,10 +1,11 @@
 import classNames from 'classnames/bind';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { KeyboardEvent, ChangeEvent } from 'react';
 import { Button } from '@/components/button/button';
 import { useDispatch } from 'react-redux';
 import { useSearchQuery } from '@/store/api/api-endpoints';
 import { getErrorMessage } from '@/utils/error-handlers';
+import { useLocalStorage } from '@/hooks/use-local-storage';
 import { ERROR_MESSAGES } from '@/constants/constants';
 import {
   setLoading,
@@ -19,20 +20,15 @@ import styles from './search-bar.module.css';
 const cx = classNames.bind(styles);
 
 type SearchBarProps = {
-  value?: string;
-  onSearch: (value: string) => void;
-  onDataChange: (data: PokemonWithDescription[]) => void;
+  onSearchResult: (isActive: boolean, data: PokemonWithDescription[]) => void;
 };
 
 const normalize = (value: string): string => value.trim().toLowerCase();
 
-export const SearchBar = ({
-  value = '',
-  onSearch,
-  onDataChange,
-}: SearchBarProps) => {
-  const [query, setQuery] = useState(value);
-  const [searchTerm, setSearchTerm] = useState(() => normalize(value));
+export const SearchBar = ({ onSearchResult }: SearchBarProps) => {
+  const [savedQuery, setSavedQuery] = useLocalStorage('search', '');
+  const [query, setQuery] = useState(savedQuery);
+  const [searchTerm, setSearchTerm] = useState(() => normalize(savedQuery));
   const dispatch = useDispatch();
 
   const {
@@ -48,7 +44,7 @@ export const SearchBar = ({
   useEffect(() => {
     if (!searchTerm) {
       dispatch(resetError());
-      onDataChange([]);
+      onSearchResult(false, []);
       return;
     }
 
@@ -63,13 +59,13 @@ export const SearchBar = ({
 
     if (isError) {
       dispatch(setError(getErrorMessage(error)));
-      onDataChange([]);
+      onSearchResult(true, []);
     } else if (searchData) {
       dispatch(setTotalPages(1));
-      onDataChange([searchData]);
+      onSearchResult(true, [searchData]);
     } else if (searchData === null) {
       dispatch(setTotalPages(0));
-      onDataChange([]);
+      onSearchResult(true, []);
       dispatch(setError(ERROR_MESSAGES.NOTFOUND));
     }
   }, [
@@ -80,30 +76,27 @@ export const SearchBar = ({
     error,
     searchTerm,
     dispatch,
-    onDataChange,
+    onSearchResult,
   ]);
 
   const handleChange = (event_: ChangeEvent<HTMLInputElement>) => {
     setQuery(event_.target.value);
   };
 
-  const handleSearch = () => {
+  const handleSearch = useCallback(() => {
     const trimmedQuery = query.trim();
     setQuery(trimmedQuery);
+    setSavedQuery(trimmedQuery);
 
     const normalized = normalize(trimmedQuery);
-    if (normalized) {
-      if (normalized !== searchTerm) {
-        dispatch(resetError());
-        onDataChange([]);
-        setSearchTerm(normalized);
-      }
-      onSearch(trimmedQuery);
-    } else {
+    if (normalized && normalized !== searchTerm) {
+      dispatch(resetError());
+      setSearchTerm(normalized);
+    } else if (!normalized) {
+      dispatch(resetError());
       setSearchTerm('');
-      onSearch('');
     }
-  };
+  }, [query, searchTerm, dispatch, setSavedQuery]);
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
