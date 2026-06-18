@@ -1,5 +1,6 @@
 import classNames from 'classnames/bind';
-import { Link } from '@tanstack/react-router';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ROUTES } from '@/constants/constants';
 import { ThemeToggle } from '@/components/theme-toggle/theme-toggle';
 import styles from './header.module.css';
@@ -7,6 +8,8 @@ import styles from './header.module.css';
 const cx = classNames.bind(styles);
 
 export function Header() {
+  const pathname = usePathname();
+
   return (
     <header className={cx('header')}>
       <h1 className={cx('logo')}>
@@ -18,16 +21,14 @@ export function Header() {
       <div className={cx('menu')}>
         <nav className={cx('nav')}>
           <Link
-            to={ROUTES.HOME}
-            className={cx('link')}
-            activeProps={{ className: cx('active') }}
+            href={ROUTES.HOME}
+            className={cx('link', { active: pathname === '/' })}
           >
             Home
           </Link>
           <Link
-            to={ROUTES.ABOUT}
-            className={cx('link')}
-            activeProps={{ className: cx('active') }}
+            href={ROUTES.ABOUT}
+            className={cx('link', { active: pathname === '/about' })}
           >
             About
           </Link>

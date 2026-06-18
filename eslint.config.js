@@ -1,8 +1,8 @@
 import js from '@eslint/js';
 import { defineConfig } from 'eslint/config';
+import nextPlugin from 'eslint-config-next';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
-import reactRefresh from 'eslint-plugin-react-refresh';
 import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 import eslintPluginPrettier from 'eslint-plugin-prettier/recommended';
 import globals from 'globals';
@@ -14,7 +14,6 @@ export default defineConfig([
   tseslint.configs.stylisticTypeChecked,
   reactPlugin.configs.flat.recommended,
   reactHooks.configs.flat.recommended,
-  reactRefresh.configs.vite,
   eslintPluginUnicorn.configs.recommended,
   eslintPluginPrettier,
   {
@@ -191,7 +190,9 @@ export default defineConfig([
       'eslint.config.js',
       'lint-staged.config.js',
       'stylelint.config.js',
-      '**/routeTree.gen.ts',
+      'next.config.ts',
+      'next.config.mjs',
+      '.next/**',
     ],
   },
 ]);

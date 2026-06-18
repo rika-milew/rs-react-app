@@ -1,6 +1,8 @@
+'use client';
+
 import { useEffect } from 'react';
 import { Button } from '@/components/button/button';
-import { useSearch, useNavigate } from '@tanstack/react-router';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import classNames from 'classnames/bind';
 import styles from './pagination.module.css';
 
@@ -11,29 +13,28 @@ type PaginationProps = {
 };
 
 export const Pagination = ({ totalPages }: PaginationProps) => {
-  const navigate = useNavigate();
-  const { page = 1 } = useSearch({ from: '/_layout' });
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const page = Number(searchParams.get('page')) || 1;
 
   const validPage = Math.max(1, Math.min(page, totalPages || 1));
 
   useEffect(() => {
     if (totalPages > 0 && (page < 1 || page > totalPages)) {
       const validPage = Math.max(1, Math.min(page, totalPages));
-      void navigate({
-        to: '.',
-        search: { page: validPage },
-        replace: true,
-      });
+      const params = new URLSearchParams(searchParams);
+      params.set('page', String(validPage));
+      router.replace(`${pathname}?${params.toString()}`);
     }
-  }, [page, totalPages, navigate]);
+  }, [page, totalPages, router, searchParams, pathname]);
 
   const handlePageChange = (newPage: number) => {
     const validNewPage = Math.max(1, Math.min(newPage, totalPages));
-    void navigate({
-      to: '.',
-      search: { page: validNewPage },
-      replace: true,
-    });
+    const params = new URLSearchParams(searchParams);
+    params.set('page', String(validNewPage));
+    router.replace(`${pathname}?${params.toString()}`);
   };
 
   const handlePreviousPage = () => {

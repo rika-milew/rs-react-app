@@ -43,3 +43,7 @@ out/
 
 # tests
 coverage/
+
+# Next.js
+.next/
+next-env.d.ts

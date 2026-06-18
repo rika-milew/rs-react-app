@@ -1,7 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { API_BASE_URL, DEFAULT_CACHE_TTL } from '@/constants/constants';
 
-const CACHE_TTL = Number(import.meta.env.VITE_CACHE_TTL) || DEFAULT_CACHE_TTL;
+const CACHE_TTL =
+  Number(process.env.NEXT_PUBLIC_CACHE_TTL) || DEFAULT_CACHE_TTL;
 const TIMEOUT = 15_000;
 
 export const apiSlice = createApi({

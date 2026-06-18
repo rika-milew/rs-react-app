@@ -1,9 +1,11 @@
+'use client';
+
 import { CardList } from '@/components/card-list/card-list';
 import { SearchBar } from '@/components/search-bar/search-bar';
 import { ErrorButton } from '@/components/error-button/error-button';
 import { useCallback, useEffect, useState } from 'react';
-import { useSearch, useNavigate } from '@tanstack/react-router';
-import { ROUTES, API_STATUS } from '@/constants/constants';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { API_STATUS } from '@/constants/constants';
 import { useGetListQuery } from '@/store/api/api-endpoints';
 import { getErrorMessage } from '@/utils/error-handlers';
 import { useDispatch } from 'react-redux';
@@ -15,15 +17,15 @@ import {
 } from '@/store/ui-state-slice';
 import type { PokemonWithDescription } from '@/types/api';
 
-export const SearchPage = () => {
+export default function HomePage() {
   const [searchData, setSearchData] = useState<PokemonWithDescription[]>([]);
   const [isSearchActive, setIsSearchActive] = useState(false);
 
   const dispatch = useDispatch();
 
-  const navigate = useNavigate();
-  const searchParams = useSearch({ from: ROUTES.LAYOUT });
-  const { page = 1 } = searchParams;
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const page = Number(searchParams.get('page')) || 1;
   const currentPage = page - 1;
 
   const {
@@ -74,14 +76,12 @@ export const SearchPage = () => {
       setSearchData(data);
 
       if (isActive) {
-        void navigate({
-          to: '.',
-          search: { page: 1 },
-          replace: true,
-        });
+        const params = new URLSearchParams();
+        params.set('page', '1');
+        router.replace(`/?${params.toString()}`);
       }
     },
-    [navigate],
+    [router],
   );
 
   const handleRefresh = useCallback(() => {
@@ -95,13 +95,9 @@ export const SearchPage = () => {
 
   const openDetailView = useCallback(
     (id: number) => {
-      void navigate({
-        to: ROUTES.DETAIL,
-        params: { detailId: String(id) },
-        search: searchParams,
-      });
+      router.push('/details/' + String(id));
     },
-    [navigate, searchParams],
+    [router],
   );
 
   const data = isSearchActive
@@ -121,4 +117,4 @@ export const SearchPage = () => {
       <ErrorButton />
     </>
   );
-};
+}

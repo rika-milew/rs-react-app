@@ -2,10 +2,10 @@ import classNames from 'classnames/bind';
 import { useEffect, useCallback } from 'react';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
-import { API_STATUS, ROUTES } from '@/constants/constants';
+import { API_STATUS } from '@/constants/constants';
 import { ErrorState } from '@/components/error-state/error-state';
 import styles from './detail-view.module.css';
-import { useNavigate, useSearch } from '@tanstack/react-router';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useGetDetailQuery, useGetListQuery } from '@/store/api/api-endpoints';
 import type { ReactNode } from 'react';
 import { getErrorMessage } from '@/utils/error-handlers';
@@ -17,10 +17,9 @@ type DetailViewProps = {
 };
 
 export function DetailView({ detailId }: DetailViewProps) {
-  const navigate = useNavigate();
-
-  const search = useSearch({ from: ROUTES.LAYOUT });
-  const currentPage = search.page ?? 1;
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentPage = Number(searchParams.get('page')) || 1;
 
   const { data: cachedItem, refetch: refetchList } = useGetListQuery(
     { search: '', page: currentPage - 1 },
@@ -51,11 +50,8 @@ export function DetailView({ detailId }: DetailViewProps) {
   }, [cachedItem, refetchList, refetchDetail]);
 
   const closeDetailView = useCallback(() => {
-    void navigate({
-      to: '/',
-      search,
-    });
-  }, [navigate, search]);
+    router.push('/');
+  }, [router]);
 
   useEffect(() => {
     const handleKeyDown = (event_: KeyboardEvent) => {

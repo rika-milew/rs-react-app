@@ -1,3 +1,5 @@
+'use client';
+
 import classNames from 'classnames/bind';
 import { useState } from 'react';
 import type { PokemonWithDescription } from '@/types/api';
@@ -10,8 +12,6 @@ import styles from './card.module.css';
 
 const cx = classNames.bind(styles);
 
-import mockImage from '@/assets/mock-image.png';
-
 export const ID_LENGTH = 3;
 
 type CardProps = {
@@ -22,6 +22,8 @@ type CardProps = {
 
 export function Card({ item, variant = 'detailed', onClick }: CardProps) {
   const { id, name, sprites } = item;
+
+  const mockImage = '/assets/mock-image.png';
 
   const image =
     sprites.other?.['official-artwork']?.front_default ??
