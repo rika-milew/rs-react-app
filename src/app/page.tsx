@@ -3,7 +3,7 @@
 import { CardList } from '@/components/card-list/card-list';
 import { SearchBar } from '@/components/search-bar/search-bar';
 import { ErrorButton } from '@/components/error-button/error-button';
-import { useCallback, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { API_STATUS } from '@/constants/constants';
 import { useGetListQuery } from '@/store/api/api-endpoints';
@@ -16,8 +16,9 @@ import {
   setTotalPages,
 } from '@/store/ui-state-slice';
 import type { PokemonWithDescription } from '@/types/api';
+import { Loader } from '@/components/loader/loader';
 
-export default function HomePage() {
+function HomePageContent() {
   const [searchData, setSearchData] = useState<PokemonWithDescription[]>([]);
   const [isSearchActive, setIsSearchActive] = useState(false);
 
@@ -116,5 +117,13 @@ export default function HomePage() {
       />
       <ErrorButton />
     </>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense fallback={<Loader />}>
+      <HomePageContent />
+    </Suspense>
   );
 }
