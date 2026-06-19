@@ -50,7 +50,7 @@ export const Pagination = ({ totalPages }: PaginationProps) => {
   };
 
   return (
-    <div className={cx('pagination')}>
+    <div className={cx('pagination')} data-pagination>
       <Button
         text="← Prev"
         onClick={handlePreviousPage}

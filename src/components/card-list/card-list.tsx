@@ -1,3 +1,5 @@
+'use client';
+
 import classNames from 'classnames/bind';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';

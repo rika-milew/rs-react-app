@@ -5,7 +5,7 @@ import { Loader } from '@/components/loader/loader';
 import { API_STATUS } from '@/constants/constants';
 import { ErrorState } from '@/components/error-state/error-state';
 import styles from './detail-view.module.css';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useGetDetailQuery, useGetListQuery } from '@/store/api/api-endpoints';
 import type { ReactNode } from 'react';
 import { getErrorMessage } from '@/utils/error-handlers';
@@ -14,10 +14,10 @@ const cx = classNames.bind(styles);
 
 type DetailViewProps = {
   detailId: string;
+  onClose: () => void;
 };
 
-export function DetailView({ detailId }: DetailViewProps) {
-  const router = useRouter();
+export function DetailView({ detailId, onClose }: DetailViewProps) {
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
 
@@ -50,8 +50,8 @@ export function DetailView({ detailId }: DetailViewProps) {
   }, [cachedItem, refetchList, refetchDetail]);
 
   const closeDetailView = useCallback(() => {
-    router.push('/');
-  }, [router]);
+    onClose();
+  }, [onClose]);
 
   useEffect(() => {
     const handleKeyDown = (event_: KeyboardEvent) => {
@@ -65,7 +65,11 @@ export function DetailView({ detailId }: DetailViewProps) {
       if (!(target instanceof HTMLElement)) {
         return;
       }
-      if (target.closest('[data-detail]') || target.closest('[data-card]')) {
+      if (
+        target.closest('[data-detail]') ||
+        target.closest('[data-card]') ||
+        target.closest('[data-pagination]')
+      ) {
         return;
       }
 

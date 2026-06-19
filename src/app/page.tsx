@@ -1,5 +1,6 @@
 'use client';
 
+import classNames from 'classnames/bind';
 import { CardList } from '@/components/card-list/card-list';
 import { SearchBar } from '@/components/search-bar/search-bar';
 import { ErrorButton } from '@/components/error-button/error-button';
@@ -7,6 +8,7 @@ import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { API_STATUS } from '@/constants/constants';
 import { useGetListQuery } from '@/store/api/api-endpoints';
+import { DetailView } from '@/components/detail-view/detail-view';
 import { getErrorMessage } from '@/utils/error-handlers';
 import { useDispatch } from 'react-redux';
 import {
@@ -17,16 +19,20 @@ import {
 } from '@/store/ui-state-slice';
 import type { PokemonWithDescription } from '@/types/api';
 import { Loader } from '@/components/loader/loader';
+import styles from '../styles/pages/search-page.module.css';
+
+const cx = classNames.bind(styles);
 
 function HomePageContent() {
   const [searchData, setSearchData] = useState<PokemonWithDescription[]>([]);
   const [isSearchActive, setIsSearchActive] = useState(false);
 
   const dispatch = useDispatch();
-
   const router = useRouter();
   const searchParams = useSearchParams();
+
   const page = Number(searchParams.get('page')) || 1;
+  const detailId = searchParams.get('detail');
   const currentPage = page - 1;
 
   const {
@@ -40,6 +46,14 @@ function HomePageContent() {
     { search: '', page: currentPage },
     { skip: isSearchActive },
   );
+
+  useEffect(() => {
+    if (!searchParams.get('page')) {
+      const params = new URLSearchParams(searchParams);
+      params.set('page', '1');
+      router.replace('/?' + params.toString());
+    }
+  }, []);
 
   useEffect(() => {
     if (isSearchActive) {
@@ -96,10 +110,18 @@ function HomePageContent() {
 
   const openDetailView = useCallback(
     (id: number) => {
-      router.push('/details/' + String(id));
+      const params = new URLSearchParams(searchParams);
+      params.set('detail', String(id));
+      router.push('/?' + params.toString());
     },
-    [router],
+    [router, searchParams],
   );
+
+  const closeDetailView = useCallback(() => {
+    const params = new URLSearchParams(searchParams);
+    params.delete('detail');
+    router.replace('/?' + params.toString());
+  }, [router, searchParams]);
 
   const data = isSearchActive
     ? searchData
@@ -108,15 +130,22 @@ function HomePageContent() {
       : [];
 
   return (
-    <>
-      <SearchBar onSearchResult={handleSearchResult} />
-      <CardList
-        data={data}
-        onRefresh={handleRefresh}
-        onCardClick={openDetailView}
-      />
-      <ErrorButton />
-    </>
+    <div className={cx('home-page-layout')}>
+      <div className={cx('search-section', { split: !!detailId })}>
+        <SearchBar onSearchResult={handleSearchResult} />
+        <CardList
+          data={data}
+          onRefresh={handleRefresh}
+          onCardClick={openDetailView}
+        />
+        <ErrorButton />
+      </div>
+      {detailId && (
+        <div className={cx('detail-section', 'open')}>
+          <DetailView detailId={detailId} onClose={closeDetailView} />
+        </div>
+      )}
+    </div>
   );
 }
 
