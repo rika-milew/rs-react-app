@@ -47,6 +47,8 @@ function HomePageContent() {
     { skip: isSearchActive },
   );
 
+  const isInitialLoading = !listData && !isError && !isSearchActive;
+
   useEffect(() => {
     if (!searchParams.get('page')) {
       const params = new URLSearchParams(searchParams);
@@ -137,6 +139,7 @@ function HomePageContent() {
           data={data}
           onRefresh={handleRefresh}
           onCardClick={openDetailView}
+          isInitialLoading={isInitialLoading}
         />
         <ErrorButton />
       </div>

@@ -19,14 +19,20 @@ type CardListProps = {
   data: PokemonWithDescription[];
   onRefresh: () => void;
   onCardClick: (id: number) => void;
+  isInitialLoading?: boolean;
 };
 
-export function CardList({ data, onRefresh, onCardClick }: CardListProps) {
+export function CardList({
+  data,
+  onRefresh,
+  onCardClick,
+  isInitialLoading,
+}: CardListProps) {
   const { isLoading, isError, isFetching, error, totalPages } = useSelector(
     (state: RootState) => state.uiState,
   );
 
-  if (isLoading) {
+  if (isInitialLoading || isLoading) {
     return (
       <section className={cx('section')}>
         <h2 className={cx('title')}>Results</h2>
