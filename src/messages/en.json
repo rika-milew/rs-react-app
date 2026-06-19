@@ -1,0 +1,38 @@
+{
+  "Home": {
+    "title": "RS React App",
+    "searchPlaceholder": "Search Pokémon...",
+    "searchButton": "Search",
+    "results": "Results",
+    "noResults": "Pokemon not found.",
+    "serverError": "Something went wrong. Try again later.",
+    "tryAgain": "Try again",
+    "refresh": "Refresh",
+    "updating": "Updating...",
+    "triggerError": "Trigger Error",
+    "name": "Eryka Mileuskaya"
+  },
+  "Details": {
+    "title": "Pokémon Details"
+  },
+  "About": {
+    "title": "About",
+    "author": "Author: Eryka Mileuskaya",
+    "description": "This is a React application built during RS School React Course(Opens in new tab) demonstrating routing, pagination, and master-detail architecture using TanStack Router."
+  },
+  "Navigation": {
+    "home": "Home",
+    "about": "About"
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "backHome": "Back Home"
+  },
+  
+  "Pagination": {
+    "prev": "← Prev",
+    "next": "Next →",
+    "page": "Page",
+    "of": "of"
+  }
+}
