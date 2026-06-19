@@ -1,3 +1,5 @@
+'use client';
+
 import classNames from 'classnames/bind';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '@/store';

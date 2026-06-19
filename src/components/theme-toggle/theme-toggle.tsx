@@ -1,3 +1,5 @@
+'use client';
+
 import classNames from 'classnames/bind';
 import { useTheme } from '@/theme-context/theme-context';
 import styles from './theme-toggle.module.css';

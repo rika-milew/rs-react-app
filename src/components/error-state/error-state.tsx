@@ -1,3 +1,5 @@
+'use client';
+
 import classNames from 'classnames/bind';
 import { Button } from '@/components/button/button';
 import styles from './error-state.module.css';

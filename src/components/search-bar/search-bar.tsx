@@ -1,3 +1,5 @@
+'use client';
+
 import classNames from 'classnames/bind';
 import { useState, useEffect, useCallback } from 'react';
 import type { KeyboardEvent, ChangeEvent } from 'react';

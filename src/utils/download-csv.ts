@@ -1,3 +1,5 @@
+'use client';
+
 import type { PokemonWithDescription } from '@/types/api';
 
 function formatCSV(items: PokemonWithDescription[]): string {
