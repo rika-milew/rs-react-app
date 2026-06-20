@@ -22,5 +22,7 @@ export default getRequestConfig(async ({ locale = 'en' }) => {
   return {
     locale,
     messages,
+    timeZone: 'Europe/Minsk',
+    now: new Date(),
   };
 });

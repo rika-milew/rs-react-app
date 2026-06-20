@@ -4,8 +4,8 @@ import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
 import { NextIntlClientProvider } from 'next-intl';
 import type { AbstractIntlMessages } from 'next-intl';
-import enMessages from '@/messages/en.json';
-import beMessages from '@/messages/be.json';
+import enMessages from '@/i18n/messages/en.json';
+import beMessages from '@/i18n/messages/be.json';
 
 const messagesMap: Record<string, AbstractIntlMessages> = {
   en: enMessages,
@@ -27,6 +27,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
       <NextIntlClientProvider
         locale={locale}
         messages={messagesMap[locale] ?? messagesMap.en}
+        timeZone="Europe/Minsk"
       >
         {children}
       </NextIntlClientProvider>
