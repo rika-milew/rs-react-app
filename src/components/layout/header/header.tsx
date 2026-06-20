@@ -36,8 +36,8 @@ export function Header() {
             About
           </Link>
         </nav>
-        <LanguageSwitcher />
         <ThemeToggle />
+        <LanguageSwitcher />
       </div>
     </header>
   );
