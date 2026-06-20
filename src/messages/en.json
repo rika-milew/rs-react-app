@@ -54,5 +54,11 @@
     "unselectAll": "Unselect all",
     "download": "Download",
     "downloading": "Downloading..."
+  },
+  "Error": {
+    "default": "Something went wrong. Try again later.",
+    "server": "Server error. Try again later.",
+    "network": "Network error. Check your internet connection.",
+    "notfound": "Pokemon not found."
   }
 }

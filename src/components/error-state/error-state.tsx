@@ -13,12 +13,15 @@ type ErrorStateProps = {
 };
 
 export const ErrorState = ({ message, onReload }: ErrorStateProps) => {
-  const t = useTranslations('Home');
+  const t = useTranslations();
+  const home = useTranslations('Home');
+
+  const translatedMessage = t(message);
 
   return (
     <div className={cx('state')}>
-      <p>{message}</p>
-      <Button text={t('tryAgain')} onClick={onReload} />
+      <p>{translatedMessage}</p>
+      <Button text={home('tryAgain')} onClick={onReload} />
     </div>
   );
 };
