@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 type UseLocalStorage = readonly [string, (value: string) => void];
 
@@ -12,15 +12,17 @@ export const useLocalStorage = (
     try {
       const savedSearch = localStorage.getItem(key);
       return savedSearch?.trim() ?? initialValue;
-    } catch (error) {
-      console.error('localStorage read failed:', error);
+    } catch {
       return initialValue;
     }
   });
 
-  const setSavedValue = (newSearch: string): void => {
-    setValue(newSearch.trim() || initialValue);
-  };
+  const setSavedValue = useCallback(
+    (newSearch: string): void => {
+      setValue(newSearch.trim() || initialValue);
+    },
+    [initialValue],
+  );
 
   useEffect(() => {
     try {
