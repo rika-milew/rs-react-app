@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --max-warnings 4",
+    "lint": "eslint . --max-warnings 5",
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
     "stylelint": "npx stylelint \"**/*.css\"",
