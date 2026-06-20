@@ -10,6 +10,8 @@ import { toggleItem } from '@/store/slice';
 import type { MouseEvent, KeyboardEvent, ChangeEvent } from 'react';
 import styles from './card.module.css';
 
+import Image from 'next/image';
+
 const cx = classNames.bind(styles);
 
 export const ID_LENGTH = 3;
@@ -90,11 +92,13 @@ export function Card({ item, variant = 'detailed', onClick }: CardProps) {
         <span className={cx('card-id')}>
           #{id.toString().padStart(ID_LENGTH, '0')}
         </span>
-        <img
+        <Image
           className={cx('image')}
           src={imgSource}
           alt={name || 'Pokémon image'}
           onError={handleImageError}
+          fill
+          sizes="(max-width: 768px) 50vw, 200px"
         />
       </div>
       <h3 className={cx('name')}>{capitalizedName}</h3>

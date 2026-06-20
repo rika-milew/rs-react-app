@@ -112,7 +112,7 @@ export function DetailView({ detailId, onClose }: DetailViewProps) {
 
   return (
     <DetailLayout closeDetailView={closeDetailView}>
-      <Card item={item} variant="detailed" />
+      <Card key={detailId} item={item} variant="detailed" />
     </DetailLayout>
   );
 }
