@@ -99,6 +99,8 @@ export function Card({ item, variant = 'detailed', onClick }: CardProps) {
           onError={handleImageError}
           fill
           sizes="(max-width: 768px) 50vw, 200px"
+          loading="eager"
+          priority
         />
       </div>
       <h3 className={cx('name')}>{capitalizedName}</h3>
