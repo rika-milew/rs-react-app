@@ -181,7 +181,7 @@ export default defineConfig([
     },
   },
   {
-    files: ['src/i18n/request.ts'],
+    files: ['src/i18n.ts'],
     rules: {
     '@typescript-eslint/no-unsafe-assignment': 'off',
     },

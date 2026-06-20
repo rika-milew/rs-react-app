@@ -18,7 +18,9 @@
   "About": {
     "title": "About",
     "author": "Author: Eryka Mileuskaya",
-    "description": "This is a React application built during RS School React Course(Opens in new tab) demonstrating routing, pagination, and master-detail architecture using TanStack Router."
+    "startDescription": "This is a React application built during",
+    "link": "RS School React Course",
+    "endDescription": "demonstrating routing, pagination, and master-detail architecture using Next.js App Router."
   },
   "Navigation": {
     "home": "Home",
