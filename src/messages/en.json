@@ -60,5 +60,10 @@
     "server": "Server error. Try again later.",
     "network": "Network error. Check your internet connection.",
     "notfound": "Pokemon not found."
+  },
+  "ErrorPage": {
+    "title": "Something went wrong",
+    "text": "Please try again or reset the app.",
+    "tryAgain": "Try again"
   }
 }
