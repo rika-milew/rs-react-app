@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Providers from './providers';
+import { LocaleProvider } from '@/contexts/locale-provider';
 import { Layout } from '@/components/layout/layout';
+import type { ReactNode } from 'react';
 import '@/styles/index.css';
 
 export const metadata: Metadata = {
@@ -11,13 +13,15 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <html lang="en">
       <body>
         <Providers>
-          <Layout>{children}</Layout>
+          <LocaleProvider>
+            <Layout>{children}</Layout>
+          </LocaleProvider>
         </Providers>
       </body>
     </html>

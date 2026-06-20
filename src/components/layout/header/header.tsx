@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ROUTES } from '@/constants/constants';
 import { ThemeToggle } from '@/components/theme-toggle/theme-toggle';
+import LanguageSwitcher from '@/components/language-switcher/language-switcher';
 import styles from './header.module.css';
 
 const cx = classNames.bind(styles);
@@ -35,6 +36,7 @@ export function Header() {
             About
           </Link>
         </nav>
+        <LanguageSwitcher />
         <ThemeToggle />
       </div>
     </header>
