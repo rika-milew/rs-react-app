@@ -1,9 +1,12 @@
 import classNames from 'classnames/bind';
+import { useTranslations } from 'next-intl';
 import styles from './footer.module.css';
 
 const cx = classNames.bind(styles);
 
 export function Footer() {
+  const t = useTranslations('Home');
+
   return (
     <footer className={cx('footer')}>
       <span className={cx('logo')}>RS School</span>
@@ -13,8 +16,8 @@ export function Footer() {
         target="_blank"
         rel="noopener noreferrer"
       >
-        Eryka Mileuskaya
-        <span className={cx('visually-hidden')}> (Opens in new tab)</span>
+        {t('name')}
+        <span className={cx('visually-hidden')}>{t('newTab')}</span>
       </a>
       <span className={cx('year')}>© {new Date().getFullYear()}</span>
     </footer>

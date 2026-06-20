@@ -1,6 +1,7 @@
 'use client';
 
 import classNames from 'classnames/bind';
+import { useTranslations } from 'next-intl';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
 import { Pagination } from '@/components/pagination/pagination';
@@ -28,6 +29,8 @@ export function CardList({
   onCardClick,
   isInitialLoading,
 }: CardListProps) {
+  const t = useTranslations('Home');
+
   const { isLoading, isError, isFetching, error, totalPages } = useSelector(
     (state: RootState) => state.uiState,
   );
@@ -58,7 +61,7 @@ export function CardList({
 
   return (
     <section className={cx('section')}>
-      <h2 className={cx('title')}>Results</h2>
+      <h2 className={cx('title')}>{t('results')}</h2>
       {isFetching && <Loader />}
       <div className={cx('card-container')}>
         {data.map((card) => (
@@ -75,7 +78,7 @@ export function CardList({
       {!isFetching && <Pagination totalPages={totalPages} />}
       <Button
         onClick={onRefresh}
-        text={isFetching ? 'Updating...' : 'Refresh'}
+        text={isFetching ? t('updating') : t('refresh')}
         disabled={isFetching}
         className="refresh-button"
       />

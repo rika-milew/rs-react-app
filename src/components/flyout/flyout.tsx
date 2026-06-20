@@ -1,6 +1,7 @@
 'use client';
 
 import classNames from 'classnames/bind';
+import { useTranslations } from 'next-intl';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '@/store';
 import { clearAllItems } from '@/store/slice';
@@ -12,6 +13,7 @@ import styles from './flyout.module.css';
 const cx = classNames.bind(styles);
 
 export function Flyout() {
+  const t = useTranslations('Flyout');
   const dispatch = useDispatch();
   const selectedItems = useSelector(
     (state: RootState) => state.selectedItems.selectedItems,
@@ -47,28 +49,28 @@ export function Flyout() {
   return (
     <div className={cx('flyout')}>
       <span className={cx('count')} aria-live="polite">
-        Selected Items:
+        {t('selectedItems')}
         <span>
           {' '}
-          {count} Item{count === 1 ? '' : 's'}
+          {count} {count === 1 ? t('item') : t('items')}
         </span>
       </span>
       {error && (
         <p className={cx('download-error')} role="alert">
-          Failed to download CSV
+          {t('downloadError')}
         </p>
       )}
       <div className={cx('buttons')}>
         <Button
           variant="primary"
           onClick={handleClearAll}
-          text="Unselect all"
+          text={t('unselectAll')}
           disabled={isLoading}
         />
         <Button
           variant="basic"
           onClick={handleDownload}
-          text={isLoading ? 'Downloading...' : 'Download'}
+          text={isLoading ? t('downloading') : t('download')}
           disabled={isLoading}
         />
       </div>

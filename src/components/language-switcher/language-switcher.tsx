@@ -14,6 +14,7 @@ export default function LanguageSwitcher() {
       <button
         className={cx('button', { active: locale === 'en' })}
         onClick={() => setLocale('en')}
+        aria-label="English"
       >
         EN
       </button>
@@ -21,6 +22,7 @@ export default function LanguageSwitcher() {
       <button
         className={cx('button', { active: locale === 'be' })}
         onClick={() => setLocale('be')}
+        aria-label="Беларуская"
       >
         BE
       </button>

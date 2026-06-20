@@ -1,6 +1,7 @@
 'use client';
 
 import classNames from 'classnames/bind';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/button/button';
 import styles from './error-state.module.css';
 
@@ -12,10 +13,12 @@ type ErrorStateProps = {
 };
 
 export const ErrorState = ({ message, onReload }: ErrorStateProps) => {
+  const t = useTranslations('Home');
+
   return (
     <div className={cx('state')}>
       <p>{message}</p>
-      <Button text="Try again" onClick={onReload} />
+      <Button text={t('tryAgain')} onClick={onReload} />
     </div>
   );
 };

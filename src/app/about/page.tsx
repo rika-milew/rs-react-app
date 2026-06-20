@@ -23,7 +23,7 @@ export default function AboutPage() {
           rel="noopener noreferrer"
         >
           rika-milew
-          <span className={cx('visually-hidden')}> (Opens in new tab)</span>
+          <span className={cx('visually-hidden')}>{t('newTab')}</span>
         </a>
       </p>
 
@@ -36,7 +36,7 @@ export default function AboutPage() {
           rel="noopener noreferrer"
         >
           {t('link')}
-          <span className={cx('visually-hidden')}> (Opens in new tab)</span>
+          <span className={cx('visually-hidden')}>{t('newTab')}</span>
         </a>{' '}
         {t('endDescription')}
       </p>

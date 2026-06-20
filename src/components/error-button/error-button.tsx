@@ -1,9 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/button/button';
 
 export function ErrorButton() {
+  const t = useTranslations('Home');
+
   const [hasError, setHasError] = useState(false);
 
   if (hasError) {
@@ -12,7 +15,7 @@ export function ErrorButton() {
 
   return (
     <Button
-      text="Trigger error"
+      text={t('triggerError')}
       variant="error"
       onClick={() => {
         setHasError(true);

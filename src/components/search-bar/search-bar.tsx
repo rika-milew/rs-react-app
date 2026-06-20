@@ -1,6 +1,7 @@
 'use client';
 
 import classNames from 'classnames/bind';
+import { useTranslations } from 'next-intl';
 import { useState, useEffect, useCallback } from 'react';
 import type { KeyboardEvent, ChangeEvent } from 'react';
 import { Button } from '@/components/button/button';
@@ -28,6 +29,8 @@ type SearchBarProps = {
 const normalize = (value: string): string => value.trim().toLowerCase();
 
 export const SearchBar = ({ onSearchResult }: SearchBarProps) => {
+  const t = useTranslations('Home');
+
   const [savedQuery, setSavedQuery] = useLocalStorage('search', '');
   const [query, setQuery] = useState(savedQuery);
   const [searchTerm, setSearchTerm] = useState(() => normalize(savedQuery));
@@ -109,7 +112,7 @@ export const SearchBar = ({ onSearchResult }: SearchBarProps) => {
   return (
     <div className={cx('search-container')}>
       <label htmlFor="search-input" className={cx('visually-hidden')}>
-        Search Pokémon
+        {t('search')}
       </label>
       <input
         id="search-input"
@@ -117,11 +120,11 @@ export const SearchBar = ({ onSearchResult }: SearchBarProps) => {
         value={query}
         onChange={handleChange}
         onKeyDown={handleKeyDown}
-        placeholder="Search Pokémon..."
+        placeholder={t('searchPlaceholder')}
         className={cx('input')}
       />
 
-      <Button text="Search" onClick={handleSearch} />
+      <Button text={t('searchButton')} onClick={handleSearch} />
     </div>
   );
 };

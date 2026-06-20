@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/button/button';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import classNames from 'classnames/bind';
@@ -13,6 +14,7 @@ type PaginationProps = {
 };
 
 export const Pagination = ({ totalPages }: PaginationProps) => {
+  const t = useTranslations('Pagination');
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -52,17 +54,17 @@ export const Pagination = ({ totalPages }: PaginationProps) => {
   return (
     <div className={cx('pagination')} data-pagination>
       <Button
-        text="← Prev"
+        text={t('prev')}
         onClick={handlePreviousPage}
         disabled={validPage === 1}
         variant="secondary"
       />
       <span className={cx('page-info')}>
-        Page <span className={cx('page-number')}>{validPage}</span> of{' '}
-        {totalPages}
+        {t('page')} <span className={cx('page-number')}>{validPage}</span>
+        {t('of')} {totalPages}
       </span>
       <Button
-        text="Next →"
+        text={t('next')}
         onClick={handleNextPage}
         disabled={validPage >= totalPages}
         variant="secondary"

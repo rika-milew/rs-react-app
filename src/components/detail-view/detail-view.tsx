@@ -1,4 +1,5 @@
 import classNames from 'classnames/bind';
+import { useTranslations } from 'next-intl';
 import { useEffect, useCallback } from 'react';
 import { Card } from '@/components/card/card';
 import { Loader } from '@/components/loader/loader';
@@ -123,14 +124,15 @@ function DetailLayout({
   closeDetailView: () => void;
   children: ReactNode;
 }) {
+  const t = useTranslations('Details');
   return (
     <aside data-detail className={cx('detail-view')}>
       <div className={cx('header')}>
-        <h2 className={cx('title')}>Pokémon Details</h2>
+        <h2 className={cx('title')}>{t('title')}</h2>
         <button
           className={cx('close-button')}
           onClick={closeDetailView}
-          aria-label="Close details"
+          aria-label={t('close')}
         >
           ✕
         </button>
