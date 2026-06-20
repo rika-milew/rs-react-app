@@ -27,14 +27,14 @@ export const ThemeToggle = () => {
       <div className={cx('icon-container')}>
         <Image
           className={cx('icon', { visible: isDefault })}
-          src="/sun.svg"
+          src="/icons/sun.svg"
           alt="Sun"
           width={24}
           height={24}
         />
         <Image
           className={cx('icon', { visible: !isDefault })}
-          src="/moon.svg"
+          src="/icons/moon.svg"
           alt="Moon"
           width={24}
           height={24}

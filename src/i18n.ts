@@ -6,10 +6,10 @@ const locales = new Set<string>(['en', 'be']);
 type Messages = Record<string, Record<string, string>>;
 
 async function importMessages(locale: string): Promise<Messages> {
-  const module: { default: Messages } = await import(
+  const importedModule: { default: Messages } = await import(
     `./messages/${locale}.json`
   );
-  return module.default;
+  return importedModule.default;
 }
 
 export default getRequestConfig(async ({ locale = 'en' }) => {
