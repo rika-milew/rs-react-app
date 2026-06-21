@@ -1,15 +1,11 @@
 import { apiSlice } from './api-slice';
 import { getData } from '@/services/data-service';
-import { getItemFull, getItemsById } from '@/services/api';
+import { getItemFull } from '@/services/api';
 import { API_STATUS } from '@/constants/constants';
 import type { PokemonWithDescription } from '@/types/api';
 import { getDetailData } from '@/services/detail-service';
 import type { DetailResult } from '@/services/detail-service';
-import {
-  handleErrorResult,
-  handleQueryError,
-  handleSearchError,
-} from '@/utils/error-handlers';
+import { handleErrorResult, handleSearchError } from '@/utils/error-handlers';
 
 type ListData = {
   status: typeof API_STATUS.SUCCESS;
@@ -75,22 +71,8 @@ export const apiEndpoints = apiSlice.injectEndpoints({
       },
       providesTags: (_result, _error, id) => [{ type: 'Detail', id }],
     }),
-    download: builder.mutation<PokemonWithDescription[], string[]>({
-      queryFn: async (ids: string[]) => {
-        try {
-          const result = await getItemsById(ids);
-          return { data: result };
-        } catch (error) {
-          return handleQueryError(error);
-        }
-      },
-    }),
   }),
 });
 
-export const {
-  useGetListQuery,
-  useSearchQuery,
-  useGetDetailQuery,
-  useDownloadMutation,
-} = apiEndpoints;
+export const { useGetListQuery, useSearchQuery, useGetDetailQuery } =
+  apiEndpoints;
