@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import Providers from './providers';
 import { LocaleProvider } from '@/lib/locale-provider';
 import { Layout } from '@/components/layout/layout';
@@ -18,11 +19,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Providers>
-          <LocaleProvider>
-            <Layout>{children}</Layout>
-          </LocaleProvider>
-        </Providers>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Providers>
+            <LocaleProvider>
+              <Layout>{children}</Layout>
+            </LocaleProvider>
+          </Providers>
+        </Suspense>
       </body>
     </html>
   );
