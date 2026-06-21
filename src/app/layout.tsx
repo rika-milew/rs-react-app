@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Providers from './providers';
-import { LocaleProvider } from '@/contexts/locale-provider';
+import { LocaleProvider } from '@/lib/locale-provider';
 import { Layout } from '@/components/layout/layout';
 import type { ReactNode } from 'react';
 import '@/styles/index.css';

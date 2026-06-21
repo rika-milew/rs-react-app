@@ -3,7 +3,8 @@
 import { useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/button/button';
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { useRouter, usePathname } from '@/lib/navigation';
 import classNames from 'classnames/bind';
 import styles from './pagination.module.css';
 

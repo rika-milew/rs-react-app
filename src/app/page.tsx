@@ -5,7 +5,8 @@ import { CardList } from '@/components/card-list/card-list';
 import { SearchBar } from '@/components/search-bar/search-bar';
 import { ErrorButton } from '@/components/error-button/error-button';
 import { Suspense, useCallback, useEffect, useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { useRouter } from '@/lib/navigation';
 import { API_STATUS } from '@/constants/constants';
 import { useGetListQuery } from '@/store/api/api-endpoints';
 import { DetailView } from '@/components/detail-view/detail-view';
@@ -19,7 +20,7 @@ import {
 } from '@/store/ui-state-slice';
 import type { PokemonWithDescription } from '@/types/api';
 import { Loader } from '@/components/loader/loader';
-import styles from '../styles/pages/search-page.module.css';
+import styles from '@/styles/pages/search-page.module.css';
 
 const cx = classNames.bind(styles);
 

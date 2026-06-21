@@ -1,7 +1,7 @@
 'use client';
 
 import classNames from 'classnames/bind';
-import { useLocale } from '@/contexts/locale-provider';
+import { useLocale } from '@/lib/locale-provider';
 import styles from './language-switcher.module.css';
 
 const cx = classNames.bind(styles);

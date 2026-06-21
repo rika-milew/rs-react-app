@@ -2,9 +2,9 @@
 
 import classNames from 'classnames/bind';
 import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/lib/navigation';
 import { Button } from '@/components/button/button';
-import styles from '../styles/pages/not-found.module.css';
+import styles from '@/styles/pages/not-found.module.css';
 
 const cx = classNames.bind(styles);
 

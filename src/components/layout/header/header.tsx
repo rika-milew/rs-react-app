@@ -1,9 +1,8 @@
 'use client';
 
 import classNames from 'classnames/bind';
-import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { usePathname } from 'next/navigation';
+import { Link, usePathname } from '@/lib/navigation';
 import { ROUTES } from '@/constants/constants';
 import { ThemeToggle } from '@/components/theme-toggle/theme-toggle';
 import LanguageSwitcher from '@/components/language-switcher/language-switcher';
