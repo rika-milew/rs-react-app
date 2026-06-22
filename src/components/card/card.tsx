@@ -1,3 +1,5 @@
+'use client';
+
 import classNames from 'classnames/bind';
 import { useState } from 'react';
 import type { PokemonWithDescription } from '@/types/api';
@@ -8,9 +10,9 @@ import { toggleItem } from '@/store/slice';
 import type { MouseEvent, KeyboardEvent, ChangeEvent } from 'react';
 import styles from './card.module.css';
 
-const cx = classNames.bind(styles);
+import Image from 'next/image';
 
-import mockImage from '@/assets/mock-image.png';
+const cx = classNames.bind(styles);
 
 export const ID_LENGTH = 3;
 
@@ -22,6 +24,8 @@ type CardProps = {
 
 export function Card({ item, variant = 'detailed', onClick }: CardProps) {
   const { id, name, sprites } = item;
+
+  const mockImage = '/assets/mock-image.png';
 
   const image =
     sprites.other?.['official-artwork']?.front_default ??
@@ -88,11 +92,15 @@ export function Card({ item, variant = 'detailed', onClick }: CardProps) {
         <span className={cx('card-id')}>
           #{id.toString().padStart(ID_LENGTH, '0')}
         </span>
-        <img
+        <Image
           className={cx('image')}
           src={imgSource}
           alt={name || 'Pokémon image'}
           onError={handleImageError}
+          fill
+          sizes="(max-width: 768px) 50vw, 200px"
+          loading="eager"
+          priority
         />
       </div>
       <h3 className={cx('name')}>{capitalizedName}</h3>

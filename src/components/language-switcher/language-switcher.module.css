@@ -1,0 +1,27 @@
+.language-switcher {
+  display: flex;
+  flex-direction: row;
+  gap: 0.25rem;
+  align-items: center;
+  justify-content: space-between;
+
+  font-size: 1rem;
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.25rem;
+}
+
+.button {
+  cursor: pointer;
+  padding: 0.25rem;
+  color: var(--text);
+  background: transparent;
+}
+
+.button.active {
+  color: var(--color-orange-600);
+}
+
+.separator {
+  user-select: none;
+  font-weight: var(--font-weight-regular);
+}

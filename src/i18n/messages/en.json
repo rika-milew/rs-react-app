@@ -1,0 +1,61 @@
+{
+  "Home": {
+    "title": "RS React App",
+    "search": "Search Pokémon",
+    "searchPlaceholder": "Search Pokémon...",
+    "searchButton": "Search",
+    "results": "Results",
+    "noResults": "Pokemon not found.",
+    "serverError": "Something went wrong. Try again later.",
+    "tryAgain": "Try again",
+    "loading": "Loading…",
+    "refresh": "Refresh",
+    "updating": "Updating...",
+    "triggerError": "Trigger Error",
+    "name": "Eryka Mileuskaya",
+    "newTab": " (Opens in new tab)"
+  },
+  "Details": {
+    "title": "Pokémon Details",
+    "close": "Close details"
+  },
+  "Navigation": {
+    "home": "Home",
+    "about": "About",
+    "skipToContent": "Skip to the main content"
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "backHome": "Back Home"
+  },
+  "Pagination": {
+    "prev": "← Prev",
+    "next": "Next →",
+    "page": "Page",
+    "of": " of"
+  },
+  "Theme": {
+    "switchToLight": "Switch to the light mode",
+    "switchToDark": "Switch to the dark mode"
+  },
+  "Flyout": {
+    "selectedItems": "Selected Items:",
+    "item": "Item",
+    "items": "Items",
+    "downloadError": "Failed to download CSV",
+    "unselectAll": "Unselect all",
+    "download": "Download",
+    "downloading": "Downloading..."
+  },
+  "Error": {
+    "default": "Something went wrong. Try again later.",
+    "server": "Server error. Try again later.",
+    "network": "Network error. Check your internet connection.",
+    "notfound": "Pokemon not found."
+  },
+  "ErrorPage": {
+    "title": "Something went wrong",
+    "text": "Please try again or reset the app.",
+    "tryAgain": "Try again"
+  }
+}

@@ -1,21 +1,27 @@
+'use client';
+
 import classNames from 'classnames/bind';
+import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '@/store';
 import { clearAllItems } from '@/store/slice';
 import { Button } from '@/components/button/button';
 import { downloadCSV } from '@/utils/download-csv';
-import { useDownloadMutation } from '@/store/api/api-endpoints';
+import { generateCSV } from '@/app/actions';
 import styles from './flyout.module.css';
 
 const cx = classNames.bind(styles);
 
 export function Flyout() {
+  const t = useTranslations('Flyout');
   const dispatch = useDispatch();
   const selectedItems = useSelector(
     (state: RootState) => state.selectedItems.selectedItems,
   );
   const count = selectedItems.length;
-  const [downloadItems, { isLoading, error }] = useDownloadMutation();
+  const [isLoading, setIsLoading] = useState(false);
+  const [downloadError, setDownloadError] = useState(false);
 
   if (count === 0) {
     return null;
@@ -25,48 +31,49 @@ export function Flyout() {
     dispatch(clearAllItems());
   };
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (isLoading) {
       return;
     }
-
-    void downloadItems(selectedItems)
-      .unwrap()
-      .then((items) => {
-        if (items.length > 0) {
-          downloadCSV(items);
-        }
-      })
-      .catch(() => {
-        console.error('Failed to download CSV:', error);
-      });
+    setIsLoading(true);
+    setDownloadError(false);
+    try {
+      const { csv, fileName } = await generateCSV(selectedItems);
+      downloadCSV(csv, fileName);
+    } catch {
+      setDownloadError(true);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className={cx('flyout')}>
       <span className={cx('count')} aria-live="polite">
-        Selected Items:
+        {t('selectedItems')}
         <span>
           {' '}
-          {count} Item{count === 1 ? '' : 's'}
+          {count} {count === 1 ? t('item') : t('items')}
         </span>
       </span>
-      {error && (
+      {downloadError && (
         <p className={cx('download-error')} role="alert">
-          Failed to download CSV
+          {t('downloadError')}
         </p>
       )}
       <div className={cx('buttons')}>
         <Button
           variant="primary"
           onClick={handleClearAll}
-          text="Unselect all"
+          text={t('unselectAll')}
           disabled={isLoading}
         />
         <Button
           variant="basic"
-          onClick={handleDownload}
-          text={isLoading ? 'Downloading...' : 'Download'}
+          onClick={() => {
+            void handleDownload();
+          }}
+          text={isLoading ? t('downloading') : t('download')}
           disabled={isLoading}
         />
       </div>

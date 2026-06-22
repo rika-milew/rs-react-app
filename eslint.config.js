@@ -1,8 +1,8 @@
 import js from '@eslint/js';
 import { defineConfig } from 'eslint/config';
-import reactPlugin from 'eslint-plugin-react';
+import nextTs from 'eslint-config-next/typescript';
+import nextVitals from 'eslint-config-next/core-web-vitals';
 import reactHooks from 'eslint-plugin-react-hooks';
-import reactRefresh from 'eslint-plugin-react-refresh';
 import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 import eslintPluginPrettier from 'eslint-plugin-prettier/recommended';
 import globals from 'globals';
@@ -12,9 +12,9 @@ export default defineConfig([
   js.configs.recommended,
   tseslint.configs.strictTypeChecked,
   tseslint.configs.stylisticTypeChecked,
-  reactPlugin.configs.flat.recommended,
+  nextVitals,
+  nextTs,
   reactHooks.configs.flat.recommended,
-  reactRefresh.configs.vite,
   eslintPluginUnicorn.configs.recommended,
   eslintPluginPrettier,
   {
@@ -182,6 +182,12 @@ export default defineConfig([
     },
   },
   {
+    files: ['src/i18n/request.ts'],
+    rules: {
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+    },
+  },
+  {
     ignores: [
       '**/node_modules/**',
       '**/dist/**',
@@ -191,7 +197,9 @@ export default defineConfig([
       'eslint.config.js',
       'lint-staged.config.js',
       'stylelint.config.js',
-      '**/routeTree.gen.ts',
+      'next.config.ts',
+      'next.config.mjs',
+      '.next/**',
     ],
   },
 ]);
